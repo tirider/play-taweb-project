@@ -1,0 +1,214 @@
+@(title: String, scripts: Html = Html(""))(subtitle: Html)(content: Html)
+<!DOCTYPE html>
+<html>
+    <head>
+    	<!-- metadata description -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>4Travelers - @title</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+	    	    
+		<!-- stylesheet -->
+        <link rel="icon" type="image/png" href='@routes.Assets.at("img/favicon.png")'>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/bootstrap.min.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/bootstrap-responsive.min.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/vendor/bootstrap-select.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/vendor/slider.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/jquery.mCustomScrollbar.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/style.css")'>
+        <link rel="stylesheet" href='@routes.Assets.at("stylesheets/jquery.datetimepicker.css")'>
+
+		<!-- javascript overall-->
+        <script src='@routes.Assets.at("javascripts/vendor/modernizr-2.6.2-respond-1.1.0.min.js")'></script>
+        
+        <script type="text/javascript" src='@routes.Assets.at("javascripts/jquery-1.10.1.min.js")'></script>
+        <script src='@routes.Assets.at("javascripts/vendor/bootstrap.js")'></script>
+        <script src='@routes.Assets.at("javascripts/vendor/bootstrap-select.min.js")'></script>
+        <script src='@routes.Assets.at("javascripts/vendor/jquery.flexslider-min.js")'></script>
+        <script src='@routes.Assets.at("javascripts/vendor/bootstrap-slider.js")'></script>
+        <script src='@routes.Assets.at("javascripts/vendor/jquery.mousewheel.min.js")'></script>
+        <script src='@routes.Assets.at("javascripts/vendor/jquery.mCustomScrollbar.min.js")'></script>
+        <script src='@routes.Assets.at("javascripts/vendor/jquery.placeholder.min.js")'></script>
+        
+        <!-- fancybox -->
+       	<script type="text/javascript" src='@routes.Assets.at("javascripts/fancybox/jquery.fancybox.js")'></script>
+		<script type="text/javascript" src='@routes.Assets.at("javascripts/fancybox/jquery.fancybox.pack.js")'></script>
+		<link rel="stylesheet" type="text/css" href='@routes.Assets.at("javascripts/fancybox/jquery.fancybox.css")' media="screen" />
+		
+		<!-- datetimepicker -->
+        <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
+		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+		<script src='@routes.Assets.at("javascripts/datetimepicker/jquery.datetimepicker.js")' type="text/javascript"></script>
+		@scripts
+        <script src='@routes.Assets.at("javascripts/main.js")'></script>   
+		
+    </head>
+    <body>
+    	<!-- start hidden login / regiter frame -->
+    	<section id='hidden-header'>
+    		<!-- start top hidden container-->
+            <section class='container'>
+                
+                <!-- start profile frame -->
+                <section class='row profile-form'>
+                    <!-- start top login frame -->
+                    <div class='span6'>
+                        <div class='login-form top-form'>
+                            <h2>Sign In</h2>
+                            <p>Sign in order to give you more !</p>
+
+                            <form action="@routes.Application.login()" class='row' method="post">
+                                <div class='span3'>
+                                    <input type="email" name="login-email" id="login-email" class='input-block-level' placeholder="Email"/>
+                                </div>
+                                <div class='span3'>
+                                    <input type="password" name="login-password" id="login-password" class='input-block-level'  placeholder="Password"/>
+                                    <input type="submit" name='submit' value='Login' class='btn btn-success btn-lg btn-block'/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!-- ends top login frame -->
+                    
+                    <!-- stat top register frame -->
+                    <div class='span6'>
+                        <div class='login-form top-form'>
+                            <h2>Sign Up</h2>
+                            <p>Sign up in order to give you more !</p>
+
+                            <form action="@routes.Application.register()" class='row' method="post">
+                                <div class='span3'>
+                                    <input type="text" name='register-name' id='register-name' class='input-block-level' placeholder="Nick Name"/>
+                                    <input type="password" name='register-password' id='register-password' class='input-block-level' placeholder="Password"/>
+                                </div>
+                                <div class='span3'>
+                                	<input type="email" name='register-email' id='register-email' class='input-block-level' placeholder="Email Address"/>
+                                    <input type="password" name='register-password-confirm' id='register-password-confirm' class='input-block-level' placeholder="Password Confirmation"/>
+                                    <input type="submit" name='submit' value='Register' class='btn btn-success btn-lg btn-block'/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                     <!-- stat top register frame -->
+                </section>
+                <!-- ends profile frame -->
+            </section>
+            <!-- ends top hidden container-->
+        </section>
+        <!-- ends hidden login / regiter frame -->
+        
+        <!-- start top header nav bar frame-->
+        <header>
+            <section class='container'>
+                <section class='row'>
+                	<!-- start logo frame -->
+                    <div class='span3'>
+                        <figure class='logo'>
+                            <a href="@routes.Application.index()">
+                                <img src='@routes.Assets.at("img/logo.png")' alt="4Travelers"/>
+                            </a>
+                        </figure>
+                    </div>
+                    <!-- ends logo frame -->
+                    
+                    <!-- start top navigation bar frame -->
+                    <div class='span6'>
+                        <nav class='main-nav'>
+		                    <ul>
+		                        <li class='active'> <a href="@routes.Application.index()">Home</a> </li>
+		                        <li class='active'> <a href="@routes.Application.sparql()">SPARQL EndPoint</a> </li>
+		                        <li class='active'> <a href="#">Ontology</a> </li>
+		                        <li class='active'> <a href="#">About</a>  </li>
+		                    </ul>
+                        </nav>
+                    </div>
+                    <div class='span3'>
+                    	<!-- if not logged in -->
+                    	<div class="header-buttons">
+                    		<a href="#" class='profile custom-tooltip' title="Log In / Sign Out">Profile</a>	
+                    	</div>
+                    	<!-- ends if not logged in -->
+
+						<!-- if logged in        	
+                        <nav id="profile" class='main-nav'>
+		                    <ul>
+		                    	<li class='active'>
+		                    		<a href='#'>Profile</a>
+		                    		<ul class='dropdown-menu'>
+		                    			<br/>
+		                    			<li><b>somebody@@server.com</b></li>
+		                    			<li><a href="@routes.Application.logout()">Log Out</a></li>
+                                        <li><a href="#">Settings</a></li>
+                                    </ul>
+		                    	</li>
+		                    </ul>
+                        </nav>
+                        <!-- ends if logged in -->
+                        
+                    </div>
+                    <!-- ends top navigation bar frame -->
+                </section>
+            </section>
+        </header>
+        <!-- ends top header nav bar frame -->
+        
+        <!-- start header frame -->
+        <section id='header-page-title'>
+            <div class='container'>
+                <div class='row'>
+                    <div class='span12'>
+                        <div class='text-box span6'>
+                        	@subtitle
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- ends header frame -->
+		
+		<!-- start center container-->
+        <section id='main'>
+            <section id="container" class='container'>
+            	@content
+            </section>
+        </section>
+        <!-- ends center container-->
+        
+        <!-- start footer frame -->
+        <footer>
+            <!-- start under-decoration container frame -->
+            <section class='container'>
+                <section class='row'> </section>
+            </section>
+            <!-- ends under-decoration container frame -->
+            
+            <!-- start sub-footer frame -->
+			<section id='sub-footer'>
+			    <section class='container'>
+			        <section class='row'>
+			            <div class='span3'>
+			                <div class='copyright'>
+			                	<p class="sub-text-footer">&copy; 2013 All rights reserved. Developed by UM2 team</p> 
+			                </div>
+			            </div>
+			            <div class='span6'>
+			                <div class='copyright'>
+			                   <p class="sub-text-footer">&copy; 2013 4Travellers</p>
+			                </div>
+			            </div>
+			            <div class='span3'>
+			                <div class='social-icons'>
+			                    <a target="_blank" href="https://www.facebook.com/" class='facebook'>Facebook</a>
+			                    <a target="_blank" href="https://twitter.com/" class='twitter'>Twitter</a>                	
+			                    <a target="_blank" href="https://www.pinterest.com/" class='pinterest'>Pinterest</a>
+			                </div>
+			            </div>
+			        </section>
+			    </section>
+			</section>
+			<!-- ends sub-footer frame -->
+        </footer>
+        <!-- ends footer frame -->
+    </body>
+</html>

@@ -1,0 +1,312 @@
+<!-- calling the function -->
+@main("Home")(subtitle)(content)
+
+<!-- tag your location page -->
+@subtitle = {
+			<h1><a>Get information with us !</a></h1>
+			<p>This space will allow you to gather information about your destination places. So start your search now !</p>
+}
+
+<!-- set the content to the current page -->
+@content = {
+			<!-- start form search frame -->
+			<section class='row tab-finder'>
+			    <div class='span12'>
+			        <div class="tabbable">
+			            <div id='search-content' class="search-content">
+			                <div class='inner'>
+			                	<p id="search-head-line">Select your destination and arrival date</p>
+			                    <form id='f' name='f' action="@routes.Application.results()" method="post">
+			                        <input type="text" name='search-string' id='search-string' class='search-string' placeholder="e.g Montpellier 'Paris'"/>
+			                        <input type="hidden" name='destination-city' id="destination-city"  />
+			                        <input type="text" name='search-date' id='search-date' class='search-date' />
+			                        <button type="submit" class='btn btn-success btn-lg btn-block'>
+			        					<i class="icon-search icon-white"> </i> Search
+			        				</button>
+			                    </form>
+			                </div>
+			           	</div>
+			        </div>
+			    </div>
+			</section>
+			<!-- ends form search frame -->
+			
+			<!-- start slides bottom show frame -->
+			<section class='row featured-items'>
+			    <div class='span12'>
+			        <h2 style="margin-top:40px;">Most Visited Cities</h2>
+			        
+			        <!-- start places arrows control -->
+			        <div class='controls'>
+			            <a href="#" class='prev'>Previous</a>
+			            <a href="#" class='next'>Next</a>
+			        </div>
+			        <!-- ends places arrows control -->
+			        
+			        <!-- start cities slides frame -->
+			        <div class='featured-items-slider'>
+			            <ul class='slides'>
+			            	<!-- start slides group 1 -->
+			                <li>
+			                    <div class='row'>
+			                    	
+			                    	<!-- start item 1 -->
+									<div class='span3 featured-item-wrapper'>
+			                            <div class='featured-item'>
+			                                <div class='top'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <figure>
+			                                                <img src='@routes.Assets.at("img/photos/NY.jpg")' alt="" />
+			                                                <a href='@routes.Assets.at("img/photos/NY.jpg")' class='figure-hover fancybox'>Zoom</a>
+			                                            </figure>
+			                                            <h3><a href="#">New York</a></h3>
+			                                            <p class="item-text">
+			                                            	In terms of cross-border spending, New York ranks top in 2013, with an estimated $18.59 
+			                                            	billion, followed by London with $16.32 billion...
+			                                            </p>
+			                                        </div>
+			                                    </div>
+			                                    <i class='bubble'> </i>
+			                                </div>
+			                                <div class='bottom'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <p><a target="_blank" href="http://www.newyork.com/">http://www.newyork.com/</a></p>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>			                    	
+			                        <!-- ends item 1 -->
+			                        
+			                    	<!-- start item 2 -->
+			                        <div class='span3 featured-item-wrapper'>
+			                            <div class='featured-item'>
+			                                <div class='top'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <figure>
+			                                                <img src='@routes.Assets.at("img/photos/London.jpg")' alt="" />
+			                                                <a href='@routes.Assets.at("img/photos/London.jpg")' class='figure-hover fancybox'>Zoom</a>
+			                                            </figure>
+			                                            <h3><a href="#">London</a></h3>
+			                                            <p class="item-text">
+			                                            	Whether drawn by business or as tourists, London's visitors from New York are 
+			                                            	the ones that travel the furthest and spend the most...
+			                                            </p>
+			                                        </div>
+			                                    </div>
+			                                    <i class='bubble'> </i>
+			                                </div>
+			                                <div class='bottom'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <p><a target="_blank" href="http://www.londontown.com/">http://www.londontown.com</a></p>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <!-- ends item 2 -->
+			                        
+			                    	<!-- start item 3 -->
+			                        <div class='span3 featured-item-wrapper'>
+			                            <div class='featured-item'>
+			                                <div class='top'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <figure>
+			                                                <img src='@routes.Assets.at("img/photos/Dubai.jpg")' alt="" />
+			                                                <a href='@routes.Assets.at("img/photos/Dubai.jpg")' class='figure-hover fancybox'>Zoom</a>
+			                                            </figure>
+			                                            <h3><a href="#">Dubai</a></h3>
+			                                            <p class="item-text">
+			                                            	Sometimes called the shopping capital of the Middle East, Dubai Shows the 
+			                                            	strongest growth (along with Bangkok),...
+			                                            </p>
+			                                        </div>
+			                                    </div>
+			                                    <i class='bubble'> </i>
+			                                </div>
+			                                <div class='bottom'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <p><a target="_blank" href="http://www.dubai.com/">http://www.dubai.com/</a></p>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>			                    	
+			                        <!-- ends item 3 -->
+			                        
+			                    	<!-- start item 4 -->
+			                        <div class='span3 featured-item-wrapper'>
+			                            <div class='featured-item'>
+			                                <div class='top'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <figure>
+			                                                <img src='@routes.Assets.at("img/photos/Singapore.jpg")' alt="" />
+			                                                <a href='@routes.Assets.at("img/photos/Singapore.jpg")' class='figure-hover fancybox'>Zoom</a>
+			                                            </figure>
+			                                            <h3><a href="#">Singapore</a></h3>
+			                                            <p class="item-text">
+			                                            	With a population of less than 5 million, Singapore expects 11.75 million visitors 
+			                                            	this year. Although it is a melting pot of cultures..
+			                                            </p>
+			                                        </div>
+			                                    </div>
+			                                    <i class='bubble'> </i>
+			                                </div>
+			                                <div class='bottom'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <p><a target="_blank" href="http://www.singapore.com/">http://www.singapore.com/</a></p>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <!-- ends item 4 -->
+			                    </div>
+			                </li>
+			                <!-- ends slides group 1 -->
+			                
+			                <!-- start slides group 2 -->
+			                <li>
+			                    <div class='row'>
+			                    	
+			                    	<!-- start item 5 -->
+									<div class='span3 featured-item-wrapper'>
+			                            <div class='featured-item'>
+			                                <div class='top'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <figure>
+			                                                <img src='@routes.Assets.at("img/photos/Bangkok.jpg")' alt="" />
+			                                                <a href='@routes.Assets.at("img/photos/Bangkok.jpg")' class='figure-hover fancybox'>Zoom</a>
+			                                            </figure>
+			                                            <h3><a href="#">Bangkok</a></h3>
+			                                            <p class="item-text">
+			                                            	The top destination city by international visitor arrivals in 2013 is Bangkok, according 
+			                                            	to the MasterCard Global Destination...
+			                                            </p>
+			                                        </div>
+			                                    </div>
+			                                    <i class='bubble'> </i>
+			                                </div>
+			                                <div class='bottom'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <p><a target="_blank" href="http://www.bangkok.com/">http://www.bangkok.com/</a></p>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>			                        
+			                        <!-- ends item 5 -->
+			                        
+			                        
+			                    	<!-- start item 6 -->
+			                        <div class='span3 featured-item-wrapper'>
+			                            <div class='featured-item'>
+			                                <div class='top'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <figure>
+			                                                <img src='@routes.Assets.at("img/photos/Istanbul.jpg")' alt="" />
+			                                                <a href='@routes.Assets.at("img/photos/Istanbul.jpg")' class='figure-hover fancybox'>Zoom</a>
+			                                            </figure>
+			                                            <h3><a href="#">Istanbul</a></h3>
+			                                            <p class="item-text">
+			                                            	As a travel destination, Istanbul is a rising star, with sights like the 
+			                                            	Hagia Sophia mosque shown here. If all top 10 destination...
+			                                            </p>
+			                                        </div>
+			                                    </div>
+			                                    <i class='bubble'> </i>
+			                                </div>
+			                                <div class='bottom'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <p><a target="_blank" href="http://www.istanbul.com/tr">http://www.istanbul.com/tr</a></p>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <!-- ends item 6 -->
+			                        
+			                    	<!-- start item 7 -->
+			                        <div class='span3 featured-item-wrapper'>
+			                            <div class='featured-item'>
+			                                <div class='top'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <figure>
+			                                                <img src='@routes.Assets.at("img/photos/Paris.jpg")' alt="" />
+			                                                <a href='@routes.Assets.at("img/photos/Paris.jpg")' class='figure-hover fancybox'>Zoom</a>
+			                                            </figure>
+			                                            <h3><a href="#">Paris</a></h3>
+			                                            <p class="item-text">
+			                                            	Never mind that Paris shows a decline in the estimated number of international visitor 
+			                                            	arrivals. It's still a favorite city of many travelers...
+			                                            </p>
+			                                        </div>
+			                                    </div>
+			                                    <i class='bubble'> </i>
+			                                </div>
+			                                <div class='bottom'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <p><a target="_blank" href="http://www.paris-paris-paris.com/">http://www.paris-paris-paris.com/</a></p>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <!-- ends item 7 -->
+			                        
+			                    	<!-- start item 8 -->
+			                        <div class='span3 featured-item-wrapper'>
+			                            <div class='featured-item'>
+			                                <div class='top'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <figure>
+			                                                <img src='@routes.Assets.at("img/photos/Rome.jpg")' alt="" />
+			                                                <a href='@routes.Assets.at("img/photos/Rome.jpg")' class='figure-hover fancybox'>Zoom</a>
+			                                            </figure>
+			                                            <h3><a href="#">Rome</a></h3>
+			                                            <p class="item-text">
+			                                            	It hasn't lost any of its charm, but Rome ranks behind Seoul, 
+			                                            	Kuala Lumpur and Dubai. Are economic forces at play? I...
+			                                            </p>
+			                                        </div>
+			                                    </div>
+			                                    <i class='bubble'> </i>
+			                                </div>
+			                                <div class='bottom'>
+			                                    <div class='inner-border'>
+			                                        <div class='inner-padding'>
+			                                            <p><a target="_blank" href="http://www.rome.info/">http://www.rome.info/</a></p>
+			                                        </div>
+			                                    </div>
+			                                </div>
+			                            </div>
+			                        </div>
+			                        <!-- ends item 8 -->
+			                    </div>
+			                </li>
+			                <!-- ends slides group 2 -->
+			            </ul>
+			        </div>
+			        <!-- ends cities slider frame -->
+			    </div>
+			    
+			    <!-- decorator space -->
+			    <i class='content-bubble'> </i>
+			</section>
+			<!-- ends slides bottom show frame -->
+}

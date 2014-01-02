@@ -1,0 +1,50 @@
+<!-- start hidden login / regiter frame -->
+<section id='hidden-header'>
+	<!-- start top hidden container-->
+    <section class='container'>
+        
+        <!-- start profile frame -->
+        <section class='row profile-form' style='margin-left:20px; margin-right:20px;'>
+            <!-- start top login frame -->
+            <div class='span6'>
+                <div class='login-form top-form'>
+                    <h2>Log In</h2>
+                    <p>Login in order to give you more !</p>
+
+                    <form action="@routes.AuthController.login()" class='row' method="post">
+                        <div class='span3'>
+                            <input type="email" name="login-email" id="login-email" class='input-block-level' placeholder="Email"/>
+                        </div>
+                        <div class='span3'>
+                            <input type="password" name="login-password" id="login-password" class='input-block-level'  placeholder="Password"/>
+                            <input type="submit" name='submit' value='Login' class='btn btn-success btn-lg btn-block'/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- ends top login frame -->
+            
+            <!-- stat top register frame -->
+            <div class='span6'>
+                <div class='login-form top-form'>
+                    <h2>Sign Up</h2>
+                    <p>Sign up in order to give you more !</p>
+
+                    <form action="@routes.AuthController.register()" class='row' method="post">
+                        <div class='span3'>
+                            <input type="email" name='register-email' id='register-email' class='input-block-level' placeholder="Email Address"/>
+                        </div>
+                        <div class='span3'>
+                            <input type="password" name='register-password' id='register-password' class='input-block-level' placeholder="Password"/>
+                            <input type="submit" name='submit' value='Register' class='btn btn-success btn-lg btn-block'/>
+                        </div>
+                    </form>
+                </div>
+            </div>
+             <!-- stat top register frame -->
+        </section>
+        <!-- ends profile frame -->
+    </section>
+    <!-- ends top hidden container-->
+</section>
+<!-- ends hidden login / regiter frame -->
