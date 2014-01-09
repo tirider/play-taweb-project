@@ -13,7 +13,13 @@ import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import org.jdom2.Document;
 import org.jdom2.Element;
@@ -31,10 +37,19 @@ import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 
 public class Core {
+	/**
+	 * Downloads data from url given
+	 * @param urlString
+	 * @return
+	 * @throws Exception
+	 */
 	public static String readUrl(String urlString) throws Exception {
 	    BufferedReader reader = null;
 	    try {
 	        URL url = new URL(urlString);
+	        if(!checkUrl(url)) {
+	        	return null;
+	        }
 	        reader = new BufferedReader(new InputStreamReader(url.openStream()));
 	        StringBuffer buffer = new StringBuffer();
 	        int read;
@@ -49,144 +64,73 @@ public class Core {
 	    }
 	}
 	
+	/**
+	 * Returns cities found by user's query. This method uses a json file dump from dbpedia.
+	 * @param query
+	 * @return cityName, countryName
+	 */
 	public static String getCityByQuery(String query)
 	{
-//		String prefixes = "" +
-//				"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
-//				"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +	
-//				"PREFIX foaf: <http://xmlns.com/foaf/0.1/> " +
-//				"PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> " +
-//				"PREFIX dbpprop: <http://dbpedia.org/property/> ";
-//		
-//		String service_ep = "http://dbpedia.org/sparql";
-//		String queryString = 	prefixes +
-//								"select distinct ?nomCity ?nomCountry ?nomDep where "
-//								+ "{ "
-//								+ "{ "
-//								+ "?r a <http://dbpedia.org/ontology/Settlement> . "
-//								+ "?r rdfs:label ?nomCity . "
-//								+ "?r dbpedia-owl:country ?countryResource . "
-//								+ "?countryResource rdfs:label ?nomCountry . "
-//								+ "FILTER (lang(?nomCity) = \"en\" && lang(?nomCountry) = \"en\" && regex(str(?nomCity), \"^"+ query +"\", \"i\")) "
-//								+ "OPTIONAL {?r dbpedia-owl:department ?depResource . ?depResource rdfs:label ?nomDep . FILTER (lang(?nomDep) = \"en\") } "
-//								+ "OPTIONAL {?r dbpedia-owl:populationTotal ?pop } "
-//								+ "} "
-//								+ "UNION "
-//								+ "{ "
-//								+ "?r a <http://dbpedia.org/ontology/City> . "
-//								+ "?r rdfs:label ?nomCity . "
-//								+ "?r dbpedia-owl:country ?countryResource . "
-//								+ "?countryResource rdfs:label ?nomCountry . "
-//								+ "FILTER (lang(?nomCity) = \"en\" && lang(?nomCountry) = \"en\" && regex(str(?nomCity), \"^"+ query +"\", \"i\")) "
-//								+ "OPTIONAL {?r dbpedia-owl:department ?depResource . ?depResource rdfs:label ?nomDep . FILTER (lang(?nomDep) = \"en\") } "
-//								+ "OPTIONAL {?r dbpedia-owl:populationTotal ?pop } "
-//								+ "} "
-//								+ "} "
-//								+ "ORDER BY DESC(?pop) "
-//								+ "LIMIT 10";
-//		
-//		QueryExecution qexec = QueryExecutionFactory.sparqlService(service_ep, queryString);
-//		ResultSet results = qexec.execSelect() ;
+		query = query.toLowerCase();
+
+		LinkedHashMap<String, String> resultArray = new LinkedHashMap<String, String>(); // LinkedHashMap preserves order insertion
 		
-//		String departmentNameStr = "";
-//		
-//		for ( ; results.hasNext() ; )
-//		{
-//			departmentNameStr = "";
-//			
-//			QuerySolution qsolution = results.nextSolution() ;
-//
-//			Literal resultCityName = qsolution.getLiteral("nomCity");
-//		    String cityName = resultCityName.getString();
-//
-//		    String departmentName = "";
-//		    if(qsolution.contains("nomDep")) {
-//		    	Literal resultDepartmentName = qsolution.getLiteral("nomDep");
-//		    	departmentName = resultDepartmentName.getString();
-//		    }
-//
-//		    Literal resultCountryName = qsolution.getLiteral("nomCountry");
-//		    String countryName = resultCountryName.getString();
-//		    
-//		    if(departmentName != "") departmentNameStr = departmentName + ", ";
-//
-//		    
-		
+		File file = Play.application().getFile("/public/json/cities_en.json");
 		String resultsStr = "{\"cities\":[";
-		
-		String cityName = "";
+		String jsonStr;
 		try {
-            SAXBuilder sxb = new SAXBuilder();
-            URL url = new URL("http://lookup.dbpedia.org/api/search/KeywordSearch?QueryClass=Settlement&MaxHits=10&QueryString=" + query);
-            Namespace ns = Namespace.getNamespace("http://lookup.dbpedia.org/");
-            Document document = sxb.build(url);
-            Element racine = document.getRootElement();
-            List<Element> results = racine.getChildren("Result", ns);
-            int size = results.size();
-            for (Element element : results) {
-            	cityName = element.getChildText("Label", ns);
-            	resultsStr += "{\"value\" : \"" + cityName + "\",";
-    		    resultsStr += "\"name\" : \"" + cityName + getCountryByCityName(cityName) + "\"}";
-            	//resultsStr += "\"name\" : \"" + cityName + "\"}";
-    		    if (--size > 0) {
-    		    	resultsStr += ", ";
-    		    }
-    		}
-    		resultsStr += "]}";
-        } catch (Exception ex) {
-        	return null;
-        }
+			jsonStr = Files.toString(file, Charsets.UTF_8);
+			if(jsonStr == null) {
+				return null;
+			}
+			ObjectMapper mapper = new ObjectMapper();
+			JsonNode actualObj = mapper.readTree(jsonStr);
+			JsonNode results = actualObj.get("cities");
+			int size = 12;
+			outer:
+			for (JsonNode element: results) {
+				if(element.get("city").asText().toLowerCase().equals(query)) {
+					if (--size > 0) {
+						resultArray.put(element.get("city").asText(), element.get("country").asText());
+	    		    }
+					else {
+						break outer;
+					}
+				}
+			}
+			outer2:
+			for (JsonNode element: results) {
+				if(element.get("city").asText().toLowerCase().startsWith(query)) {
+					if (--size > 0) {
+						if(!resultArray.containsKey(element.get("city").asText())) {
+							resultArray.put(element.get("city").asText(), element.get("country").asText());
+						}
+	    		    }
+					else {
+						break outer2;
+					}
+				}
+			}
+			
+			for (String key : resultArray.keySet()) {
+				resultsStr += "{\"value\" : \"" + key + "\",";
+				resultsStr += "\"name\" : \"" + key + ", " + resultArray.get(key) + "\"},";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		resultsStr += "]}";
+		resultsStr = resultsStr.replace(",]}", "]}"); // remove last comma
 		return resultsStr;
 	}
 	
-	public static String getCountryByCityName(String cityName)
-	{
-		String prefixes = "" +
-		"PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
-		"PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +	
-		"PREFIX foaf: <http://xmlns.com/foaf/0.1/> " +
-		"PREFIX dbpedia-owl: <http://dbpedia.org/ontology/> " +
-		"PREFIX dbpprop: <http://dbpedia.org/property/> ";
-
-		String service_ep = "http://dbpedia.org/sparql";
-		String queryString = 	prefixes
-								+ "SELECT ?countryName "
-								+ "WHERE "
-								+ "{ "
-								+ "{ "
-								+ "?cityResource rdf:type dbpedia-owl:Settlement. "
-								+ "?cityResource rdfs:label \"" + cityName + "\"@en. "
-								+ "?cityResource  dbpedia-owl:country ?countryResource. "
-								+ "?countryResource  rdfs:label ?countryName. "
-								+ "FILTER (lang(?countryName)= 'en')"
-								+ "} "
-								+ "UNION "
-								+ "{ "
-								+ "?cityResource rdf:type dbpedia-owl:City. "
-								+ "?cityResource rdfs:label \"" + cityName + "\"@en. "
-								+ "?cityResource  dbpedia-owl:country ?countryResource. "
-								+ "?countryResource  rdfs:label ?countryName. "
-								+ "FILTER (lang(?countryName)= 'en')"
-								+ "} "
-								+ "} "
-								+ "LIMIT 1";
-
-		QueryExecution qexec = QueryExecutionFactory.sparqlService(service_ep, queryString);
-		ResultSet results = qexec.execSelect() ;
-		String countryName = "";
-		for ( ; results.hasNext() ; )
-		{
-			countryName = "";
-			QuerySolution qsolution = results.nextSolution() ;
-		    if(qsolution.contains("countryName")) {
-		    	Literal resultDepartmentName = qsolution.getLiteral("countryName");
-		    	countryName = ", " + resultDepartmentName.getString();
-		    }
-		}
-
-		return countryName;
-	}
-	
+	/**
+	 * Parse integer
+	 * @param string
+	 * @return
+	 */
 	public static int parseInt(String string) {
 		try {
 			return Integer.parseInt(string);
@@ -194,5 +138,72 @@ public class Core {
 		catch(NumberFormatException e) {
 			return 0;
 		}
+	}
+	
+	/**
+	 * Checks url by HTTP HEAD method
+	 * @param url
+	 * @return
+	 */
+	public static boolean checkUrl(URL url) {
+
+        HttpURLConnection huc;
+		try {
+			huc = ( HttpURLConnection )  url.openConnection();
+			huc.setRequestMethod("HEAD");
+	        if(huc.getResponseCode() != HttpURLConnection.HTTP_OK)
+	        {
+	        	return false;
+	        }
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		} 
+        
+        return true;
+	}
+	
+	/**
+	 * Get current date
+	 * @return Date
+	 */
+	public static Date getDate() {
+		Date date = new Date();
+		return date;
+	}
+	
+	/**
+	 * Format date for users
+	 * @param date
+	 * @return
+	 */
+	public static String formatDate(Date date) {
+		DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm"); // Currently we will use GMT +1 Time (Europe/Paris)
+		return dateFormat.format(date);
+	}
+	
+	/**
+	 * Converts to compliant with Dublin Core date format
+	 * @return String
+	 */
+	public static String getDateForRDF(Date date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'+01:00'"); // Currently we will use GMT +1 Time (Europe/Paris)
+		return dateFormat.format(date);
+	}
+	
+	/**
+	 * Converts date from Dublin Core date format to normal date format
+	 * @return String
+	 */
+	public static String getDateFromRDF(String date) {
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'+01:00'"); // Currently we will use GMT +1 Time (Europe/Paris)
+		Date formattedDate = null;
+		try {
+			formattedDate = dateFormat.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+		return dateFormat.format(formattedDate);
 	}
 }

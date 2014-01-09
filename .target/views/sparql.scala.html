@@ -6,7 +6,7 @@
 			<h1><a>SPARQL EndPoint</a></h1>
 			<p>You can try recentes programming languages SPARQL-based to examinate our data.</p>
 }
-
+	
 <!-- set the content to the current page -->
 @content = {
 			<section class='container'>
@@ -21,7 +21,7 @@
                                     </div>
                                     <div class='pull-right results-per-page custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
                                         <ul>
-                                            <strong><a href="#">Namespace Prefixes</a></strong>
+                                            <strong><a href="@routes.Application.namespaceprefixes()">Namespace Prefixes</a></strong>
                                         </ul>
                                     </div>
                                 </div>
@@ -34,7 +34,7 @@
                                 	<p>Send your request in order to check our data.</p>
                                     <div class='half first-half'>
                                         <form id="spaqrl-form" method="get" action="@routes.Application.sparqlresults()">
-                                            <textarea name="query" id="sparql-text" class='input-block-level'>SELECT * WHERE { ?s ?p ?o } LIMIT 2</textarea>
+                                            <textarea name="query" id="endpoint-box-query" class='input-block-level'>SELECT * WHERE { ?s ?p ?o } LIMIT 2</textarea>
                                             <div class='pull-left custom-margin' style="margin-right: 10px;">
                                             	<span class='text-line' style="margin-right: 10px;">Results Format</span>
 	                                            <select name="format" class='selectpicker'>

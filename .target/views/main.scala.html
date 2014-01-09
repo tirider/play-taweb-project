@@ -55,8 +55,8 @@
                     <!-- start top login frame -->
                     <div class='span6'>
                         <div class='login-form top-form'>
-                            <h2>Log In</h2>
-                            <p>Login in order to give you more !</p>
+                            <h2>Sign In</h2>
+                            <p>Sign in order to give you more !</p>
 
                             <form action="@routes.Application.login()" class='row' method="post">
                                 <div class='span3'>
@@ -118,8 +118,9 @@
 		                    <ul>
 		                        <li class='active'> <a href="@routes.Application.index()">Home</a> </li>
 		                        <li class='active'> <a href="@routes.Application.sparql()">SPARQL EndPoint</a> </li>
-		                        <li class='active'> <a href="#">Ontology</a> </li>
-		                        <li class='active'> <a href="#">About</a>  </li>
+		                        <li class='active'> <a href="@routes.Application.services()">Services</a> </li>
+		                        <li class='active'> <a href="@routes.Application.ontology()">Ontology</a> </li>
+		                        <li class='active'> <a href="@routes.Application.about()">About</a> </li>
 		                    </ul>
                         </nav>
                     </div>

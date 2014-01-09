@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import models.beans.Weather;
 import play.Play;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -12,8 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class WeatherForecast {
 
-	public static List<WeatherData> getWeatherByLatLongOnDate(double Lat, double Long, Date ArrivalDate) {
-		List<WeatherData> wd = new ArrayList<WeatherData>();
+	public static List<Weather> getWeatherByLatLongOnDate(double Lat, double Long, Date ArrivalDate) {
+		List<Weather> wd = new ArrayList<Weather>();
 		String jsonStr;
 		try {
 			jsonStr = Core.readUrl("http://api.openweathermap.org/data/2.5/forecast?lat=" + Lat + "&lon=" + Long + "&units=metric&cnt=99&APPID="+Play.application().configuration().getString("OWMAPPID"));
@@ -33,7 +34,7 @@ public class WeatherForecast {
 						description = weatherNodeElement.get("description").textValue();
 					}
 					temperature = (int) Math.round(Double.parseDouble(element.get("main").get("temp").toString()));
-					wd.add(new WeatherData(weatherDate, temperature, icon, description));
+					wd.add(new Weather(weatherDate, temperature, icon, description));
 				}
 			}
 			return wd;

@@ -16,5 +16,5 @@ public interface IUserDAO
 	
 	public List<User> findAll();	
 	
-	public boolean exists(String email, String password);	
+	public boolean exists(String email, String password);
 }

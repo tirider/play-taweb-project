@@ -1781,7 +1781,7 @@ footer .container{
   display: inline-block;
   padding: 5px 10px;
 }
-.endpoint-box .endpoint-box-content input[type='submit'].btn:hover {
+.endpoint-box .endpoint-box-content input[type='submit'].btn:hover, .bluehover:hover {
   background-image: none;
   background-color: #4479ca;
 }
@@ -2166,4 +2166,122 @@ figure img {
   body {
     padding: 0;
   }
+}
+#error-message {
+	margin: 10px 0 0 0;
+    color: #db2525;
+}
+#search-string.error-input-box, #search-date.error-input-box {
+	border-color: #db2525;
+}
+.location-feedback {
+	padding: 10px 20px;
+}
+.location-feedback h2 {
+	color: #000;
+}
+.grey {
+	color: #999;
+}
+.small {
+	font-size: 90%;
+}
+.stars { 
+  position: relative; 
+  float: left; 
+  background: url('../img/star_u.png') repeat-x left top; 
+  cursor: default; 
+}
+.stars .star { 
+  height: 20px; 
+  padding-left: 20px; 
+  background: transparent none repeat-x left top; 
+}
+#canvote.stars:hover .star { 
+  background-image: url('../img/star_u.png'); 
+}
+#canvote.stars:hover .star:hover {
+  background-image: url('../img/star_o.png'); 
+  cursor: pointer; 
+}
+.stars .rating { 
+  position: absolute; 
+  height: 100%; 
+  background: url('../img/star_d.png') repeat-x left top; 
+}
+#canvote.stars:hover .rating { 
+  display: none;
+}
+.left-feeback {
+	float: left;
+	width: 250px;
+}
+.height-feedback {
+	padding: 10px 0 15px;
+}
+.location-feedback #user-traveled {
+	width: 40px;
+}
+.location-feedback #times-traveled {
+	width: 50px;
+	margin: 0 5px;
+}
+#photos img {
+	width: 145px;
+}
+#photos {
+	width: 870px;
+}
+#comment {
+	padding: 20px 20px 5px 20px;
+}
+#comment textarea {
+	width: 785px;
+	height: 80px;
+	margin: 8px 0 12px 0;
+}
+.center {
+	text-align: center;
+}
+#comments {
+    padding: 20px 20px 5px 20px;
+}
+.full-width {
+	width: 100%;
+}
+.index-description {
+	height: 110px;
+	overflow: hidden;
+}
+.rate-left {
+	float: left;
+	width: 78px;
+}
+.rate-right {
+	float: left;
+	width: 200px;
+}
+.ok-times-travelled {
+	margin: 0 0 0 8px;
+}
+.review {
+	margin: 2px 0 12px;
+}
+.user-destination {
+	padding: 15px 30px 20px;
+}
+#user-destinations {
+	width: 100%;
+}
+#user-destinations #map_canvas {
+	width: 100%;
+	height: 500px;
+}
+#ontology table, #ontology table {
+	table-collapse:collapse;
+	border: 1px solid #ddd;
+}
+#ontology table th, #ontology table td, #namespaceprefixes table th, #namespaceprefixes table td {
+	border: 1px solid #ddd;
+	padding: 5px;
 }

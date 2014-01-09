@@ -1,6 +1,93 @@
 var fortravelers = {
     
     init : function() {
+    	
+    	/*
+    	 * Updates how many times a user traveled to a destination and unlocks rating and commenting
+    	 */
+    	jQuery(document).on("click", "#user-traveled", function () {
+		    $.ajax({
+		        type: "POST",
+		        url: "/submitTimesTraveled/",
+		        data: "{ \"cityname\": \"" + $('#city').val() + "\", \"timestraveled\": \"" + $('#times-traveled').val() + "\" }",
+		        contentType: "application/json; charset=utf-8",
+		        dataType: "json",
+		        success: function (msg) {
+	                $('#cannotvote').attr('id', 'canvote');
+	                if(!$(".write-comment").length) {
+	                	$('.userCanComment').append("<a href=\"#comment\" class=\"write-comment\">Write a comment</a>")
+	                }
+	                $("#user-comment").removeAttr("disabled");
+	                $("#user-comment").removeAttr("title");
+	                $("#comment-text").removeAttr("disabled");
+	                $("#comment-text").removeAttr("title");
+		        },
+		        error: function (msg) {
+		            alert(msg.d);
+		        }
+		    });
+		});
+    	
+    	/*
+    	 * Update rate by user
+    	 */
+    	var instance = 0;
+    	jQuery(document).on("click", "#votestar1, #votestar2, #votestar3, #votestar4, #votestar5", function () {
+    		var rating = $(this).attr('data-value');
+    		if(instance == 0) {
+    			instance = 1;
+    			if($("#canvote").length) {
+				    $.ajax({
+				        type: "POST",
+				        url: "/submitRating/",
+				        data: "{ \"cityname\": \"" + $('#city').val() + "\", \"rating\": \"" + rating + "\" }",
+				        contentType: "application/json; charset=utf-8",
+				        dataType: "json",
+				        success: function (msg) {
+			                alert('Thank you for voting');
+				        },
+				        error: function (msg) {
+				            alert(msg.d);
+				        }
+				    });
+    			}
+        		else {
+        			alert('You can vote or comment only if you have been to this place.');
+        		}
+    		}
+		});
+    	
+    	/*
+    	 * Submit review
+    	 */
+    	jQuery(document).on("click", "#user-comment", function () {
+    		var review = $('#comment-text').val();
+    		if (review == '') {
+    			if(!$(".comment-missing").length) {
+    				$('#comment').append("<div id=\"error-message comment-missing\">Please enter a text</div>");
+    			}
+    		}
+    		else {
+			    $.ajax({
+			        type: "POST",
+			        url: "/submitReview/",
+			        data: "{ \"cityname\": \"" + $('#city').val() + "\", \"review\": \"" + review + "\" }",
+			        contentType: "application/json; charset=utf-8",
+			        dataType: "json",
+			        success: function (msg) {
+			        	var reviewHtml = "<div class=\"review\"><em>" + msg.nick + " on " + msg.date + "</em><p>" + review + "</p></div>";
+		                $('a#comments-text').after(reviewHtml);
+		                $("#comment-text").val("");
+		                if($(".no-reviews").length) {
+		                	$(".no-reviews").remove();
+		                }
+			        },
+			        error: function (msg) {
+			            alert(msg.d);
+			        }
+			    });
+    		}
+		});
 
 		jQuery('.header-buttons .profile').click(function() {
             var $this = $(this);
@@ -21,41 +108,50 @@ var fortravelers = {
         });
         		
 		jQuery('#email-login').click(function(){
-			
 			$('#hidden-header').css('display','');
 		});
 		
 		jQuery('#search-string').focus();
 		
-		jQuery('#search-string').autocomplete({
+		jQuery("#search-string" ).autocomplete({
 			 source: function( request, response ) {
 			 $.ajax({
 				 beforeSend: function() {
 					 if (!$("#loader").length) {
-						 $('#search-string').after("<span id=\"loader\"></span>");
+						 $("#destination" ).after("<span id=\"loader\"></span>");
 					 }
 				 },
-				 url: "/cityInformationByQuery/" + request.term,
+				 type: "POST",
+				 url: "/cityInformationByQuery/",
+				 data: "{ \"cityname\": \"" + request.term + "\" }",
+			 	 contentType: "application/json; charset=utf-8",
 				 dataType: "json",
 				 success: function( data ) {
-					 response( $.map( data.cities, function( item ) {
-						 return {
-							 label: item.name,
-							 value: item.name,
-							 hiddenValue: item.value
-						 }
-					 },
-					 $("#loader").remove()
-					 ));
+					 if (data == 0) {
+						 $("#loader").remove();
+						 $("#error-message").remove();
+						 $("#destination-date-form").append("<div id=\"error-message\">Error fetching cities!</div>");
+					 }
+					 else {
+						 response( $.map( data.cities, function( item ) {
+							 return {
+								 label: item.name,
+								 value: item.name,
+								 hiddenValue: item.value
+							 }
+						 },
+						 $("#loader").remove()
+						 ));
+					 }
 				 	}
 			 	});
 			 },
 			 minLength: 2,
 			 select: function( event, ui ) {
-				 $("#search-string").val(ui.item.name);
+				 $("#destination").val(ui.item.name);
 				 $("#destination-city").val(ui.item.hiddenValue);
 			 }
-		});
+		 });
 		
         jQuery('.custom-tooltip').tooltip({
             'selector': '',
@@ -63,13 +159,29 @@ var fortravelers = {
         });
         
 		jQuery("#f").submit(function(event) {
-			if($('#search-string').val() == "" || $('#search-date').val() == "") {
+			if($('#search-string').val() == "" || $('#search-date').val() == "" || $('#search-date').val() == "__/__/____ __:__") {
 				$("#error-message").remove();
 				$("#f").append("<div id=\"error-message\">Please fill in required fields</div>");
+				if($('#search-string').val() == "") {
+					$('#search-string').addClass('error-input-box');
+				}
+				if($('#search-date').val() == "" || $('#search-date').val() == "__/__/____ __:__") {
+					$('#search-date').addClass('error-input-box');
+				}
 				return false;
 			}
 			return true;
 			event.preventDefault();
+		});
+		
+		$(document).on('focus', '#search-string', function () {
+			$('#search-string').removeClass('error-input-box');
+			$('#error-message').remove();
+		});
+		
+		$(document).on('focus', '#search-date', function () {
+			$('#search-date').removeClass('error-input-box');
+			$('#error-message').remove();
 		});
 				
 		jQuery('#search-date').datetimepicker({

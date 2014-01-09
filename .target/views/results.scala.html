@@ -1,16 +1,14 @@
-@(city : models.beans.City, arrivalDate : Date, weatherDataList: List[WeatherData], rate : String, GMAPIKEY : String)
+@(city : models.beans.City, arrivalDate : Date, weatherDataList: List[models.beans.Weather], rating : Int, nbrating : Int, canVote : Boolean, photos : List[models.beans.Photo], reviews : List[models.beans.Review])
 
 @main("Search Result", scripts)(subtitle)(content)
 
 @scripts = {
-			<!--*{<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=@{GMAPIKEY}&sensor=false"></script>}*-->
 			<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
 			<script src='@routes.Assets.at("javascripts/vendor/gmap3.min.js")'></script>
 }
 
 @subtitle = {
-			<h1><a>Get information with us !</a></h1>
-			<p>This space will allow you to gather information about your destination places. So start your search now !</p>
+			<h1><a>@city.getName(),<br>@city.getCountry()</a></h1>
 }
 
 @content = {
@@ -46,6 +44,78 @@
                         </div>
                     </div>
                 </div>
+                <div class='location-finder'>
+	                <div class='location-feedback'>
+		                <h2>What users think</h2>
+		                    <div class='clearfix height-feedback'>
+	                            <div class='left-feeback'>
+	                            @if(canVote) {
+	                               <div id="canvote" class="stars">
+                                } else {
+                                    <div id="cannotvote" class="stars">
+                                }
+									<div class="rating" style="width: @{rating}%;"></div>
+									<div class="star" id="votestar1" data-value="1">
+									<div class="star" id="votestar2" data-value="2">
+									<div class="star" id="votestar3" data-value="3">
+									<div class="star" id="votestar4" data-value="4">
+									<div class="star" id="votestar5" data-value="5">
+		                            </div></div></div></div></div>
+		                            </div>
+		                            @if(nbrating == 0) {
+		                              Not rated yet
+		                            } else {
+			                            @if(nbrating == 1) {
+			                              (1 vote)
+			                            } else {
+			                              (@nbrating votes)
+			                            }
+		                            }
+		                            @* NO ELSE IF SUPPORTED BY SCALA TEMPLATE :P *@
+	                            </div>
+	                            <div class='left-feeback'>
+	                                @if(reviews != null) {
+		                                @if(reviews.size() > 0) {
+		                                   <a href="#comments">Reviews (@reviews.size())</a>
+		                                } else {
+		                                   No reviews yet.
+		                                }
+	                                }
+	                            </div>
+	                            <div class='left-feeback userCanComment'>
+	                            @if(canVote) {
+                                   <a href="#comment" class="write-comment">Write a review</a>
+                                }
+                                </div>
+                            </div>
+                           <p>I have been there 
+                           <select id='times-traveled'>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">more than 10</option>
+                           </select>
+                           times <input value="OK" id="user-traveled" class="btn btn-success bluehover ok-times-travelled"></p>
+                           <span class="grey small">(Only users who have been to a destination are allowed to rate and comment.)</span>
+	                </div>
+                </div>
+                
+                <div class='location-finder'>
+	                <div id='photos'>
+			            @if(photos.isEmpty()) {
+			                No photos!
+			            } else {
+			                @for(ph <- photos) {<a href="@ph.getImgLargeUrl()" class="figure-hover fancybox"><img src="@ph.getImgThumbnailUrl()"></a>}
+			            }
+		            </div>
+	            </div>
+            
                     <div class='location-finder'>
                         <div class='left-side'>
                         	@if(!weatherDataList.isEmpty()) {
@@ -71,14 +141,47 @@
                             <div id="map_canvas"> </div>
                         </div>
                     </div>
+                    
+                    <div class='location-finder'>
+	                    <div id='comment'>
+	                        <a name="comment"></a>
+	                        <label for="comment-text">Write your review for @city.getName()</label>
+	                        @if(canVote) {
+		                        <textarea rows="" cols="" id="comment-text"></textarea>
+	                            <p class="center"><input value="Submit" id="user-comment" class="btn btn-success"></p>
+	                        } else {
+		                        <textarea rows="" cols="" id="comment-text" disabled title="You can vote or comment only if you have been to this place."></textarea>
+	                            <p class="center"><input value="Submit" id="user-comment" class="btn btn-success" disabled title="You can vote or comment only if you have been to this place."></p>
+	                        }
+	                    </div>
+	                    <div id='comments'>
+	                       <a name="comments" id="comments-text"></a>
+	                       @if(reviews != null) {
+		                       @if(!reviews.isEmpty()) {
+	                                @for(r <- reviews){
+	                                    <div class="review">
+		                                    <em>By @r.getNick() on @r.getReviewDate</em>
+		                                    <p>@r.getReview()</p>
+	                                    </div>
+	                                }
+	                            } else {
+	                               <div class="no-reviews">No reviews yet.</div>
+	                            }
+                            }
+                            @if(reviews == null) {
+                                    <div class="no-reviews">No reviews yet.</div>
+                            }
+                        </div>
+                    </div>
+                
                 </section>
                 <aside class='span3'>
                     <section class='widget'>
                         <section class='widget-title uppercase'>
                             <div class='inner'>
                                     <div class='pull-left custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
-                                        <h2><strong>Recommandation</strong></h2>
-                                    </div>                               	
+                                        <h2><strong>Recommendation</strong></h2>
+                                    </div>
                             </div>
                         </section>
                         <section class='widget-content'>
@@ -89,12 +192,17 @@
                                         <p><strong>@city.getName(), @city.getCountry()</strong></p>
                                     </div>
                                 </div>
-                                
                                 <div class='widget-section'>
                                     <div class='inner'>
                                         <label for="category">Currency</label>
                                         <p>@city.getCurrencyCode</p>
-                                        <p>Rate: @rate</p>
+                                    </div>
+                                </div>
+                                <div class='widget-section'>
+                                    <div class='inner'>
+                                        <label for="category">Population</label>
+                                        <p>@city.getPopulationTotal</p>
+                                        
                                     </div>
                                 </div>
                                 <div class='widget-section'>
@@ -168,5 +276,6 @@
 					}					
 				});
 			});
-        </script>    
+        </script>
+        <input type="hidden" value="@city.getName()" id="city">
 }
