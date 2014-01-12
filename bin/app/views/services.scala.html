@@ -1,0 +1,39 @@
+@(getMostInterestedCities : String, getTotalUsers : String)
+
+@main("Services")(subtitle)(content)
+
+@subtitle = {
+            <h1><a>Services</a></h1>
+            <p>Some examples how you can use our data.</p>
+}
+
+@content = {
+            <section class='container'>
+                <section class='row'>
+                    <div class='span9'>
+                        <div class='endpoint-box full-width'>
+                            <!-- -->
+                            <div class='title-bar'>
+                                <div class='inner'>
+                                    <div class='pull-left custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
+                                        <h2><strong>Services</strong></h2>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class='endpoint-box-content'>
+                                <div class='inner'>
+								    <h2>Most Interested Cities</h2>
+								    <p>@Html(getMostInterestedCities)</p>
+								    
+								    <h2>Total Users</h2>
+								    <p>@getTotalUsers</p>
+								    
+								    </div>
+                            </div>
+                            <!-- -->
+                        </div>
+                    </div>
+                </section>
+            </section>
+}

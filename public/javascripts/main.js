@@ -2,6 +2,137 @@ var fortravelers = {
     
     init : function() {
     	
+    	// EASY MODAL OVERLAY
+    	function easyModal(){
+	    	jQuery('.easy-modal').easyModal({
+				top: 80,
+				autoOpen: true,
+				overlayOpacity: 0.3,
+				overlayColor: "#333",
+				overlayClose: true,
+				closeOnEscape: true,
+				onClose: function(){
+					$(".easy-modal").remove();
+				}
+			});
+		}
+		
+    	// GENERAL FIELDS VALIDATION 
+    	jQuery('input:password').attr('required','required').attr('pattern','.{6,}');
+    	jQuery('#login-email, #register-email, #register-name').attr('required','required');
+    	
+    	// SIGN IN VALIDATION
+    	jQuery('#login-btn').prop('disabled','disabled');
+    	jQuery('#login-email').keyup(function(){ btnLoginValidator(); });
+    	jQuery('#login-password').keyup(function(){ btnLoginValidator(); });
+    	    	
+    	function btnLoginValidator() {
+			var regEmail = /[\s]+/;
+			var regPwd = /.{6,}/;
+			
+			if(regEmail.test($('#login-email').val()) || regPwd.test($('#login-password').val())) {
+				$('#login-btn').removeAttr('disabled');  } 
+			else {  $('#login-btn').prop('disabled','disabled'); }
+    	}
+    	
+    	$('#login-btn').click(function() {
+			$.ajax({
+				type : 'POST',
+		        url : '/login',
+		        data: { email: $('#login-email').val(), password: $('#login-password').val() },
+		        success : function(data) { 
+		        	if(data == "done") { 
+		        		location.reload(true); 
+		        	}
+		        	else { 
+		        		$('#form-login').append("<div class=\"easy-modal\">Ooupss, correct your email or password field.</div>") 
+		        		easyModal();
+		        	}
+		        },
+		        error : function(data) { 
+		        	$('#form-login').append("<div class=\"easy-modal\">Ooups, the server has refuse your request. Maybe you should try later.</div>");
+		        	easyModal(); 
+		        }
+			});
+			return false;
+		});
+			
+    	// SIGN UP VALIDATION
+    	$('#register-btn').prop('disabled','disabled');
+    	jQuery('#register-name').keyup(function(){ btnRegisterValidator(); userNameValidator();});
+    	jQuery('#register-email').keyup(function(){ btnRegisterValidator(); emailValidator();});
+    	jQuery('#register-password').keyup(function(){ btnRegisterValidator(); pwdValidator(); });
+    	jQuery('#register-password-confirm').keyup(function(){ btnRegisterValidator(); pwdValidator(); });
+    	
+    	function btnRegisterValidator() {
+			var reg = /[\s]+/;
+			var regEmail = /^\w+@\w+$/;
+			if(reg.test($('#register-name').val()) || $('#register-name').val()=="" ||
+			  ($('#register-password').val() != $('#register-password-confirm').val() || 
+			   $('#register-password').val()=="" || $('#register-password-confirm').val() =="") ||
+			   $('#register-email').val()=="" || !regEmail.test($('#register-email').val())) {
+			   $('#register-btn').prop('disabled','disabled'); 
+			}
+			else { $('#register-btn').removeAttr('disabled'); }
+		}
+    	
+		function userNameValidator() {
+			var reg = /[\s]+/;
+			if(reg.test($('#register-name').val())) {
+				$('#register-name').css('border-color','rgb(233, 50, 45)');
+				$('#register-name').css('background-color','rgb(255, 244, 241)');
+				$('#register-name').css('color','rgb(246, 100, 66)'); }
+			else { $('#register-name').removeAttr('style'); $('#register-name').removeAttr('title');} 
+		}
+		
+		function emailValidator() {
+			var reg = /^\w+@\w+$/;
+			if(!reg.test($('#register-email').val())) {
+				$('#register-email').css('border-color','rgb(233, 50, 45)');
+				$('#register-email').css('background-color','rgb(255, 244, 241)');
+				$('#register-email').css('color','rgb(246, 100, 66)'); }
+			else { $('#register-email').removeAttr('style');} 
+		}
+				    	
+		function pwdValidator() {
+			if($('#register-password').val() != $('#register-password-confirm').val()) {
+				$('#register-password-confirm').css('border-color','rgb(233, 50, 45)');
+				$('#register-password-confirm').css('background-color','rgb(255, 244, 241)');
+				$('#register-password-confirm').css('color','rgb(246, 100, 66)');						
+			}
+			else { $('#register-password-confirm').removeAttr('style'); }
+		}
+		
+		$('#register-btn').click(function() {
+			$.ajax({
+				type : 'POST',
+		        url : '/register',
+		        data: {
+		        	  username: $('#register-name').val(), 
+		        	  email: $('#register-email').val(), 
+		        	  password: $('#register-password').val() 
+		       	},
+		        success : function(data) { 
+		        	if(data == "username") {
+		        		$('#register-name').attr('title','Username already exists. Type a new one and try again.');
+						$('#register-name').focus();
+						$('#register-name').css('color','rgb(246, 100, 66)');
+					}			        		
+		        	else if (data == "email") {
+		        		$('#register-email').attr('title','Email already exists. Type a new one and try again.');
+						$('#register-email').focus();
+						$('#register-email').css('color','rgb(246, 100, 66)');
+		        	}
+		        	else location.reload(true);  
+		        },
+		        error : function(data) { 
+		        	$('#form-register').append("<div class=\"easy-modal\">Ooups, the server has refuse your request.</div>");
+		        	easyModal(); 
+		        }
+			});
+			return false;
+		});
+		
     	/*
     	 * Updates how many times a user traveled to a destination and unlocks rating and commenting
     	 */
@@ -159,15 +290,26 @@ var fortravelers = {
         });
         
 		jQuery("#f").submit(function(event) {
-			if($('#search-string').val() == "" || $('#search-date').val() == "" || $('#search-date').val() == "__/__/____ __:__") {
-				$("#error-message").remove();
-				$("#f").append("<div id=\"error-message\">Please fill in required fields</div>");
+			var regexDate = /_{2}\s*\/\s*_{2}\/\s*_{4}/;
+			
+			if($('#search-string').val() == "" || $('#search-date').val() == "" || 
+			   regexDate.test($('#search-date').val())) {
 				if($('#search-string').val() == "") {
-					$('#search-string').addClass('error-input-box');
+					$('#search-string').prop('title','Please fill in required fields');
+					$('#search-string').focus();
+					$('#search-string').css('border-color','rgb(233, 50, 45)');
+					$('#search-string').css('background-color','rgb(255, 244, 241)');
+					$('#search-string').css('color','rgb(246, 100, 66)');					
 				}
-				if($('#search-date').val() == "" || $('#search-date').val() == "__/__/____ __:__") {
-					$('#search-date').addClass('error-input-box');
+				else $('#search-string').removeAttr('style');
+				
+				if(regexDate.test($('#search-date').val()) || $('#search-date').val() == "") {
+					$('#search-date').focus();
+					$('#search-date').css('border-color','rgb(233, 50, 45)');
+					$('#search-date').css('background-color','rgb(255, 244, 241)');
+					$('#search-date').css('color','rgb(246, 100, 66)');	
 				}
+				else $('#search-date').removeAttr('style');
 				return false;
 			}
 			return true;
@@ -186,9 +328,9 @@ var fortravelers = {
 				
 		jQuery('#search-date').datetimepicker({
 			datepicker:true,
-			timepicker:true,
+			timepicker:false,
 			mask: true,
-			format: 'd/m/Y H:i', 
+			format: 'd/m/Y', 
 			minDate: 0 ,// today
 			validateOnBlur:true
 		});

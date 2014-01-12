@@ -31,6 +31,8 @@ import models.semantic.Ontology;
 import models.semantic.SparqlEndpoint;
 import models.semantic.Semantic;
 import play.Play;
+import play.mvc.Http;
+import play.api.mvc.Session;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.libs.Json;
@@ -39,7 +41,6 @@ import play.mvc.Result;
 import views.html.index;
 import views.html.notFoundPage;
 import views.html.results;
-import views.html.cityInformationByQuery;
 import views.html.sparql;
 import views.html.sparqlresults;
 import views.html.services;
@@ -50,30 +51,36 @@ import views.html.namespaceprefixes;
 
 public class Application extends Controller 
 {
+	// Home page
     public static Result index() 
     {
-        return ok( index.render(Semantic.getMostInterestedCities()) );
+        return ok(index.render(Semantic.getMostInterestedCities()));
     }
-
+ 
     // LOGIN USER
 	public static Result login() 
     {
+		// GET PARAM VALUES
     	DynamicForm loginForm = Form.form().bindFromRequest();
-    	String email = loginForm.get("login-email");
-        String password = loginForm.get("login-password");
+    	String email = loginForm.get("email");
+        String password = loginForm.get("password");
         
+    	// DAO
         IUserDAO userDAO = new UserDAO(new DAOFactory().createMongodbConnection());
+        
+        // AUTHENTICATION CHECKER
         if(userDAO.exists(email, password))
         {
-        	String user = session("connected");
-        	if(user == null) 
-        	{
-        		User usr = userDAO.find(email);
-        		session("connected", usr.getName());
-        	}
-            return redirect(controllers.routes.Application.index());
+        	User user = userDAO.find(email);
+        	//session().clear();
+        	session("connected", "rr");
+			return ok("done");
         }
-        return unauthorized("Oops, need the right credentials");
+        else
+        {
+	        // USER DOES NOT EXISTS
+	        return ok("undone");
+        }
     }
 	
 	// LOGGING OUT USER
@@ -84,7 +91,6 @@ public class Application extends Controller
 		{
 			session().clear();
 		    flash("success", "You've been logged out");
-		    
 		}
 		return redirect(routes.Application.index());
     }	
@@ -92,32 +98,38 @@ public class Application extends Controller
     // REGISTER USER
     public static Result register() 
     {
-    	IUserDAO userDAO = new UserDAO(new DAOFactory().createMongodbConnection());
-    	
     	DynamicForm loginForm = Form.form().bindFromRequest();
+    	String username = loginForm.get("username");
+    	String email = loginForm.get("email");
+    	String password = loginForm.get("password");
     	
-    	String name = loginForm.get("register-name");
-    	String email = loginForm.get("register-email");
-    	String password = loginForm.get("register-password");
-    	String passwordConfirm = loginForm.get("register-password-confirm");
-    	
-    	if(!name.isEmpty() && !email.isEmpty() && !password.isEmpty())
-    	{
-    		User user = new User();
-    		user.setName(name);
-    		user.setEmail(email);
-    		user.setPassword(password);
-    		user.setInscriptiondate(new Date());
-    		
-    		if(userDAO.save(user))
-    		{
-        		session("connected", name);
-        		Semantic.insertUserTDB(name, email);
-        		return redirect(controllers.routes.Application.index());
-        	}
-    	}
-    			
-		return ok("You are not logged");
+		User user = new User();
+		user.setName(username);
+		user.setEmail(email);
+		user.setPassword(password);
+		user.setInscriptiondate(new Date());
+		
+		IUserDAO userDAO = new UserDAO(new DAOFactory().createMongodbConnection());
+		
+		if(userDAO.exists(username))
+		{
+			return ok("username");		
+		}
+		else if (userDAO.existsEmail(email))
+		{
+			return ok("email");	
+		}
+		else
+		{
+			if(userDAO.save(user))
+			{
+				//session().clear();
+				//session("connected", username);
+				Semantic.insertUserTDB(username, email);
+				return ok();
+			}
+			else return badRequest();
+		} //return redirect(routes.Application.index());
     }  
 
     public static Result cityInformationByQuery() 

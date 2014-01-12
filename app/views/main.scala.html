@@ -40,6 +40,9 @@
         <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css">
 		<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 		<script src='@routes.Assets.at("javascripts/datetimepicker/jquery.datetimepicker.js")' type="text/javascript"></script>
+		
+		<!-- easyModal-->
+		<script type="text/javascript" src='@routes.Assets.at("javascripts/easyModal/jquery.easyModal.js")'></script>
 		@scripts
         <script src='@routes.Assets.at("javascripts/main.js")'></script>   
 		
@@ -58,13 +61,13 @@
                             <h2>Sign In</h2>
                             <p>Sign in order to give you more !</p>
 
-                            <form action="@routes.Application.login()" class='row' method="post">
+                            <form id='form-login' action="@routes.Application.login()" class='row' method="post">
                                 <div class='span3'>
                                     <input type="email" name="login-email" id="login-email" class='input-block-level' placeholder="Email"/>
                                 </div>
                                 <div class='span3'>
                                     <input type="password" name="login-password" id="login-password" class='input-block-level'  placeholder="Password"/>
-                                    <input type="submit" name='submit' value='Login' class='btn btn-success btn-lg btn-block'/>
+                                    <input type="submit" name='login-btn' id='login-btn' value='Sign In' class='btn btn-success btn-lg btn-block'/>
                                 </div>
                             </form>
                         </div>
@@ -77,15 +80,15 @@
                             <h2>Sign Up</h2>
                             <p>Sign up in order to give you more !</p>
 
-                            <form action="@routes.Application.register()" class='row' method="post">
+                            <form id='form-register' action="@routes.Application.register()" class='row' method="post">
                                 <div class='span3'>
-                                    <input type="text" name='register-name' id='register-name' class='input-block-level' placeholder="Nick Name"/>
-                                    <input type="password" name='register-password' id='register-password' class='input-block-level' placeholder="Password"/>
+                                    <input type="text" name='register-name' id='register-name' class='input-block-level' placeholder="User Name"  />
+                                    <input type="email" name='register-email' id='register-email' class='input-block-level' placeholder="Email Address"/>
                                 </div>
                                 <div class='span3'>
-                                	<input type="email" name='register-email' id='register-email' class='input-block-level' placeholder="Email Address"/>
-                                    <input type="password" name='register-password-confirm' id='register-password-confirm' class='input-block-level' placeholder="Password Confirmation"/>
-                                    <input type="submit" name='submit' value='Register' class='btn btn-success btn-lg btn-block'/>
+                                	<input type="password" name='register-password' id='register-password' class='input-block-level' placeholder="Password"/>
+                                    <input type="password" name='register-password-confirm' id='register-password-confirm' class='input-block-level' placeholder="Password Confirmation" />
+                                    <input type="submit" name='register-btn' id='register-btn' value='Sign Up' class='btn btn-success btn-lg btn-block' />
                                 </div>
                             </form>
                         </div>

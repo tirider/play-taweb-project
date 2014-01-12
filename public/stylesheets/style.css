@@ -1902,6 +1902,26 @@ figure img {
   -ms-transition: all 0.4s ease-in-out;
   transition: all 0.4s ease-in-out;
 }
+.easy-modal {
+	width: 300px;
+	height: auto;
+	padding: 10px;
+	color: red; /*rgb(51, 51, 51);*/
+	font-size: 14px;
+	line-height: 20px;
+	border-right: 1px solid rgb(195, 197, 201);
+	border-width: medium 1px 1px;
+	border-style: none solid solid;
+	border-color: -moz-use-text-color rgb(195, 197, 201) rgb(195, 197, 201);
+	-moz-border-top-colors: none;
+	-moz-border-right-colors: none;
+	-moz-border-bottom-colors: none;
+	-moz-border-left-colors: none;
+	border-image: none;
+	border-radius: 4px;
+	background-clip: padding-box;
+	background-color: white;
+}
 .location-finder article:hover {
   background-color: #edeeef;
 }
@@ -1967,11 +1987,11 @@ figure img {
 }
 @media (min-width: 1200px) {
   .tab-finder .search-content form .search-string {
-    width: 630px;
+    width: 696px;
     margin-right: 15px;
   }
   .tab-finder .search-content form .search-date {
-    width: 266px;
+    width: 200px;
   }
   .tab-finder .tab-content form .search-string {
     width: 800px;

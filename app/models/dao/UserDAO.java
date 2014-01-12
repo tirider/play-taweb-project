@@ -212,6 +212,60 @@ public class UserDAO implements IUserDAO
 	}
 
 	@Override
+	public boolean exists(String username) 
+	{
+		// GET A THE CONNECTION FROM THE POOL
+		DB db = (DB) this.dao.getConnection();
+		db.requestStart();
+		
+		// ON CHERCHE LA COLLECTION CORRESPONDANTE SUR MONGODB
+		DBCollection collection = db.getCollection(TABLE_NAME);
+		
+		// CREATION DU QUERY
+		BasicDBObject searchquery = new BasicDBObject();
+		searchquery.put(TABLE_FIELD_5, username.toLowerCase());
+
+		// RESULTAT DE LA REQUETE
+		DBObject row = collection.findOne(searchquery);
+		
+		boolean exists = false;
+		
+		if(row != null) exists = true;
+			
+		// RELEASE THE CONNECTION BACK TO THE POOL 
+		db.requestDone();		
+		
+		return exists;
+	}
+	
+	@Override
+	public boolean existsEmail(String email) 
+	{
+		// GET A THE CONNECTION FROM THE POOL
+		DB db = (DB) this.dao.getConnection();
+		db.requestStart();
+		
+		// ON CHERCHE LA COLLECTION CORRESPONDANTE SUR MONGODB
+		DBCollection collection = db.getCollection(TABLE_NAME);
+		
+		// CREATION DU QUERY
+		BasicDBObject searchquery = new BasicDBObject();
+		searchquery.put(TABLE_FIELD_2, email.toLowerCase());
+
+		// RESULTAT DE LA REQUETE
+		DBObject row = collection.findOne(searchquery);
+		
+		boolean exists = false;
+		
+		if(row != null) exists = true;
+			
+		// RELEASE THE CONNECTION BACK TO THE POOL 
+		db.requestDone();		
+		
+		return exists;
+	}
+		
+	@Override
 	public boolean exists(String email, String password)
 	{
 		// GET A THE CONNECTION FROM THE POOL
