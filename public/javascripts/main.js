@@ -2,6 +2,8 @@ var fortravelers = {
     
     init : function() {
     	
+    	$.pnotify.defaults.history = false;
+    	
     	// CHECK FOR AUTHENTICATION
 		if($('#authentication').val() == 0) {
 			authentication();

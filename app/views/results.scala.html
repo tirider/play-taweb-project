@@ -1,4 +1,4 @@
-@(city : models.beans.City, arrivalDate : Date, weatherDataList: List[models.beans.Weather], rating : Int, nbrating : Int, canVote : Boolean, photos : List[models.beans.Photo], reviews : List[models.beans.Review])
+@(city : models.beans.City, arrivalDate : Date, weatherDataList: List[models.beans.Weather], rating : Int, nbrating : Int, canVote : Boolean, photos : List[models.beans.Photo], reviews : List[models.beans.Review], nbtimestraveled : Int)
 
 @main(city.getName(), scripts)(subtitle)(content)
 
@@ -162,21 +162,20 @@
                                    <a href="#comment" class="write-comment">Write a review</a>
                                 }
                                 </div>
-                            
                            I have been there:
                            <div class="clearfix">
                            <select id='times-traveled'>
-                                <option value="0">None</option>
-                                <option value="1">Once</option>
-                                <option value="2">Twice</option>
-                                <option value="3">3 times</option>
-                                <option value="4">4 times</option>
-                                <option value="5">5 times</option>
-                                <option value="6">6 times</option>
-                                <option value="7">7 times</option>
-                                <option value="8">8 times</option>
-                                <option value="9">9 times</option>
-                                <option value="10">more than 10 times</option>
+                                <option value="0" @if(nbtimestraveled == 0) { selected="selected" }>None</option>
+                                <option value="1" @if(nbtimestraveled == 1) { selected="selected" }>Once</option>
+                                <option value="2" @if(nbtimestraveled == 2) { selected="selected" }>Twice</option>
+                                <option value="3" @if(nbtimestraveled == 3) { selected="selected" }>3 times</option>
+                                <option value="4" @if(nbtimestraveled == 4) { selected="selected" }>4 times</option>
+                                <option value="5" @if(nbtimestraveled == 5) { selected="selected" }>5 times</option>
+                                <option value="6" @if(nbtimestraveled == 6) { selected="selected" }>6 times</option>
+                                <option value="7" @if(nbtimestraveled == 7) { selected="selected" }>7 times</option>
+                                <option value="8" @if(nbtimestraveled == 8) { selected="selected" }>8 times</option>
+                                <option value="9" @if(nbtimestraveled == 9) { selected="selected" }>9 times</option>
+                                <option value="10" @if(nbtimestraveled == 10) { selected="selected" }>more than 10 times</option>
                            </select>
                            <input value="OK" id="user-traveled" class="btn btn-success bluehover ok-times-travelled">
                            </div>

@@ -322,6 +322,38 @@ public class Semantic {
 	}
 	
 	/**
+	 * Returns how many times a user traveled to a destination
+	 * @param cityname
+	 * @param nick
+	 * @return
+	 */
+	public static int getNumberOfTimesTraveled(String cityname, String nick)
+	{
+		String query = "SELECT?o WHERE { "
+				+ "?userResource rdf:type foaf:Person ."
+				+ "?userResource foaf:nick \"" + nick + "\" ."
+				+ "?userResource trvl:to ?userDestinationResource ."
+				+ "?userDestinationResource trvl:timesTraveled ?o ."
+				+ "?userDestinationResource trvl:destination ?destinationR ."
+				+ "?destinationR rdfs:label \"" + cityname + "\" "
+				+ "}";
+
+		ResultSet results = SparqlEndpoint.queryData(query);
+		
+		int resultStr = 0;
+		
+		for ( ; results.hasNext() ; )
+		{
+			QuerySolution qsolution = results.nextSolution();
+		
+			int resultCount = qsolution.getLiteral("o").getInt();
+			resultStr = resultCount;
+		}
+		
+		return resultStr;
+	}
+	
+	/**
 	 * Return a list of reviews by city name.
 	 * @param cityname
 	 * @return

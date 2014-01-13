@@ -155,7 +155,7 @@ public class Application extends Controller
         String cityname = parameters.get("cityname").asText();
         String timestraveled = parameters.get("timestraveled").asText();
         
-    	return ok(Semantic.updateUserDestinationTravelledTDB(session("connected"), timestraveled, cityname));
+    	return ok(Semantic.updateUserDestinationTravelledTDB(session("username"), timestraveled, cityname));
     }
     
     public static Result submitRating() 
@@ -164,7 +164,7 @@ public class Application extends Controller
         String cityname = parameters.get("cityname").asText();
         String rating = parameters.get("rating").asText();
         
-    	return ok(Semantic.updateUserDestinationRatingTDB(session("connected"), rating, cityname));
+    	return ok(Semantic.updateUserDestinationRatingTDB(session("username"), rating, cityname));
     }
     
     public static Result submitReview() 
@@ -173,7 +173,7 @@ public class Application extends Controller
         String cityname = parameters.get("cityname").asText();
         String review = parameters.get("review").asText();
         
-    	return ok(Semantic.updateUserDestinationReviewTDB(session("connected"), review, cityname));
+    	return ok(Semantic.updateUserDestinationReviewTDB(session("username"), review, cityname));
     }
     
     public static Result search() throws Exception
@@ -210,9 +210,10 @@ public class Application extends Controller
 	        	photos = PhotoService.getPhotosByLatLong(city.getLatitude(), city.getLongitude());
 	        }
 	
-	        // GET CITY RATING / NB OF VOTES / REVIEWS
+	        // GET CITY RATING / NB OF VOTES / TIMES TRAVELED / REVIEWS
 	        int rating = Semantic.getRatingByCity(city.getName());
 	        int nbrating = Semantic.getNumberOfVotesByCity(city.getName());
+	        int nbtimes = Semantic.getNumberOfTimesTraveled(city.getName(), session("username"));
 	        List<Review> reviews = Semantic.getReviewsByCity(city.getName());
 	        
 	        // CAN USER VOTE AND COMMENT
@@ -222,7 +223,7 @@ public class Application extends Controller
 	        Semantic.updateCityAndCountryTDB(city.getName(), city.getOverview(), city.getLatitude(), city.getLongitude(), city.getPopulationTotal(), city.getCountry(), city.getCurrencyCode(), photos);
 	        Semantic.updateUserDestinationInterestedTDB(session("username"), city.getName());
 	        
-	        return ok(results.render(city, ArrivalDate, weatherData, rating, nbrating, canVote, photos, reviews));    		
+	        return ok(results.render(city, ArrivalDate, weatherData, rating, nbrating, canVote, photos, reviews, nbtimes));
     	}
     	return redirect(routes.Application.index(0));
     }
