@@ -279,11 +279,17 @@ var fortravelers = {
 		
 		jQuery('#search-string').focus();
 		
-		jQuery("#search-string, #register-city" ).autocomplete({
+		var parentID = "";
+		jQuery("#search-string, #register-city").autocomplete({
 			 source: function( request, response ) {
 			 $.ajax({
 				 beforeSend: function() {
-					$('#search-string').last().addClass( "loading" );
+						$( "#search-string" ).keyup(function() {
+							$('#search-string').last().addClass( "loading-main" );
+						});
+						$( "#register-city" ).keyup(function() {
+							$('#register-city').last().addClass( "loading-register " );
+						});
 				 },
 				 type: "POST",
 				 url: "/cityInformationByQuery/",
@@ -292,7 +298,8 @@ var fortravelers = {
 				 dataType: "json",
 				 success: function( data ) {
 					 if (data == 0) {
-						 $('#search-string').removeClass('loading');
+						 $('#search-string').removeClass('loading-main');
+						 $('#register-city').removeClass('loading-register');
 					 }
 					 else {
 						 response( $.map( data.cities, function( item ) {
@@ -302,7 +309,8 @@ var fortravelers = {
 								 hiddenValue: item.value
 							 }
 						 },
-						 $('#search-string').removeClass('loading')
+						 $('#search-string').removeClass('loading-main'),
+						 $('#register-city').removeClass('loading-register')
 						 ));
 					 }
 				 },

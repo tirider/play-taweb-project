@@ -161,7 +161,7 @@ header {
   background: url('../img/header.png') repeat-x;
   height: 51px;
   position: relative;
-  z-index: 1000;
+  z-index: 3;
 }
 header .logo a {
   display: inline-block;
@@ -1989,11 +1989,11 @@ figure img {
   margin-top: -20px;
   text-transform: uppercase;
 }
-.loading {
-  background-image: url('../img/loading.gif');
-  background-position: right;
-  background-repeat: no-repeat;
-  background-color: white;
+.loading-main {
+  background: url('../img/loading-main.gif') right no-repeat;
+}
+.loading-register {
+  background: #f9f9f9 url('../img/loading-reg.gif') no-repeat 238px 10px;
 }
 #profile {
   float: right;
