@@ -50,7 +50,7 @@
 			            @if(photos.isEmpty()) {
 			                No photos!
 			            } else {
-			                @for(ph <- photos) {<a href="@ph.getImgLargeUrl()" class="figure-hover fancybox"><img src="@ph.getImgThumbnailUrl()"></a>}
+			                @for(ph <- photos) {<a href="@ph.getImgLargeUrl()" class="figure-hover fancybox"><img src="@ph.getImgThumbnailUrl()" alt="@city.getName()"></a>}
 			            }
 		            </div>
 	            </div>
@@ -180,7 +180,6 @@
                            <input value="OK" id="user-traveled" class="btn btn-success bluehover ok-times-travelled">
                            </div>
                            <span class="grey small">(Only users who have been to a destination are allowed to rate and comment.)</span>
-                    </div>
                     </div>
                         </section>
                     </section>
