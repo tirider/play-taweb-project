@@ -258,7 +258,8 @@ var fortravelers = {
                 $this.attr('data-original-title', 'Log In / Sign Out');
                 $('#hidden-header .profile-form').hide();
                 $('#main').css('float','');
-                fortravelers.closeHiddenHeader();               
+                fortravelers.closeHiddenHeader();
+                $("#body").css('height', '');
             } 
             else {
 				$this.addClass('closed');
@@ -266,6 +267,8 @@ var fortravelers = {
                 $('#hidden-header .profile-form').show();
                 $('#main').css('float','left');
                 fortravelers.openHiddenHeader();
+                var heightToAdd = $("#main").height() + 500;
+                $("#body").css('height', heightToAdd + 'px');
             }			
 		}
 		
