@@ -1,4 +1,4 @@
-@(city : models.beans.City, arrivalDate : Date, weatherDataList: List[models.beans.Weather], rating : Int, nbrating : Int, canVote : Boolean, photos : List[models.beans.Photo], reviews : List[models.beans.Review])
+@(city : models.beans.City, arrivalDate : Date, weatherDataList: List[models.beans.Weather], rating : Int, nbrating : Int, canVote : Boolean, photos : List[models.beans.Photo], reviews : List[models.beans.Review], nbtimestraveled : Int)
 
 @main(city.getName(), scripts)(subtitle)(content)
 
@@ -23,14 +23,12 @@
                                         <h2><strong>Description</strong></h2>
                                     </div>
                                     <div class='pull-right results-per-page custom-margin'>
-                                        <ul>
                                         	@if(city.getName().isEmpty() && city.getCountry.isEmpty()){
                                         		<strong>The city</strong> on <strong>@arrivalDate.date.format("dd MMMM yyyy")</strong>
                                         	}
                                             @if(!city.getName().isEmpty() && !city.getCountry.isEmpty()){
                                             	<strong>@city.getName(), @city.getCountry()</strong> on <strong>@arrivalDate.date.format("dd MMMM yyyy")</strong>
                                             }
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -44,74 +42,13 @@
                         </div>
                     </div>
                 </div>
-                <div class='location-finder'>
-	                <div class='location-feedback'>
-		                <h2>What users think</h2>
-		                    <div class='clearfix height-feedback'>
-	                            <div class='left-feeback'>
-	                            @if(canVote) {
-	                               <div id="canvote" class="stars">
-                                } else {
-                                    <div id="cannotvote" class="stars">
-                                }
-									<div class="rating" style="width: @{rating}%;"></div>
-									<div class="star" id="votestar1" data-value="1">
-									<div class="star" id="votestar2" data-value="2">
-									<div class="star" id="votestar3" data-value="3">
-									<div class="star" id="votestar4" data-value="4">
-									<div class="star" id="votestar5" data-value="5">
-		                            </div></div></div></div></div>
-		                            </div>
-		                            @if(nbrating == 0) {
-		                              Not rated yet
-		                            } else {
-			                            @if(nbrating == 1) {
-			                              (1 vote)
-			                            } else {
-			                              (@nbrating votes)
-			                            }
-		                            }
-		                            @* NO ELSE IF SUPPORTED BY SCALA TEMPLATE :P *@
-	                            </div>
-	                            <div class='left-feeback'>
-	                                @if(reviews != null) {
-		                                @if(reviews.size() > 0) {
-		                                   <a href="#comments">Reviews (@reviews.size())</a>
-		                                } else {
-		                                   No reviews yet.
-		                                }
-	                                }
-	                            </div>
-	                            <div class='left-feeback userCanComment'>
-	                            @if(canVote) {
-                                   <a href="#comment" class="write-comment">Write a review</a>
-                                }
-                                </div>
-                            </div>
-                           <p>I have been there 
-                           <select id='times-traveled'>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">more than 10</option>
-                           </select>
-                           times <input value="OK" id="user-traveled" class="btn btn-success bluehover ok-times-travelled"></p>
-                           <span class="grey small">(Only users who have been to a destination are allowed to rate and comment.)</span>
-	                </div>
-                </div>
                 
                 <div class='location-finder'>
 	                <div id='photos'>
 			            @if(photos.isEmpty()) {
 			                No photos!
 			            } else {
-			                @for(ph <- photos) {<a href="@ph.getImgLargeUrl()" class="figure-hover fancybox"><img src="@ph.getImgThumbnailUrl()"></a>}
+			                @for(ph <- photos) {<a href="@ph.getImgLargeUrl()" class="figure-hover fancybox"><img src="@ph.getImgThumbnailUrl()" alt="@city.getName()"></a>}
 			            }
 		            </div>
 	            </div>
@@ -144,18 +81,18 @@
                     
                     <div class='location-finder'>
 	                    <div id='comment'>
-	                        <a name="comment"></a>
+	                        <a id="acomment"></a>
 	                        <label for="comment-text">Write your review for @city.getName()</label>
 	                        @if(canVote) {
-		                        <textarea rows="" cols="" id="comment-text"></textarea>
+		                        <textarea rows="5" cols="5" id="comment-text"></textarea>
 	                            <p class="center"><input value="Submit" id="user-comment" class="btn btn-success"></p>
 	                        } else {
-		                        <textarea rows="" cols="" id="comment-text" disabled title="You can vote or comment only if you have been to this place."></textarea>
+		                        <textarea rows="5" cols="5" id="comment-text" disabled title="You can vote or comment only if you have been to this place."></textarea>
 	                            <p class="center"><input value="Submit" id="user-comment" class="btn btn-success" disabled title="You can vote or comment only if you have been to this place."></p>
 	                        }
 	                    </div>
-	                    <div id='comments'>
-	                       <a name="comments" id="comments-text"></a>
+	                    <div id='acomments'>
+	                       <a id="comments" class="comments-text"></a>
 	                       @if(reviews != null) {
 		                       @if(!reviews.isEmpty()) {
 	                                @for(r <- reviews){
@@ -176,6 +113,76 @@
                 
                 </section>
                 <aside class='span3'>
+                
+                <section class='widget'>
+                        <section class='widget-title uppercase'>
+                            <div class='inner'>
+                                    <div class='pull-left custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
+                                        <h2><strong>What users think</strong></h2>
+                                    </div>
+                            </div>
+                        </section>
+                        <section class='widget-content'>
+                            <div id='feedback'>
+                                <div class='left-feeback'>
+                                @defining(if (canVote) "canvote" else "cannotvote") { vote =>
+                                    <div id="@vote" class="stars">
+                                }
+                                    <div class="rating" style="width: @{rating}%;"></div>
+                                    <div class="star" id="votestar1" data-value="1">
+                                    <div class="star" id="votestar2" data-value="2">
+                                    <div class="star" id="votestar3" data-value="3">
+                                    <div class="star" id="votestar4" data-value="4">
+                                    <div class="star" id="votestar5" data-value="5">
+                                    </div></div></div></div></div>
+                                    </div>
+                                    @if(nbrating == 0) {
+                                      <div class="notratedyet">Not rated yet</div>
+                                    } else {
+                                        @if(nbrating == 1) {
+                                          (<span class="nbvotes">1</span> vote)
+                                        } else {
+                                          (<span class="nbvotes">@nbrating votes</span>)
+                                        }
+                                    }
+                                </div>
+                                <div class="feedback-reviews">
+                                    @if(reviews != null) {
+                                        @if(reviews.size() > 0) {
+                                           <a href="#acomments">Reviews (@reviews.size())</a>
+                                        } else {
+                                           No reviews yet.
+                                        }
+                                    }
+                                </div>
+                                <div class='userCanComment'>
+                                @if(canVote) {
+                                   <a href="#acomment" class="write-comment">Write a review</a>
+                                }
+                                </div>
+                           I have been there:
+                           <div class="clearfix">
+                           <select id='times-traveled'>
+                                <option value="0" @if(nbtimestraveled == 0) { selected="selected" }>None</option>
+                                <option value="1" @if(nbtimestraveled == 1) { selected="selected" }>Once</option>
+                                <option value="2" @if(nbtimestraveled == 2) { selected="selected" }>Twice</option>
+                                <option value="3" @if(nbtimestraveled == 3) { selected="selected" }>3 times</option>
+                                <option value="4" @if(nbtimestraveled == 4) { selected="selected" }>4 times</option>
+                                <option value="5" @if(nbtimestraveled == 5) { selected="selected" }>5 times</option>
+                                <option value="6" @if(nbtimestraveled == 6) { selected="selected" }>6 times</option>
+                                <option value="7" @if(nbtimestraveled == 7) { selected="selected" }>7 times</option>
+                                <option value="8" @if(nbtimestraveled == 8) { selected="selected" }>8 times</option>
+                                <option value="9" @if(nbtimestraveled == 9) { selected="selected" }>9 times</option>
+                                <option value="10" @if(nbtimestraveled == 10) { selected="selected" }>more than 10 times</option>
+                           </select>
+                           <input value="OK" id="user-traveled" class="btn btn-success bluehover ok-times-travelled">
+                           </div>
+                           <span class="grey small">(Only users who have been to a destination are allowed to rate and comment.)</span>
+                    </div>
+                        </section>
+                    </section>
+                    
+                    
                     <section class='widget'>
                         <section class='widget-title uppercase'>
                             <div class='inner'>
@@ -185,53 +192,51 @@
                             </div>
                         </section>
                         <section class='widget-content'>
-                            <form action="">
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Location</label>
+                                        <label>Location</label>
                                         <p><strong>@city.getName(), @city.getCountry()</strong></p>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Currency</label>
+                                        <label>Currency</label>
                                         <p>@city.getCurrencyCode</p>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Population</label>
+                                        <label>Population</label>
                                         <p>@city.getPopulationTotal</p>
                                         
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Hotels</label>
+                                        <label>Hotels</label>
                                         
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Shops</label>
+                                        <label>Shops</label>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Bars</label>
+                                        <label>Bars</label>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner' style='position: relative;'>
-                                        <label for="category">Top Restaurant</label>
+                                        <label>Top Restaurant</label>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Top Research for this city</label>
+                                        <label>Top Research for this city</label>
                                     </div>
                                 </div>
-                            </form>
                         </section>
                     </section>
                 </aside>

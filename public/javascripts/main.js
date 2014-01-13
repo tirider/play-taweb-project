@@ -24,69 +24,47 @@ var fortravelers = {
 			});
 		}
 		
-    	// GENERAL FIELDS VALIDATION 
-    	jQuery('input:password').attr('required','required').attr('pattern','.{6,}');
-    	jQuery('#login-email, #register-email, #register-name').attr('required','required');
-    	
     	// SIGN IN VALIDATION
-    	jQuery('#login-btn').prop('disabled','disabled');
-    	jQuery('#login-email').keyup(function(){ btnLoginValidator(); });
-    	jQuery('#login-password').keyup(function(){ btnLoginValidator(); });
-    	    	
-    	function btnLoginValidator() {
-			var regEmail = /[\s]+/;
-			var regPwd = /.{6,}/;
-			
-			if(regEmail.test($('#login-email').val()) || regPwd.test($('#login-password').val())) {
-				$('#login-btn').removeAttr('disabled');  } 
-			else {  $('#login-btn').prop('disabled','disabled'); }
-    	}
+    	jQuery('#login-email').attr('required','required').attr('pattern','.+@.+');
+    	jQuery('#login-password').attr('required','required').attr('pattern','.{6,}');
     	
-    	$('#login-btn').click(function() {
-			$.ajax({
-				type : 'POST',
-		        url : '/login',
-		        data: { email: $('#login-email').val(), password: $('#login-password').val() },
-		        dataType: "json",
-		        success : function(data) {
-		        	if(data.error == "1") {
-		        		$('#form-login').append("<div class=\"easy-modal\">Ooupss, correct your email or password field.</div>") 
-		        		easyModal(); 
-		        	}
-		        	else {
-			        	var html = "<nav id=\"profile\" class='main-nav'><ul><li class='active'><a href='#'>Settings</a><ul class='dropdown-menu'><li><a href=\"#\">" + data.email + "</a></li><li><a href=\"/logout\">Log Out</a></li></ul></li></ul></nav>"; 
-			        	$(".header-buttons").after(html);
-			        	$(".header-buttons").remove();
-			        	authentication();
-		        	}
-		        },
-		        error : function(data) { 
-		        	$('#form-login').append("<div class=\"easy-modal\">Ooups, the server has refuse your request. Maybe you should try later.</div>");
-		        	easyModal(); 
-		        }
-			});
-			return false;
+    	$('#form-login').submit(function(event) {
+    		if($('#login-email').val()!="" && $('#login-password').val()!="")
+    		{
+				$.ajax({
+					type : 'POST',
+			        url : '/login',
+			        data: { email: $('#login-email').val(), password: $('#login-password').val() },
+			        dataType: "json",
+			        success : function(data) {
+			        	if(data.error == "1") {
+			        		$('#form-login').append("<div class=\"easy-modal\">Ooupss, correct your email or password field.</div>") 
+			        		easyModal(); 
+			        	}
+			        	else {
+				        	var html = "<nav id=\"profile\" class='main-nav'><ul><li class='active'><a href='#'>Settings</a><ul class='dropdown-menu'><li><a href=\"#\">" + data.email + "</a></li><li><a href=\"/logout\">Log Out</a></li></ul></li></ul></nav>"; 
+				        	$(".header-buttons").after(html);
+				        	$(".header-buttons").remove();
+				        	authentication();
+			        	}
+			        },
+			        error : function(data) { 
+			        	$('#form-login').append("<div class=\"easy-modal\">Ooups, the server has refuse your request. Maybe you should try later.</div>");
+			        	easyModal(); 
+			        }
+				});
+				return false;
+			}
+			
+			$('#form-login').append("<div class=\"easy-modal\">Ooupss, correct your email or password field.</div>") 
+			easyModal();			
+			
+			event.preventDefault();
 		});
 			
     	// SIGN UP VALIDATION
-    	$('#register-btn').prop('disabled','disabled');
-    	jQuery('#register-name').keyup(function(){ btnRegisterValidator(); userNameValidator();});
-    	jQuery('#register-email').keyup(function(){ btnRegisterValidator(); emailValidator();});
-    	jQuery('#register-password').keyup(function(){ btnRegisterValidator(); pwdValidator(); });
-    	jQuery('#register-password-confirm').keyup(function(){ btnRegisterValidator(); pwdValidator(); });
-    	
-    	function btnRegisterValidator() {
-			var reg = /[\s]+/;
-			var regEmail = /^.+@.+$/;
-			if(reg.test($('#register-name').val()) || $('#register-name').val()=="" ||
-			  ($('#register-password').val() != $('#register-password-confirm').val() || 
-			   $('#register-password').val()=="" || $('#register-password-confirm').val() =="") ||
-			   $('#register-email').val()=="" || !regEmail.test($('#register-email').val())) {
-			   $('#register-btn').prop('disabled','disabled'); 
-			}
-			else { $('#register-btn').removeAttr('disabled'); }
-		}
-    	
+    	jQuery('#register-name').attr('required','required').attr('pattern','[a-zA-Z]{3,}');
+    	jQuery('#register-name').keyup(function(){ userNameValidator(); });
 		function userNameValidator() {
 			var reg = /[\s]+/;
 			if(reg.test($('#register-name').val())) {
@@ -94,18 +72,14 @@ var fortravelers = {
 				$('#register-name').css('background-color','rgb(255, 244, 241)');
 				$('#register-name').css('color','rgb(246, 100, 66)'); }
 			else { $('#register-name').removeAttr('style'); $('#register-name').removeAttr('title');} 
-		}
-		
-		function emailValidator() {
-			var reg = /^\w+@\w+$/;
-			if(!reg.test($('#register-email').val())) {
-				$('#register-email').css('border-color','rgb(233, 50, 45)');
-				$('#register-email').css('background-color','rgb(255, 244, 241)');
-				$('#register-email').css('color','rgb(246, 100, 66)'); }
-			else { $('#register-email').removeAttr('style');} 
-		}
-				    	
-		function pwdValidator() {
+		}    	
+    	jQuery('#register-email').attr('required','required').attr('pattern','.+@.+');
+    	jQuery('#register-city').attr('required','required');
+    	jQuery('#register-password').attr('required','required').attr('pattern','.{6,}');
+    	jQuery('#register-password-confirm').attr('required','required').attr('pattern','.{6,}');
+    	jQuery('#register-password').keyup(function(){ passwordsValidator(); });
+    	jQuery('#register-password-confirm').keyup(function(){ passwordsValidator(); }); 
+		function passwordsValidator() {
 			if($('#register-password').val() != $('#register-password-confirm').val()) {
 				$('#register-password-confirm').css('border-color','rgb(233, 50, 45)');
 				$('#register-password-confirm').css('background-color','rgb(255, 244, 241)');
@@ -113,35 +87,54 @@ var fortravelers = {
 			}
 			else { $('#register-password-confirm').removeAttr('style'); }
 		}
-		
-		$('#register-btn').click(function() {
-			$.ajax({
-				type : 'POST',
-		        url : '/register',
-		        data: {
-		        	  username: $('#register-name').val(), 
-		        	  email: $('#register-email').val(), 
-		        	  password: $('#register-password').val() 
-		       	},
-		        success : function(data) { 
-		        	if(data == "username") {
-		        		$('#register-name').attr('title','Username already exists. Type a new one and try again.');
-						$('#register-name').focus();
-						$('#register-name').css('color','rgb(246, 100, 66)');
-					}			        		
-		        	else if (data == "email") {
-		        		$('#register-email').attr('title','Email already exists. Type a new one and try again.');
-						$('#register-email').focus();
-						$('#register-email').css('color','rgb(246, 100, 66)');
-		        	}
-		        	else location.reload(true);  
-		        },
-		        error : function(data) { 
-		        	$('#form-register').append("<div class=\"easy-modal\">Ooups, the server has refuse your request.</div>");
-		        	easyModal(); 
-		        }
-			});
-			return false;
+		    	
+		$('#form-register').submit(function(event) {
+			if( $('#register-name').val() !="" && $('#register-email').val() !="" && $('#register-city').val()!="" &&
+			    $('#register-password').val()!= "" && $('#register-password-confirm').val()!="") {
+				$.ajax({
+					type : 'POST',
+			        url : '/register',
+			        data: {
+			        	  username: $('#register-name').val(), 
+			        	  email: $('#register-email').val(), 
+			        	  city: $('#register-city').val(), 
+			        	  password: $('#register-password').val(), 
+			        	  passwordConfirm: $('#register-password-confirm').val() 
+			       	},
+			       	dataType: "json",
+			        success : function(data) { 
+			        	if(data.error == "1") {
+			        		$('#form-register').append("<div class=\"easy-modal\">Please be sure you have all the filds properly filled and try again.</div>");
+			        		easyModal(); 
+						}			        		
+			        	else if(data.error == "2") {
+			        		$('#register-name').attr('title','Username already exists. Type a new one and try again.');
+							$('#register-name').focus();
+							$('#register-name').css('color','rgb(246, 100, 66)');
+						}			        		
+			        	else if (data.error == "3") {
+			        		$('#register-email').attr('title','Email already exists. Type a new one and try again.');
+							$('#register-email').focus();
+							$('#register-email').css('color','rgb(246, 100, 66)');
+			        	}
+			        	else if (data.error == "0") {
+			        		var html = "<nav id=\"profile\" class='main-nav'><ul><li class='active'><a href='#'>Settings</a><ul class='dropdown-menu'><li><a href=\"#\">" + data.email + "</a></li><li><a href=\"/logout\">Log Out</a></li></ul></li></ul></nav>"; 
+				        	$(".header-buttons").after(html);
+				        	$(".header-buttons").remove();
+				        	authentication();	
+			        	} 
+			        },
+			        error : function(data) { 
+			        	$('#form-register').append("<div class=\"easy-modal\">Ooups, the server has refuse your request.</div>");
+			        	easyModal(); 
+			        }
+				});
+				return false;
+			}
+			$('#form-register').append("<div class=\"easy-modal\">Please be sure you have all the filds properly filled and try again.</div>");
+			easyModal();
+			        					
+			event.preventDefault();
 		});
 		
     	/*
@@ -218,36 +211,41 @@ var fortravelers = {
     	 * Submit review
     	 */
     	jQuery(document).on("click", "#user-comment", function () {
-    		var review = $('#comment-text').val();
-    		if (review == '') {
-    			if(!$(".comment-missing").length) {
-    				$('#comment').append("<div id=\"error-message comment-missing\">Please enter a text</div>");
-    			}
-    		}
-    		else {
-			    $.ajax({
-			        type: "POST",
-			        url: "/submitReview/",
-			        data: "{ \"cityname\": \"" + $('#city').val() + "\", \"review\": \"" + review + "\" }",
-			        contentType: "application/json; charset=utf-8",
-			        dataType: "json",
-			        success: function (msg) {
-			        	var reviewHtml = "<div class=\"review\"><em>" + msg.nick + " on " + msg.date + "</em><p>" + review + "</p></div>";
-		                $('a.comments-text').after(reviewHtml);
-		                $("#comment-text").val("");
-		                if($(".no-reviews").length) {
-		                	$(".no-reviews").remove();
-		                }
-		                $.pnotify({
-		            		title: 'Success',
-		            		text: 'Thank you for your review.'
-		            	});
-			        },
-			        error: function (msg) {
-			            alert(msg.d);
-			        }
-			    });
-    		}
+    		if($('#comment-text').val()=="")
+				$('#comment-text').focus();
+			else
+			{
+	    		var review = $('#comment-text').val();
+	    		if (review == '') {
+	    			if(!$(".comment-missing").length) {
+	    				$('#comment').append("<div id=\"error-message comment-missing\">Please enter a text</div>");
+	    			}
+	    		}
+	    		else {
+				    $.ajax({
+				        type: "POST",
+				        url: "/submitReview/",
+				        data: "{ \"cityname\": \"" + $('#city').val() + "\", \"review\": \"" + review + "\" }",
+				        contentType: "application/json; charset=utf-8",
+				        dataType: "json",
+				        success: function (msg) {
+				        	var reviewHtml = "<div class=\"review\"><em>" + msg.nick + " on " + msg.date + "</em><p>" + review + "</p></div>";
+			                $('a.comments-text').after(reviewHtml);
+			                $("#comment-text").val("");
+			                if($(".no-reviews").length) {
+			                	$(".no-reviews").remove();
+			                }
+			                $.pnotify({
+			            		title: 'Success',
+			            		text: 'Thank you for your review.'
+			            	});
+				        },
+				        error: function (msg) {
+				            alert(msg.d);
+				        }
+				    });
+	    		}
+	    	}
 		});
 
 		function authentication()

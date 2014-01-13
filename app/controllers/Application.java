@@ -30,6 +30,8 @@ import models.dao.UserDAO;
 import models.semantic.Ontology;
 import models.semantic.SparqlEndpoint;
 import models.semantic.Semantic;
+import models.forms.SignInForm;
+import models.forms.SignUpForm;
 import play.Play;
 import play.mvc.Http;
 import play.api.mvc.Session;
@@ -69,26 +71,25 @@ public class Application extends Controller
     	String email = loginForm.get("email");
         String password = loginForm.get("password");
         
-    	// DAO
-        IUserDAO userDAO = new UserDAO(new DAOFactory().createMongodbConnection());
-        
-        // AUTHENTICATION CHECKER
-        if(userDAO.exists(email, password))
+        if(SignInForm.isValidEmail(email) && SignInForm.isValidPassword(password))
         {
-        	User user = userDAO.find(email);
-        	
-        	session().clear();
-        	session("username", user.getName());
-			session("email", user.getEmail());
-			
-			//return ok("done");
-			return ok("{\"email\":\"" + user.getEmail() + "\" }");
-        }
-        else
-        {
-	        // USER DOES NOT EXISTS
-	        return ok("{\"error\":\"1\" }");
-        }
+	    	// DAO
+	        IUserDAO userDAO = new UserDAO(new DAOFactory().createMongodbConnection());
+	        
+	        // AUTHENTICATION CHECKER
+	        if(userDAO.exists(email, password))
+	        {
+	        	User user = userDAO.find(email);
+	        	
+	        	session().clear();
+	        	session("username", user.getName());
+				session("email", user.getEmail());
+				
+				return ok("{\"email\":\"" + user.getEmail() + "\" }");
+	        }
+	        else return ok("{\"error\":\"1\" }"); 
+	     }
+	     return ok("{\"error\":\"1\" }");
     }
 	
 	// LOGGING OUT USER
@@ -109,36 +110,44 @@ public class Application extends Controller
     	DynamicForm loginForm = Form.form().bindFromRequest();
     	String username = loginForm.get("username");
     	String email = loginForm.get("email");
+    	String city = loginForm.get("city");
     	String password = loginForm.get("password");
+    	String passwordConfirm = loginForm.get("passwordConfirm");
     	
-		User user = new User();
-		user.setName(username);
-		user.setEmail(email);
-		user.setPassword(password);
-		user.setInscriptiondate(new Date());
-		
-		IUserDAO userDAO = new UserDAO(new DAOFactory().createMongodbConnection());
-		
-		if(userDAO.exists(username))
-		{
-			return ok("username");		
-		}
-		else if (userDAO.existsEmail(email))
-		{
-			return ok("email");	
-		}
-		else
-		{
-			if(userDAO.save(user))
+    	if(SignUpForm.isValidUserName(username) && SignUpForm.isValidEmail(email) && 
+    	   SignUpForm.isValidCity(city) && SignUpForm.isValidPasswords(password,passwordConfirm) )
+        {
+			User user = new User();
+			user.setName(username);
+			user.setEmail(email);
+			user.setPassword(password);
+			user.setInscriptiondate(new Date());
+			
+			IUserDAO userDAO = new UserDAO(new DAOFactory().createMongodbConnection());
+			
+			if(userDAO.exists(username))
 			{
-				session().clear();
-				session("username", username);
-				session("email", email);
-				Semantic.insertUserTDB(username, email);
-				return ok();
+				return ok("{\"error\":\"2\" }");		
 			}
-			else return badRequest();
-		} //return redirect(routes.Application.index(1));
+			else if (userDAO.existsEmail(email))
+			{
+				return ok("{\"error\":\"3\" }");
+			}
+			else
+			{
+				if(userDAO.save(user))
+				{
+					System.out.println("inside");
+					session().clear();
+					session("username", username);
+					session("email", email);
+					Semantic.insertUserTDB(username, email);
+					return ok("{\"error\":\"0\",\"email\":\"" + user.getEmail() + "\" }");
+				}
+				else return badRequest();
+			}
+		}
+		return ok("{\"error\":\"1\" }");
     }  
 
     public static Result cityInformationByQuery() 

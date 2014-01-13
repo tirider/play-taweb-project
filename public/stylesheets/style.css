@@ -410,15 +410,15 @@ footer .container{
 	height: 16px;
 }
 #sub-footer {
-  /*background-color: #efefef;
-  width: 100%;
-  float: left;
-  border-top: solid 1px #c3c5c9;
-  padding: 10px 0;*/
   background-color: #2b5188;
+  color: rgb(255, 255, 255);
   width: 100%;
   float: left;
   border-top: solid 1px #c3c5c9;
+  border-top-width: 5px;
+  border-top-color: #333333;
+  font-family: "Helvetica Neue","Helvetica",sans-serif;
+  font-weight: normal;	  
 }
 #sub-footer .copyright {
   color: #a7a7a7;
@@ -2296,8 +2296,10 @@ figure img {
 .ok-times-travelled {
 	margin: 0 0 0 8px;
 }
-.review {
+.review, .no-reviews {
 	margin: 2px 0 12px;
+	padding-left: 20px;
+	padding-right: 20px;
 }
 .user-destination {
 	padding: 15px 30px 20px;

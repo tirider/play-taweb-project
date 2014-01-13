@@ -1,0 +1,61 @@
+@main("Ontology")(subtitle)(content)
+
+@subtitle = {
+            <h1><a>Ontology</a></h1>
+            <p>This page help developers to understand how to user SPARQL EndPoing, how we store our data and our ontology.</p>
+}
+
+@content = {
+            <section class='container'>
+                <section class='row'>
+                    <div class='span9'>
+                        <div class='endpoint-box full-width'>
+                            <!-- -->
+                            <div class='title-bar'>
+                                <div class='inner'>
+                                    <div class='pull-left custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
+                                        <h2><strong>Ontology</strong></h2>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class='endpoint-box-content'>
+                                <div class='inner' id="ontology">
+                                    <h1>RDF Travel Ontology</h1>
+                                    <p>You can also download in <a href="@routes.Application.ontologyDL("RDF")">RDF/XML</a> or <a href="@routes.Application.ontologyDL("N3")">Turtle</a>.</p>
+                                    <p>Vocabulary for expressing traveling and destinations using the Resource Description Framework.</p>
+                                    
+                                    <h3>Namespace</h3>
+                                    <p>The URI for this vocabulary is <code>http://4travelers.org/</code></p>
+                                    <p>When abbreviating terms the suggested prefix is <code>trvl</code></p>
+                                    
+                                    <p>Each class or property in the vocabulary has a URI constructed by appending a term name to the vocabulary URI. For example: <code>http://4travelers.org/Destination</code></p>
+                                    
+                                    <h3>Term Summary</h3>
+                                    <p>An alphabetical list of all terms defined in this schema.</p>
+                                    
+                                    <h4>Classes</h4>
+                                    <table>
+                                        <tr><th>Term</th><th>URI</th><th>Description</th></tr>
+                                        <tr><td>Destination</td><td>http://4travelers.org/Destination</td><td>A destination, usually it's same as a Settlement.</td></tr>
+                                        <tr><td>UserDestination</td><td>http://4travelers.org/UserDestination</td><td>A user feedback for a destination.</td></tr>
+                                    </table>
+                                    
+                                    <h4>Properties</h4>
+                                    <table>
+                                        <tr><th>Term</th><th>URI</th><th>Description</th></tr>
+                                        <tr><td>destination</td><td>http://4travelers.org/destination</td><td>The resource of the destination.</td></tr>
+                                        <tr><td>timesInterested</td><td>http://4travelers.org/timesInterested</td><td>A numeric value.</td></tr>
+                                        <tr><td>timesTraveled</td><td>http://4travelers.org/timesTraveled</td><td>A numeric value.</td></tr>
+                                        <tr><td>to</td><td>http://4travelers.org/to</td><td>A user which is interested to a destination.</td></tr>
+                                        <tr><td>review</td><td>http://4travelers.org/review</td><td>The resource of the review of a destination.</td></tr>
+                                    </table>
+                                    
+                                    </div>
+                            </div>
+                            <!-- -->
+                        </div>
+                    </div>
+                </section>
+            </section>
+}
