@@ -1,4 +1,4 @@
-@(HTMLString : String)
+@(HTMLString : String, authentication: Integer)
 
 <!-- calling the function -->
 @main("Home")(subtitle)(content)
@@ -18,10 +18,9 @@
 			            <div id='search-content' class="search-content">
 			                <div class='inner'>
 			                	<p id="search-head-line">Select your destination and arrival date</p>
-			                    <form id='f' name='f' action="@routes.Application.search()" method="post">
+			                    <form id='f' name='f' action="@routes.Application.search()" method="POST">
 			                        <input type="text" name='search-string' id='search-string' class='search-string' placeholder="e.g Montpellier, Paris, London"/>
 			                        <input type="hidden" name='destination-city' id="destination-city" />
-			                        <input type="text" name='search-date' id='search-date' class='search-date' />
 			                        <button type="submit" class='btn btn-success btn-lg btn-block'>
 			        					<i class="icon-search icon-white"> </i> Search
 			        				</button>
@@ -60,4 +59,7 @@
 			    <i class='content-bubble'> </i>
 			</section>
 			<!-- ends slides bottom show frame -->
+			
+	        <!-- authentication -->
+	        <input type="hidden" id="authentication" value="@authentication"/>			
 }

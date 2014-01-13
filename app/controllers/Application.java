@@ -52,9 +52,13 @@ import views.html.namespaceprefixes;
 public class Application extends Controller 
 {
 	// Home page
-    public static Result index() 
+    public static Result index(Integer auth) 
     {
-        return ok(index.render(Semantic.getMostInterestedCities()));
+    	int authentication = Core.parseInt(String.valueOf(auth));
+    	
+    	if(authentication == 0) 
+    		return ok(index.render(Semantic.getMostInterestedCities(),0));
+		return ok(index.render(Semantic.getMostInterestedCities(),1));    		
     }
  
     // LOGIN USER
@@ -72,27 +76,31 @@ public class Application extends Controller
         if(userDAO.exists(email, password))
         {
         	User user = userDAO.find(email);
-        	//session().clear();
-        	session("connected", "rr");
-			return ok("done");
+        	
+        	session().clear();
+        	session("username", user.getName());
+			session("email", user.getEmail());
+			
+			//return ok("done");
+			return ok("{\"email\":\"" + user.getEmail() + "\" }");
         }
         else
         {
 	        // USER DOES NOT EXISTS
-	        return ok("undone");
+	        return ok("{\"error\":\"1\" }");
         }
     }
 	
 	// LOGGING OUT USER
     public static Result logout() 
     {
-		String user = session("connected");
-		if(user != null) 
+		if(session("username") != null) 
 		{
 			session().clear();
 		    flash("success", "You've been logged out");
 		}
-		return redirect(routes.Application.index());
+		// PARAM=1 AVOIDING THE LOGIN QUESTION
+		return redirect(routes.Application.index(1));
     }	
     
     // REGISTER USER
@@ -123,13 +131,14 @@ public class Application extends Controller
 		{
 			if(userDAO.save(user))
 			{
-				//session().clear();
-				//session("connected", username);
+				session().clear();
+				session("username", username);
+				session("email", email);
 				Semantic.insertUserTDB(username, email);
 				return ok();
 			}
 			else return badRequest();
-		} //return redirect(routes.Application.index());
+		} //return redirect(routes.Application.index(1));
     }  
 
     public static Result cityInformationByQuery() 
@@ -180,38 +189,42 @@ public class Application extends Controller
     
     public static Result results(String destination) throws ParseException 
     {
-        // GET CITY DATA - FIRST CHECK IF CITY ALREADY EXISTS IN TDB
-        City city = Semantic.getCityDetails(destination);
-        if(city == null) {
-        	city = CityParser.parse(destination);
-        }
-        if(city == null) { // NO CITY FOUND FROM TDB AND DBPEDIA
-        	return notFound(notFoundPage.render());
-        }
-        
-        // GET WEATHER INFORMATION -- DON'T CHECK METEO IN TDB, LET'S UPDATE AGAIN
-        Date ArrivalDate = new Date();
-        List<Weather> weatherData = WeatherForecast.getWeatherByLatLongOnDate(city.getLatitude(),city.getLongitude(), ArrivalDate);
-        
-        // GET PHOTOS - FIRST CHECK IF PHOTOS ALREADY EXISTS IN TDB
-        List<Photo> photos = Semantic.getPhotosByCity(destination);
-        if(photos == null) {
-        	photos = PhotoService.getPhotosByLatLong(city.getLatitude(), city.getLongitude());
-        }
-
-        // GET CITY RATING / NB OF VOTES / REVIEWS
-        int rating = Semantic.getRatingByCity(city.getName());
-        int nbrating = Semantic.getNumberOfVotesByCity(city.getName());
-        List<Review> reviews = Semantic.getReviewsByCity(city.getName());
-        
-        // CAN USER VOTE AND COMMENT
-        Boolean canVote = Semantic.canUserVote(city.getName(), session("connected"));
-        
-        // UPDATE SEMANTIC
-        Semantic.updateCityAndCountryTDB(city.getName(), city.getOverview(), city.getLatitude(), city.getLongitude(), city.getPopulationTotal(), city.getCountry(), city.getCurrencyCode(), photos);
-        Semantic.updateUserDestinationInterestedTDB(session("connected"), city.getName());
-        
-        return ok(results.render(city, ArrivalDate, weatherData, rating, nbrating, canVote, photos, reviews));
+    	if(session("username") != null)
+    	{
+	        // GET CITY DATA - FIRST CHECK IF CITY ALREADY EXISTS IN TDB
+	        City city = Semantic.getCityDetails(destination);
+	        if(city == null) {
+	        	city = CityParser.parse(destination);
+	        }
+	        if(city == null) { // NO CITY FOUND FROM TDB AND DBPEDIA
+	        	return notFound(notFoundPage.render());
+	        }
+	        
+	        // GET WEATHER INFORMATION -- DON'T CHECK METEO IN TDB, LET'S UPDATE AGAIN
+	        Date ArrivalDate = new Date();
+	        List<Weather> weatherData = WeatherForecast.getWeatherByLatLongOnDate(city.getLatitude(),city.getLongitude(), ArrivalDate);
+	        
+	        // GET PHOTOS - FIRST CHECK IF PHOTOS ALREADY EXISTS IN TDB
+	        List<Photo> photos = Semantic.getPhotosByCity(destination);
+	        if(photos == null) {
+	        	photos = PhotoService.getPhotosByLatLong(city.getLatitude(), city.getLongitude());
+	        }
+	
+	        // GET CITY RATING / NB OF VOTES / REVIEWS
+	        int rating = Semantic.getRatingByCity(city.getName());
+	        int nbrating = Semantic.getNumberOfVotesByCity(city.getName());
+	        List<Review> reviews = Semantic.getReviewsByCity(city.getName());
+	        
+	        // CAN USER VOTE AND COMMENT
+	        Boolean canVote = Semantic.canUserVote(city.getName(), session("username"));
+	        
+	        // UPDATE SEMANTIC
+	        Semantic.updateCityAndCountryTDB(city.getName(), city.getOverview(), city.getLatitude(), city.getLongitude(), city.getPopulationTotal(), city.getCountry(), city.getCurrencyCode(), photos);
+	        Semantic.updateUserDestinationInterestedTDB(session("username"), city.getName());
+	        
+	        return ok(results.render(city, ArrivalDate, weatherData, rating, nbrating, canVote, photos, reviews));    		
+    	}
+    	return redirect(routes.Application.index(0));
     }
     
     public static Result sparql() 

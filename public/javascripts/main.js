@@ -2,6 +2,11 @@ var fortravelers = {
     
     init : function() {
     	
+    	// CHECK FOR AUTHENTICATION
+		if($('#authentication').val() == 0) {
+			authentication();
+		}
+    	
     	// EASY MODAL OVERLAY
     	function easyModal(){
 	    	jQuery('.easy-modal').easyModal({
@@ -40,13 +45,17 @@ var fortravelers = {
 				type : 'POST',
 		        url : '/login',
 		        data: { email: $('#login-email').val(), password: $('#login-password').val() },
-		        success : function(data) { 
-		        	if(data == "done") { 
-		        		location.reload(true); 
-		        	}
-		        	else { 
+		        dataType: "json",
+		        success : function(data) {
+		        	if(data.error == "1") {
 		        		$('#form-login').append("<div class=\"easy-modal\">Ooupss, correct your email or password field.</div>") 
-		        		easyModal();
+		        		easyModal(); 
+		        	}
+		        	else {
+			        	var html = "<nav id=\"profile\" class='main-nav'><ul><li class='active'><a href='#'>Settings</a><ul class='dropdown-menu'><li><a href=\"#\">" + data.email + "</a></li><li><a href=\"/logout\">Log Out</a></li></ul></li></ul></nav>"; 
+			        	$(".header-buttons").after(html);
+			        	$(".header-buttons").remove();
+			        	authentication();
 		        	}
 		        },
 		        error : function(data) { 
@@ -66,7 +75,7 @@ var fortravelers = {
     	
     	function btnRegisterValidator() {
 			var reg = /[\s]+/;
-			var regEmail = /^\w+@\w+$/;
+			var regEmail = /^.+@.+$/;
 			if(reg.test($('#register-name').val()) || $('#register-name').val()=="" ||
 			  ($('#register-password').val() != $('#register-password-confirm').val() || 
 			   $('#register-password').val()=="" || $('#register-password-confirm').val() =="") ||
@@ -220,8 +229,9 @@ var fortravelers = {
     		}
 		});
 
-		jQuery('.header-buttons .profile').click(function() {
-            var $this = $(this);
+		function authentication()
+		{
+			var $this = $('.header-buttons .profile');
             if($('#hidden-header').hasClass('open')) {
                 $this.removeClass('closed');
                 $this.attr('data-original-title', 'Log In / Sign Out');
@@ -235,7 +245,11 @@ var fortravelers = {
                 $('#hidden-header .profile-form').show();
                 $('#main').css('float','left');
                 fortravelers.openHiddenHeader();
-            }
+            }			
+		}
+		
+		jQuery('.header-buttons .profile').click(function() {
+            authentication();
         });
         		
 		jQuery('#email-login').click(function(){
@@ -244,13 +258,11 @@ var fortravelers = {
 		
 		jQuery('#search-string').focus();
 		
-		jQuery("#search-string" ).autocomplete({
+		jQuery("#search-string, #register-city" ).autocomplete({
 			 source: function( request, response ) {
 			 $.ajax({
 				 beforeSend: function() {
-					 if (!$("#loader").length) {
-						 $("#destination" ).after("<span id=\"loader\"></span>");
-					 }
+					$('#search-string').last().addClass( "loading" );
 				 },
 				 type: "POST",
 				 url: "/cityInformationByQuery/",
@@ -259,9 +271,7 @@ var fortravelers = {
 				 dataType: "json",
 				 success: function( data ) {
 					 if (data == 0) {
-						 $("#loader").remove();
-						 $("#error-message").remove();
-						 $("#destination-date-form").append("<div id=\"error-message\">Error fetching cities!</div>");
+						 $('#search-string').removeClass('loading');
 					 }
 					 else {
 						 response( $.map( data.cities, function( item ) {
@@ -271,10 +281,13 @@ var fortravelers = {
 								 hiddenValue: item.value
 							 }
 						 },
-						 $("#loader").remove()
+						 $('#search-string').removeClass('loading')
 						 ));
 					 }
-				 	}
+				 },
+				 error: function(data){
+				 	alert("Not citie founds.");
+				 }
 			 	});
 			 },
 			 minLength: 2,
@@ -290,28 +303,15 @@ var fortravelers = {
         });
         
 		jQuery("#f").submit(function(event) {
-			var regexDate = /_{2}\s*\/\s*_{2}\/\s*_{4}/;
-			
-			if($('#search-string').val() == "" || $('#search-date').val() == "" || 
-			   regexDate.test($('#search-date').val())) {
-				if($('#search-string').val() == "") {
-					$('#search-string').prop('title','Please fill in required fields');
-					$('#search-string').focus();
-					$('#search-string').css('border-color','rgb(233, 50, 45)');
-					$('#search-string').css('background-color','rgb(255, 244, 241)');
-					$('#search-string').css('color','rgb(246, 100, 66)');					
-				}
-				else $('#search-string').removeAttr('style');
-				
-				if(regexDate.test($('#search-date').val()) || $('#search-date').val() == "") {
-					$('#search-date').focus();
-					$('#search-date').css('border-color','rgb(233, 50, 45)');
-					$('#search-date').css('background-color','rgb(255, 244, 241)');
-					$('#search-date').css('color','rgb(246, 100, 66)');	
-				}
-				else $('#search-date').removeAttr('style');
-				return false;
+			if($('#search-string').val() == "") {
+				$('#search-string').prop('title','Please fill in required fields');
+				$('#search-string').focus();
+				$('#search-string').css('border-color','rgb(233, 50, 45)');
+				$('#search-string').css('color','rgb(246, 100, 66)');		
+				return false;			
 			}
+			//else { $('#search-string').removeAttr('style'); }
+			
 			return true;
 			event.preventDefault();
 		});
@@ -319,20 +319,6 @@ var fortravelers = {
 		$(document).on('focus', '#search-string', function () {
 			$('#search-string').removeClass('error-input-box');
 			$('#error-message').remove();
-		});
-		
-		$(document).on('focus', '#search-date', function () {
-			$('#search-date').removeClass('error-input-box');
-			$('#error-message').remove();
-		});
-				
-		jQuery('#search-date').datetimepicker({
-			datepicker:true,
-			timepicker:false,
-			mask: true,
-			format: 'd/m/Y', 
-			minDate: 0 ,// today
-			validateOnBlur:true
 		});
 
         jQuery(document).tooltip();

@@ -703,10 +703,6 @@ footer .container{
   display: inline-block;
   margin-left: 40px;
 }
-.tab-finder .search-content form .search-string {
-  width: 628px;
-  margin-right: 15px;
-}
 .tab-finder .tab-content form {
   display: inline-block;
 }
@@ -1985,17 +1981,22 @@ figure img {
   margin-top: -20px;
   text-transform: uppercase;
 }
+.loading {
+  background-image: url('../img/loading.gif');
+  background-position: right;
+  background-repeat: no-repeat;
+  background-color: white;
+}
+#profile {
+  float: right;
+}
 @media (min-width: 1200px) {
   .tab-finder .search-content form .search-string {
-    width: 696px;
-    margin-right: 15px;
-  }
-  .tab-finder .search-content form .search-date {
-    width: 200px;
+    width: 950px;
+    background-color: #FFFFFF;
   }
   .tab-finder .tab-content form .search-string {
     width: 800px;
-    margin-right: 15px;
   }
   .tab-finder .tab-content form .btn {
     width: 300px;
