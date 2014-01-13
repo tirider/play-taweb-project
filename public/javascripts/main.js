@@ -2,6 +2,8 @@ var fortravelers = {
     
     init : function() {
     	
+    	$.pnotify.defaults.history = false;
+    	
     	// EASY MODAL OVERLAY
     	function easyModal(){
 	    	jQuery('.easy-modal').easyModal({
@@ -146,12 +148,16 @@ var fortravelers = {
 		        success: function (msg) {
 	                $('#cannotvote').attr('id', 'canvote');
 	                if(!$(".write-comment").length) {
-	                	$('.userCanComment').append("<a href=\"#comment\" class=\"write-comment\">Write a comment</a>")
+	                	$('.userCanComment').append("<a href=\"#comment\" class=\"write-comment\">Write a review</a>")
 	                }
 	                $("#user-comment").removeAttr("disabled");
 	                $("#user-comment").removeAttr("title");
 	                $("#comment-text").removeAttr("disabled");
 	                $("#comment-text").removeAttr("title");
+	                $.pnotify({
+	            		title: 'Success',
+	            		text: 'Thank you for your feedback. Now you can rate or write a review'
+	            	});
 		        },
 		        error: function (msg) {
 		            alert(msg.d);
@@ -175,7 +181,18 @@ var fortravelers = {
 				        contentType: "application/json; charset=utf-8",
 				        dataType: "json",
 				        success: function (msg) {
-			                alert('Thank you for voting');
+				        	console.log(msg.rating);
+				        	$(".rating").css("width", msg.rating);
+				        	if($(".notratedyet").length) {
+				        		$(".notratedyet").text("1 vote");
+				        	}
+				        	if($(".nbvotes").length) {
+				        		$(".nbvotes").text(msg.numberOfVotes + " votes");
+				        	}
+				        	$.pnotify({
+			            		title: 'Success',
+			            		text: 'Thank you for voting.'
+			            	});
 				        },
 				        error: function (msg) {
 				            alert(msg.d);
@@ -212,6 +229,10 @@ var fortravelers = {
 		                if($(".no-reviews").length) {
 		                	$(".no-reviews").remove();
 		                }
+		                $.pnotify({
+		            		title: 'Success',
+		            		text: 'Thank you for your review.'
+		            	});
 			        },
 			        error: function (msg) {
 			            alert(msg.d);

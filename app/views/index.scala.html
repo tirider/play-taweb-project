@@ -1,4 +1,4 @@
-@(HTMLString : String)
+@(HTMLString : String, userShouldLogIn : Int)
 
 <!-- calling the function -->
 @main("Home")(subtitle)(content)
@@ -60,4 +60,5 @@
 			    <i class='content-bubble'> </i>
 			</section>
 			<!-- ends slides bottom show frame -->
+			<input type="hidden" value="@userShouldLogIn" id="userShouldLogIn">
 }

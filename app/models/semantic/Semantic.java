@@ -214,11 +214,14 @@ public class Semantic {
 		userDestination.removeAll(ratingProp);
     	userDestination.addProperty(ratingProp, rating);
     	
+    	int ratingPercentage = getRatingByCity(cityname);
+    	int numberOfVotes = getNumberOfVotesByCity(cityname);
+    	
     	taweb.close();
     	Dataset dataset = getDataset();
         closeDataset(dataset);
     	
-    	return "{\"d\":\"1\"}";
+    	return "{\"rating\":\"" + ratingPercentage + "\", \"numberOfVotes\":\"" + numberOfVotes + "\"}";
 	}
 	
 	/**
@@ -352,7 +355,6 @@ public class Semantic {
 				rev.setNick(qsolution.getLiteral("nick").toString());
 				rev.setReview(qsolution.getLiteral("text").toString());
 				rev.setReviewDate(Core.getDateFromRDF(qsolution.getLiteral("date").toString()));
-				System.out.println(qsolution.getLiteral("nick").toString() + qsolution.getLiteral("text").toString());
 				reviews.add(rev);
 			}
 		}
@@ -436,18 +438,17 @@ public class Semantic {
 		}
 
 		// CREATE COUNTRY RESSOURCE
-		
-		Resource CountryR = taweb.getResource(dbpedia + countryname);
-        if(!taweb.containsResource(CountryR))
+		Resource CountryName = taweb.getResource(dbpedia + countryname);
+        if(!taweb.containsResource(CountryName))
         {
-        	Resource Country = taweb.createResource(dbpedia + countryname);
-    		CountryR = taweb.createResource(dbpediaowl + "Country");
-    		taweb.add(Country, RDF.type, CountryR);
-    		Country.addProperty(RDFS.label, countryname);
-    		Country.addProperty(currencyCode, currencyCodeStr);
+        	CountryName = taweb.createResource(dbpedia + countryname);
+        	Resource CountryR = taweb.createResource(dbpediaowl + "Country");
+    		taweb.add(CountryName, RDF.type, CountryR);
+    		CountryName.addProperty(RDFS.label, countryname);
+    		CountryName.addProperty(currencyCode, currencyCodeStr);
         }
 
-        DestinationR.addProperty(country, CountryR);
+        DestinationR.addProperty(country, CountryName);
 		
 		taweb.close();
 		Dataset dataset = getDataset();
@@ -487,13 +488,13 @@ public class Semantic {
 		Model taweb = getModel();
 		City city = null;
 		
-		Resource City = taweb.getResource(dbpedia + cityname);
+		Resource City = taweb.getResource(trvl + cityname);
 		if(taweb.containsResource(City)) {
 			
 			city = new City();
 			
 			String query = "SELECT ?countryName ?overview ?lat ?long ?population ?currencyCode WHERE { "
-    				+ "?cityResource rdf:type dbpedia-owl:Settlement . "
+    				+ "?cityResource rdf:type trvl:Destination . "
     				+ "?cityResource rdfs:label \"" + cityname + "\" ."
 					+ "?cityResource dbpedia-owl:country ?countryResource . "
 					+ "?countryResource rdfs:label ?countryName . "
@@ -508,7 +509,6 @@ public class Semantic {
 	
 			for ( ; results.hasNext() ; )
 			{
-				
 				QuerySolution qsolution = results.nextSolution();
 	
 				city.setName(cityname);
@@ -547,13 +547,13 @@ public class Semantic {
 		
 		List<Photo> photos = null;
 		
-		Resource City = taweb.getResource(dbpedia + cityname);
+		Resource City = taweb.getResource(trvl + cityname);
 		if(taweb.containsResource(City)) {
 			
 			photos = new ArrayList<Photo>();
 			
 			String query = "SELECT ?img WHERE { "
-    				+ "?cityResource rdf:type dbpedia-owl:Settlement . "
+    				+ "?cityResource rdf:type trvl:Destination . "
     				+ "?cityResource rdfs:label \"" + cityname + "\" ."
 					+ "?cityResource foaf:img ?img "
 					+ "}";
@@ -574,7 +574,7 @@ public class Semantic {
 		taweb.close();
         Dataset dataset = getDataset();
         closeDataset(dataset);
-		
+        
 		return photos;
 	}
 	
@@ -705,7 +705,7 @@ public class Semantic {
 				+ "?destinationResource rdfs:label ?destination "
 				+ " } "
 				+ "GROUP BY ?destination "
-				+ "ORDER BY ?count "
+				+ "ORDER BY DESC(?count) "
 				+ "LIMIT 8";
 
 		ResultSet results = SparqlEndpoint.queryData(query);
@@ -728,7 +728,10 @@ public class Semantic {
 				x = 0;
 			}
 			
-			QuerySolution qsolution = results.nextSolution() ;
+			QuerySolution qsolution = results.nextSolution();
+			if(!qsolution.contains("destination")) {
+				return null;
+			}
 			cityName =  qsolution.getLiteral("destination").toString();
 			String[] cityDetails = getCityDetailsByCityName(cityName);
 			cityDescription = cityDetails[0];
@@ -832,8 +835,138 @@ public class Semantic {
 		return resultStr;
 	}
 	
-	public static void ontology()
+	/**
+	 * Returns list of most traveled cities for service page
+	 * @return
+	 */
+	public static String getListMostTraveledCities()
 	{
+		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) ?destination WHERE { "
+				+ "?s rdf:type trvl:UserDestination . "
+				+ "?s trvl:timesTraveled ?o . "
+				+ "?s trvl:destination ?destinationResource . "
+				+ "?destinationResource rdfs:label ?destination "
+				+ " } "
+				+ "GROUP BY ?destination "
+				+ "ORDER BY ?count "
+				+ "LIMIT 10";
+
+		ResultSet results = SparqlEndpoint.queryData(query);
+		if(results == null) {
+			return null;
+		}
+        String resultHtml = "";
+        String cityname = "";
+
+        resultHtml += "<table>";
+		for ( ; results.hasNext() ; )
+		{
+			QuerySolution qsolution = results.nextSolution() ;
+			cityname = qsolution.getLiteral("destination").toString();
+			resultHtml += "<tr><td><a href=\"" + cityname + "\">" + cityname + "</a></td></tr>";
+		}
+		resultHtml += "</table>";
 		
+		return resultHtml;
+	}
+	
+	/**
+	 * Returns list of most interactive users by reviews
+	 * @return
+	 */
+	public static String getListMostInteractiveUsers()
+	{
+		String query = "SELECT (COUNT(?reviewResource) AS ?reviews) ?nick WHERE { "
+				+ "?reviewResource rdf:type rev:Review ."
+				+ "?reviewResource rev:reviewer ?userResource ."
+				+ "?userResource foaf:nick ?nick  "
+				+ " } "
+				+ "GROUP BY ?nick "
+				+ "ORDER BY DESC(?reviews) "
+				+ "LIMIT 10";
+
+		ResultSet results = SparqlEndpoint.queryData(query);
+		if(results == null) {
+			return null;
+		}
+        String resultHtml = "";
+        String nick = "";
+
+        resultHtml += "<table>";
+		for ( ; results.hasNext() ; )
+		{
+			QuerySolution qsolution = results.nextSolution() ;
+			nick = qsolution.getLiteral("nick").toString();
+			resultHtml += "<tr><td><a href=\"user/" + nick + "\">" + nick + "</a></td></tr>";
+		}
+		resultHtml += "</table>";
+		
+		return resultHtml;
+	}
+	
+	/**
+	 * Returns best rated cities by the average of users
+	 * @return
+	 */
+	public static String getListBestRatedCities()
+	{
+		String query = "SELECT (AVG(xsd:integer(?rate)) AS ?r) ?cityname ?countryname WHERE { "
+				+ "?userDestinationResource rdf:type trvl:UserDestination ."
+				+ "?userDestinationResource rev:rating ?rate . "
+				+ "?userDestinationResource trvl:destination ?destinationResource ."
+				+ "?destinationResource rdfs:label ?cityname . "
+				+ "?destinationResource dbpedia-owl:country ?countryResource . "
+				+ "?countryResource rdfs:label ?countryname"
+				+ " } "
+				+ "GROUP BY ?cityname ?countryname "
+				+ "ORDER BY DESC(?r) "
+				+ "LIMIT 10";
+
+		ResultSet results = SparqlEndpoint.queryData(query);
+		if(results == null) {
+			return null;
+		}
+        String resultHtml = "";
+        String cityname = "";
+        String countryname = "";
+        String rate = "";
+
+        resultHtml += "<table>";
+		for ( ; results.hasNext() ; )
+		{
+			QuerySolution qsolution = results.nextSolution() ;
+			cityname = qsolution.getLiteral("cityname").toString();
+			countryname = qsolution.getLiteral("countryname").toString();
+			rate = String.valueOf(qsolution.getLiteral("r").getDouble());
+			resultHtml += "<tr><td><a href=\"" + cityname + "\">" + cityname + ", " + countryname + "</a></td><td>" + rate + "</td></tr>";
+		}
+		resultHtml += "</table>";
+		
+		return resultHtml;
+	}
+	
+	/**
+	 * Returns the number of destination searched from our user for service page
+	 * @return
+	 */
+	public static String getNumberOfDestinationsSearched()
+	{
+		String query = "SELECT (COUNT(?destinationResource) AS ?d) WHERE { "
+				+ "?destinationResource rdf:type trvl:Destination ."
+				+ " } ";
+
+		ResultSet results = SparqlEndpoint.queryData(query);
+		if(results == null) {
+			return null;
+		}
+        String resultHtml = "";
+
+		for ( ; results.hasNext() ; )
+		{
+			QuerySolution qsolution = results.nextSolution() ;
+			resultHtml = String.valueOf(qsolution.getLiteral("d").getInt());
+		}
+		
+		return resultHtml;
 	}
 }

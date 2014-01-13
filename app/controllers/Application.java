@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -54,7 +55,8 @@ public class Application extends Controller
 	// Home page
     public static Result index() 
     {
-        return ok(index.render(Semantic.getMostInterestedCities()));
+    	int userShouldLogIn = 0;
+        return ok(index.render(Semantic.getMostInterestedCities(), userShouldLogIn));
     }
  
     // LOGIN USER
@@ -123,8 +125,8 @@ public class Application extends Controller
 		{
 			if(userDAO.save(user))
 			{
-				//session().clear();
-				//session("connected", username);
+				session().clear();
+				session("connected", username);
 				Semantic.insertUserTDB(username, email);
 				return ok();
 			}
@@ -198,7 +200,6 @@ public class Application extends Controller
         if(photos == null) {
         	photos = PhotoService.getPhotosByLatLong(city.getLatitude(), city.getLongitude());
         }
-
         // GET CITY RATING / NB OF VOTES / REVIEWS
         int rating = Semantic.getRatingByCity(city.getName());
         int nbrating = Semantic.getNumberOfVotesByCity(city.getName());
@@ -285,7 +286,7 @@ public class Application extends Controller
     
     public static Result services()
     {
-    	return ok(services.render(Semantic.getMostInterestedCities(), Semantic.getTotalUsers()));
+    	return ok(services.render(Semantic.getListMostTraveledCities(), Semantic.getListMostInteractiveUsers(), Semantic.getListBestRatedCities(), Semantic.getTotalUsers(), Semantic.getNumberOfDestinationsSearched()));
     }
     
     public static Result about()

@@ -44,67 +44,6 @@
                         </div>
                     </div>
                 </div>
-                <div class='location-finder'>
-	                <div class='location-feedback'>
-		                <h2>What users think</h2>
-		                    <div class='clearfix height-feedback'>
-	                            <div class='left-feeback'>
-	                            @if(canVote) {
-	                               <div id="canvote" class="stars">
-                                } else {
-                                    <div id="cannotvote" class="stars">
-                                }
-									<div class="rating" style="width: @{rating}%;"></div>
-									<div class="star" id="votestar1" data-value="1">
-									<div class="star" id="votestar2" data-value="2">
-									<div class="star" id="votestar3" data-value="3">
-									<div class="star" id="votestar4" data-value="4">
-									<div class="star" id="votestar5" data-value="5">
-		                            </div></div></div></div></div>
-		                            </div>
-		                            @if(nbrating == 0) {
-		                              Not rated yet
-		                            } else {
-			                            @if(nbrating == 1) {
-			                              (1 vote)
-			                            } else {
-			                              (@nbrating votes)
-			                            }
-		                            }
-		                            @* NO ELSE IF SUPPORTED BY SCALA TEMPLATE :P *@
-	                            </div>
-	                            <div class='left-feeback'>
-	                                @if(reviews != null) {
-		                                @if(reviews.size() > 0) {
-		                                   <a href="#comments">Reviews (@reviews.size())</a>
-		                                } else {
-		                                   No reviews yet.
-		                                }
-	                                }
-	                            </div>
-	                            <div class='left-feeback userCanComment'>
-	                            @if(canVote) {
-                                   <a href="#comment" class="write-comment">Write a review</a>
-                                }
-                                </div>
-                            </div>
-                           <p>I have been there 
-                           <select id='times-traveled'>
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">more than 10</option>
-                           </select>
-                           times <input value="OK" id="user-traveled" class="btn btn-success bluehover ok-times-travelled"></p>
-                           <span class="grey small">(Only users who have been to a destination are allowed to rate and comment.)</span>
-	                </div>
-                </div>
                 
                 <div class='location-finder'>
 	                <div id='photos'>
@@ -176,6 +115,78 @@
                 
                 </section>
                 <aside class='span3'>
+                
+                <section class='widget'>
+                        <section class='widget-title uppercase'>
+                            <div class='inner'>
+                                    <div class='pull-left custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
+                                        <h2><strong>What users think</strong></h2>
+                                    </div>
+                            </div>
+                        </section>
+                        <section class='widget-content'>
+                            <div id='feedback'>
+                                <div class='left-feeback'>
+                                @defining(if (canVote) "canvote" else "cannotvote") { vote =>
+                                    <div id="@vote" class="stars">
+                                }
+                                    <div class="rating" style="width: @{rating}%;"></div>
+                                    <div class="star" id="votestar1" data-value="1">
+                                    <div class="star" id="votestar2" data-value="2">
+                                    <div class="star" id="votestar3" data-value="3">
+                                    <div class="star" id="votestar4" data-value="4">
+                                    <div class="star" id="votestar5" data-value="5">
+                                    </div></div></div></div></div>
+                                    </div>
+                                    @if(nbrating == 0) {
+                                      <div class="notratedyet">Not rated yet</div>
+                                    } else {
+                                        @if(nbrating == 1) {
+                                          (<span class="nbvotes">1</span> vote)
+                                        } else {
+                                          (<span class="nbvotes">@nbrating votes</span>)
+                                        }
+                                    }
+                                </div>
+                                <div class="feedback-reviews">
+                                    @if(reviews != null) {
+                                        @if(reviews.size() > 0) {
+                                           <a href="#comments">Reviews (@reviews.size())</a>
+                                        } else {
+                                           No reviews yet.
+                                        }
+                                    }
+                                </div>
+                                <div class='userCanComment'>
+                                @if(canVote) {
+                                   <a href="#comment" class="write-comment">Write a review</a>
+                                }
+                                </div>
+                            
+                           I have been there:
+                           <div class="clearfix">
+                           <select id='times-traveled'>
+                                <option value="0">None</option>
+                                <option value="1">Once</option>
+                                <option value="2">Twice</option>
+                                <option value="3">3 times</option>
+                                <option value="4">4 times</option>
+                                <option value="5">5 times</option>
+                                <option value="6">6 times</option>
+                                <option value="7">7 times</option>
+                                <option value="8">8 times</option>
+                                <option value="9">9 times</option>
+                                <option value="10">more than 10 times</option>
+                           </select>
+                           <input value="OK" id="user-traveled" class="btn btn-success bluehover ok-times-travelled">
+                           </div>
+                           <span class="grey small">(Only users who have been to a destination are allowed to rate and comment.)</span>
+                    </div>
+                    </div>
+                        </section>
+                    </section>
+                    
+                    
                     <section class='widget'>
                         <section class='widget-title uppercase'>
                             <div class='inner'>

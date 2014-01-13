@@ -2194,17 +2194,17 @@ figure img {
 #search-string.error-input-box, #search-date.error-input-box {
 	border-color: #db2525;
 }
-.location-feedback {
+#feedback {
 	padding: 10px 20px;
 }
-.location-feedback h2 {
+#feedback h2 {
 	color: #000;
 }
 .grey {
 	color: #999;
 }
 .small {
-	font-size: 90%;
+	font-size: 80%;
 }
 .stars { 
   position: relative; 
@@ -2232,19 +2232,22 @@ figure img {
 #canvote.stars:hover .rating { 
   display: none;
 }
-.left-feeback {
+.feedback-reviews {
+	padding: 10px 0;
+}
+.notratedyet {
+	text-align: right;
+	margin: 0 40px 0 0;
+}
+#feedback #user-traveled {
+	width: 20px;
+}
+#feedback #times-traveled {
+	width: 163px;
 	float: left;
-	width: 250px;
 }
-.height-feedback {
-	padding: 10px 0 15px;
-}
-.location-feedback #user-traveled {
-	width: 40px;
-}
-.location-feedback #times-traveled {
-	width: 50px;
-	margin: 0 5px;
+.userCanComment {
+	padding: 0 0 10px 0;
 }
 #photos img {
 	width: 145px;
@@ -2297,11 +2300,19 @@ figure img {
 	width: 100%;
 	height: 500px;
 }
-#ontology table, #ontology table {
+#ontology table, #namespaceprefixes table, #services table {
 	table-collapse:collapse;
 	border: 1px solid #ddd;
 }
-#ontology table th, #ontology table td, #namespaceprefixes table th, #namespaceprefixes table td {
+#ontology table th, #ontology table td, #namespaceprefixes table th, #namespaceprefixes table td, #services table td {
 	border: 1px solid #ddd;
 	padding: 5px;
+}
+.left-serv {
+	float: left;
+	width: 400px;
+}
+.right-serv {
+    float: right;
+    width: 400px;
 }
