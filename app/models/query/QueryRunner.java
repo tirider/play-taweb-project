@@ -32,7 +32,7 @@ public class QueryRunner
 	
 	public static City execute(String queryString, String cityName)
 	{
-		City city = new City();
+		City city = null;
 		
 		String query = String.format(queryString, cityName);
 		//System.out.println(query);
@@ -42,6 +42,8 @@ public class QueryRunner
 
 		for ( ; results.hasNext() ; )
 		{
+			city = new City();
+			
 			QuerySolution qsolution = results.nextSolution() ;
 		    
 			Literal result = qsolution.getLiteral(FIELD1) ;

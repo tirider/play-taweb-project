@@ -298,7 +298,7 @@ public class Application extends Controller
     
     public static Result services()
     {
-    	return ok(services.render(Semantic.getMostInterestedCities(), Semantic.getTotalUsers()));
+    	return ok(services.render(Semantic.getListMostTraveledCities(), Semantic.getListMostInteractiveUsers(), Semantic.getListBestRatedCities(), Semantic.getTotalUsers(), Semantic.getNumberOfDestinationsSearched()));
     }
     
     public static Result about()

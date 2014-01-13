@@ -1,4 +1,4 @@
-@(getMostInterestedCities : String, getTotalUsers : String)
+@(getListMostTraveledCities : String, getListMostInteractiveUsers : String, getListBestRatedCities : String, getTotalUsers : String, getNumberOfDestinationsSearched : String)
 
 @main("Services")(subtitle)(content)
 
@@ -22,13 +22,29 @@
                             </div>
                             
                             <div class='endpoint-box-content'>
-                                <div class='inner'>
-								    <h2>Most Interested Cities</h2>
-								    <p>@Html(getMostInterestedCities)</p>
+                                <div class='inner' id="services">
+                                    <p>Below are some example of how you can use our data from the <a href="@routes.Application.sparql()">SPARQL EndPoint</a>.</p>
 								    
-								    <h2>Total Users</h2>
-								    <p>@getTotalUsers</p>
-								    
+								    <div class="clearfix">
+									    <div class="left-serv">
+										    <h3>Most Traveled Cities</h3>
+										    <p>@Html(getListMostTraveledCities)</p>
+										    
+										    <h3>Best Rated Cities</h3>
+		                                    <p>@Html(getListBestRatedCities)</p>
+									    </div>
+									    
+									    <div class="right-serv">
+										    <h3>Most Interactive Users</h3>
+										    <p>@Html(getListMostInteractiveUsers)</p>
+										    
+										    <h3>Total Users</h3>
+										    <p>@getTotalUsers</p>
+										    
+										    <h3>Total Destinations searched</h3>
+                                            <p>@getNumberOfDestinationsSearched</p>
+									    </div>
+								    </div>
 								    </div>
                             </div>
                             <!-- -->
