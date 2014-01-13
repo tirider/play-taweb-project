@@ -23,14 +23,12 @@
                                         <h2><strong>Description</strong></h2>
                                     </div>
                                     <div class='pull-right results-per-page custom-margin'>
-                                        <ul>
                                         	@if(city.getName().isEmpty() && city.getCountry.isEmpty()){
                                         		<strong>The city</strong> on <strong>@arrivalDate.date.format("dd MMMM yyyy")</strong>
                                         	}
                                             @if(!city.getName().isEmpty() && !city.getCountry.isEmpty()){
                                             	<strong>@city.getName(), @city.getCountry()</strong> on <strong>@arrivalDate.date.format("dd MMMM yyyy")</strong>
                                             }
-                                        </ul>
                                     </div>
                                 </div>
                             </div>
@@ -83,18 +81,18 @@
                     
                     <div class='location-finder'>
 	                    <div id='comment'>
-	                        <a name="comment"></a>
+	                        <a id="acomment"></a>
 	                        <label for="comment-text">Write your review for @city.getName()</label>
 	                        @if(canVote) {
-		                        <textarea rows="" cols="" id="comment-text"></textarea>
+		                        <textarea rows="5" cols="5" id="comment-text"></textarea>
 	                            <p class="center"><input value="Submit" id="user-comment" class="btn btn-success"></p>
 	                        } else {
-		                        <textarea rows="" cols="" id="comment-text" disabled title="You can vote or comment only if you have been to this place."></textarea>
+		                        <textarea rows="5" cols="5" id="comment-text" disabled title="You can vote or comment only if you have been to this place."></textarea>
 	                            <p class="center"><input value="Submit" id="user-comment" class="btn btn-success" disabled title="You can vote or comment only if you have been to this place."></p>
 	                        }
 	                    </div>
-	                    <div id='comments'>
-	                       <a name="comments" id="comments-text"></a>
+	                    <div id='acomments'>
+	                       <a id="comments" class="comments-text"></a>
 	                       @if(reviews != null) {
 		                       @if(!reviews.isEmpty()) {
 	                                @for(r <- reviews){
@@ -151,7 +149,7 @@
                                 <div class="feedback-reviews">
                                     @if(reviews != null) {
                                         @if(reviews.size() > 0) {
-                                           <a href="#comments">Reviews (@reviews.size())</a>
+                                           <a href="#acomments">Reviews (@reviews.size())</a>
                                         } else {
                                            No reviews yet.
                                         }
@@ -159,7 +157,7 @@
                                 </div>
                                 <div class='userCanComment'>
                                 @if(canVote) {
-                                   <a href="#comment" class="write-comment">Write a review</a>
+                                   <a href="#acomment" class="write-comment">Write a review</a>
                                 }
                                 </div>
                            I have been there:
@@ -194,53 +192,51 @@
                             </div>
                         </section>
                         <section class='widget-content'>
-                            <form action="">
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Location</label>
+                                        <label>Location</label>
                                         <p><strong>@city.getName(), @city.getCountry()</strong></p>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Currency</label>
+                                        <label>Currency</label>
                                         <p>@city.getCurrencyCode</p>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Population</label>
+                                        <label>Population</label>
                                         <p>@city.getPopulationTotal</p>
                                         
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Hotels</label>
+                                        <label>Hotels</label>
                                         
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Shops</label>
+                                        <label>Shops</label>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Bars</label>
+                                        <label>Bars</label>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner' style='position: relative;'>
-                                        <label for="category">Top Restaurant</label>
+                                        <label>Top Restaurant</label>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner'>
-                                        <label for="category">Top Research for this city</label>
+                                        <label>Top Research for this city</label>
                                     </div>
                                 </div>
-                            </form>
                         </section>
                     </section>
                 </aside>

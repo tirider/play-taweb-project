@@ -746,6 +746,7 @@ public class Semantic {
 		}
 
 		String cityName = "";
+		String cityNameUrl = "";
 		String cityDescription = "";
 		String cityImage = "";
 		
@@ -768,6 +769,7 @@ public class Semantic {
 			String[] cityDetails = getCityDetailsByCityName(cityName);
 			cityDescription = cityDetails[0];
 			cityImage = cityDetails[1];
+			cityNameUrl = cityName.replace(" ", "%20");
 
 			resultHtml += "<div class='span3 featured-item-wrapper'>"
 				        + "<div class='featured-item'>"
@@ -779,7 +781,7 @@ public class Semantic {
 			                       		+ " <a href='" + cityImage + "' class='figure-hover fancybox'>Zoom</a>"
 		                       		+ " </figure>";
 
-			resultHtml += "<h3><a href='" + cityName + "'>" + cityName + "</a></h3>";
+			resultHtml += "<h3><a href='" + cityNameUrl + "'>" + cityName + "</a></h3>";
 			
 			resultHtml += "<p class='item-text index-description'>";
 			resultHtml += cityDescription;
@@ -895,7 +897,7 @@ public class Semantic {
 		{
 			QuerySolution qsolution = results.nextSolution() ;
 			cityname = qsolution.getLiteral("destination").toString();
-			resultHtml += "<tr><td><a href=\"" + cityname + "\">" + cityname + "</a></td></tr>";
+			resultHtml += "<tr><td><a href=\"" + cityname.replace(" ", "%20") + "\">" + cityname + "</a></td></tr>";
 		}
 		resultHtml += "</table>";
 		
@@ -970,7 +972,7 @@ public class Semantic {
 			cityname = qsolution.getLiteral("cityname").toString();
 			countryname = qsolution.getLiteral("countryname").toString();
 			rate = String.valueOf(qsolution.getLiteral("r").getDouble());
-			resultHtml += "<tr><td><a href=\"" + cityname + "\">" + cityname + ", " + countryname + "</a></td><td>" + rate + "</td></tr>";
+			resultHtml += "<tr><td><a href=\"" + cityname.replace(" ", "%20") + "\">" + cityname + ", " + countryname + "</a></td><td>" + rate + "</td></tr>";
 		}
 		resultHtml += "</table>";
 		

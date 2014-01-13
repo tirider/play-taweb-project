@@ -233,7 +233,7 @@ var fortravelers = {
 			        dataType: "json",
 			        success: function (msg) {
 			        	var reviewHtml = "<div class=\"review\"><em>" + msg.nick + " on " + msg.date + "</em><p>" + review + "</p></div>";
-		                $('a#comments-text').after(reviewHtml);
+		                $('a.comments-text').after(reviewHtml);
 		                $("#comment-text").val("");
 		                if($(".no-reviews").length) {
 		                	$(".no-reviews").remove();
