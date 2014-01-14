@@ -81,14 +81,14 @@
                     
                     <div class='location-finder'>
 	                    <div id='comment'>
-	                        <a id="acomment"></a>
+	                        <a id="acomment"> </a>
 	                        <label for="comment-text">Write your review for @city.getName()</label>
 	                        @if(canVote) {
 		                        <textarea rows="5" cols="5" id="comment-text"></textarea>
-	                            <p class="center"><input value="Submit" id="user-comment" class="btn btn-success"></p>
+	                            <p class="center"><input value="Post comment" id="user-comment" class="btn btn-success"></p>
 	                        } else {
 		                        <textarea rows="5" cols="5" id="comment-text" disabled title="You can vote or comment only if you have been to this place."></textarea>
-	                            <p class="center"><input value="Submit" id="user-comment" class="btn btn-success" disabled title="You can vote or comment only if you have been to this place."></p>
+	                            <p class="center"><input value="Post comment" id="user-comment" class="btn btn-success" disabled title="You can vote or comment only if you have been to this place."></p>
 	                        }
 	                    </div>
 	                    <div id='acomments'>

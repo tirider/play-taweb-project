@@ -19,7 +19,7 @@
                                         <h2><strong>SPARQL Query Editor</strong></h2>
                                     </div>
                                     <div class='pull-right results-per-page custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
-                                            <a href="@routes.Application.namespaceprefixes()"><strong>Namespace Prefixes</strong></a>
+                                            <a href="/namespaceprefixes"><strong>Namespace Prefixes</strong></a>
                                     </div>
                                 </div>
                             </div>
@@ -30,7 +30,7 @@
                                 <div class='inner'>
                                 	<p>Send your request in order to check our data.</p>
                                     <div class='half first-half'>
-                                        <form id="spaqrl-form" method="get" action="@routes.Application.sparqlresults()">
+                                        <form id="spaqrl-form" method="get" action="/sparqlresults">
                                             <textarea name="query" id="endpoint-box-query" class='input-block-level'>SELECT * WHERE { ?s ?p ?o } LIMIT 2</textarea>
                                             <div class='pull-left custom-margin' style="margin-right: 10px;">
                                             	<span class='text-line' style="margin-right: 10px;">Results Format</span>

@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import models.Core;
 import models.beans.City;
 import models.beans.Destination;
 import models.beans.Photo;
 import models.beans.Review;
+import models.global.Core;
 import models.semantic.SparqlEndpoint;
 import play.Play;
 
@@ -515,8 +515,8 @@ public class Semantic {
 	 * @param cityname
 	 * @return
 	 */
-	public static City getCityDetails(String cityname) {
-		
+	public static City getCityDetails(String cityname) 
+	{
 		Model taweb = getModel();
 		City city = null;
 		
@@ -790,13 +790,6 @@ public class Semantic {
 		                 + "</div>"
 		                 + "<i class='bubble'> </i>"
 		             + "</div>"
-		             + "<div class='bottom'>"
-		                 + "<div class='inner-border'>"
-		                     + "<div class='inner-padding'>"
-		                         + "<p><a target='_blank' href='http://www.newyork.com/'>http://www.newyork.com/</a></p>"
-		                        	 + "</div>"
-		                 + "</div>"
-		             + "</div>"
 		         + "</div>"
 		     + "</div>";
 					
@@ -910,7 +903,8 @@ public class Semantic {
 	 */
 	public static String getListMostInteractiveUsers()
 	{
-		String query = "SELECT (COUNT(?reviewResource) AS ?reviews) ?nick WHERE { "
+		String query = "SELECT (COUNT(?reviewResource) AS ?reviews) ?nick " +
+				"WHERE { "
 				+ "?reviewResource rdf:type rev:Review ."
 				+ "?reviewResource rev:reviewer ?userResource ."
 				+ "?userResource foaf:nick ?nick  "
