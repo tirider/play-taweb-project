@@ -50,6 +50,14 @@
 		
     </head>
     <body>
+    <div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&appId=638954239501562";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
     <div id="maincontainer">
     	<!-- start hidden login / regiter frame -->
     	<section id='hidden-header'>
@@ -64,7 +72,7 @@
                             <h2>Sign In</h2>
                             <p>Sign in order to give you more !</p>
 
-                            <form id='form-login' action="@routes.Application.login()" class='row' method="post">
+                            <form id='form-login' action="/login" class='row' method="post">
                                 <div class='span3'>
                                     <input type="email" name="login-email" id="login-email" class='input-block-level' placeholder="Email"/>
                                 </div>
@@ -83,7 +91,7 @@
                             <h2>Sign Up</h2>
                             <p>Sign up in order to give you more !</p>
 
-                            <form id='form-register' action="@routes.Application.register()" class='row' method="post">
+                            <form id='form-register' action="/register" class='row' method="post">
                                 <div class='span3'>
                                     <input type="text" name='register-name' id='register-name' class='input-block-level' placeholder="User Name"  />
                                     <input type="email" name='register-email' id='register-email' class='input-block-level' placeholder="Email Address"/>
@@ -123,11 +131,11 @@
                     <div class='span6'>
                         <nav class='main-nav'>
 		                    <ul>
-		                        <li class='active'> <a href="@routes.Application.index(1)">Home</a> </li>
-		                        <li class='active'> <a href="@routes.Application.sparql()">SPARQL EndPoint</a> </li>
-		                        <li class='active'> <a href="@routes.Application.services()">Services</a> </li>
-		                        <li class='active'> <a href="@routes.Application.ontology()">Ontology</a> </li>
-		                        <li class='active'> <a href="@routes.Application.about()">About</a> </li>
+		                        <li class='active'> <a href="/">Home</a> </li>
+		                        <li class='active'> <a href="/sparql">SPARQL EndPoint</a> </li>
+		                        <li class='active'> <a href="/services">Services</a> </li>
+		                        <li class='active'> <a href="/ontology">Ontology</a> </li>
+		                        <li class='active'> <a href="/about">About</a> </li>
 		                    </ul>
                         </nav>
                     </div>
@@ -145,8 +153,8 @@
 		                    	<li class='active'>
 		                    		<a href='#'>Settings</a>
 		                    		<ul class='dropdown-menu'>
-		                    			<li><a href="#">@session.get("email")</a></li>
-		                    			<li><a href="@routes.Application.logout()">Log Out</a></li>
+		                    			<li><a href='/user/@session.get("username")'>@session.get("email")</a></li>
+		                    			<li><a href="/logout">Log Out</a></li>
                                     </ul>
 		                    	</li>
 		                    </ul>
