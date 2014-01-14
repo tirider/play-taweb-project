@@ -4,19 +4,16 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
-import play.api.mvc.*;
 import models.beans.City;
 import models.beans.Destination;
 import models.beans.Photo;
 import models.beans.Review;
 import models.beans.Weather;
-import models.global.Core;
+import models.query.QueryRunner;
 import models.semantic.Semantic;
 import models.service.CityParser;
 import models.service.PhotoService;
 import models.service.WeatherForecast;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import play.data.DynamicForm;
 import play.data.Form;
@@ -26,6 +23,7 @@ import play.mvc.Result;
 import views.html.notFoundPage;
 import views.html.results;
 import views.html.user;
+import views.html.dbpediaoffline;
 
 public class ResultController extends Controller 
 {
@@ -57,7 +55,12 @@ public class ResultController extends Controller
 	        // GET CITY DATA - FIRST CHECK IF CITY ALREADY EXISTS IN TDB
 	        City city = Semantic.getCityDetails(destination);
 	        if(city == null) {
-	        	city = CityParser.parse(destination);
+	        	if(QueryRunner.isServiceUp()) {
+	        		city = CityParser.parse(destination);
+	        	}
+	        	else {
+	        		redirect(routes.ResultController.dbpediaoffline());
+	        	}
 	        }
 	        if(city == null) { // NO CITY FOUND FROM TDB AND DBPEDIA
 	        	return notFound(notFoundPage.render());
@@ -93,57 +96,6 @@ public class ResultController extends Controller
     
     /**
      * 
-     * @return
-     */
-    public static Result cityInformationByQuery() 
-    {
-    	JsonNode parameters = request().body().asJson();
-        String query = parameters.get("cityname").asText();
-        
-    	return ok(Core.getCityByQuery(query));
-    }
-    
-    /***
-     * 
-     * @return
-     */
-    public static Result submitTimesTraveled() 
-    {
-    	JsonNode parameters = request().body().asJson();
-        String cityname = parameters.get("cityname").asText();
-        String timestraveled = parameters.get("timestraveled").asText();
-        
-    	return ok(Semantic.updateUserDestinationTravelledTDB(session("username"), timestraveled, cityname));
-    }
-    
-    /**
-     * 
-     * @return
-     */
-    public static Result submitRating() 
-    {
-    	JsonNode parameters = request().body().asJson();
-        String cityname = parameters.get("cityname").asText();
-        String rating = parameters.get("rating").asText();
-        
-    	return ok(Semantic.updateUserDestinationRatingTDB(session("username"), rating, cityname));
-    }
-    
-    /**
-     * 
-     * @return
-     */
-    public static Result submitReview() 
-    {
-    	JsonNode parameters = request().body().asJson();
-        String cityname = parameters.get("cityname").asText();
-        String review = parameters.get("review").asText();
-        
-    	return ok(Semantic.updateUserDestinationReviewTDB(session("username"), review, cityname));
-    }    
-    
-    /**
-     * 
      * @param nick
      * @return
      */
@@ -158,5 +110,10 @@ public class ResultController extends Controller
     	List<Destination> destinations = Semantic.getUserDestinations(nick);
     	
     	return ok(user.render(nick, destinations));
-    }    
+    }
+    
+    public static Result dbpediaoffline()
+    {
+		return ok(dbpediaoffline.render());
+    }
 }

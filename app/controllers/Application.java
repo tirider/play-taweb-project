@@ -126,7 +126,7 @@ public class Application extends Controller
 			}
 		}
 		return ok("{\"error\":\"1\" }");
-    }  
+    }
 
     /**
      * This method provide information about developers team.
