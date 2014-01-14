@@ -13,8 +13,7 @@ import models.query.QueryRunner;
 import models.semantic.Semantic;
 import models.service.CityParser;
 import models.service.PhotoService;
-import models.service.WeatherForecast;
-
+import models.service.WeatherService;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
@@ -67,8 +66,7 @@ public class ResultController extends Controller
 	        }
 	        
 	        // GET WEATHER INFORMATION -- DON'T CHECK METEO IN TDB, LET'S UPDATE AGAIN
-	        Date ArrivalDate = new Date();
-	        List<Weather> weatherData = WeatherForecast.getWeatherByLatLongOnDate(city.getLatitude(),city.getLongitude(), ArrivalDate);
+	        List<Weather> weather = WeatherService.getWeatherByLatLongOnDate(city.getLatitude(),city.getLongitude());
 	        
 	        // GET PHOTOS - FIRST CHECK IF PHOTOS ALREADY EXISTS IN TDB
 	        List<Photo> photos = Semantic.getPhotosByCity(destination);
@@ -88,8 +86,10 @@ public class ResultController extends Controller
 	        // UPDATE SEMANTIC
 	        Semantic.updateCityAndCountryTDB(city.getName(), city.getOverview(), city.getLatitude(), city.getLongitude(), city.getPopulationTotal(), city.getCountry(), city.getCurrencyCode(), photos);
 	        Semantic.updateUserDestinationInterestedTDB(session("username"), city.getName());
+	        Semantic.updateWeatherForecastTDB(weather, city.getName());
 	        
-	        return ok(results.render(city, ArrivalDate, weatherData, rating, nbrating, canVote, photos, reviews, nbtimes));
+	        Date ArrivalDate = new Date();
+	        return ok(results.render(city, ArrivalDate, weather, rating, nbrating, canVote, photos, reviews, nbtimes));
     	}
     	return redirect(routes.Application.index(0));
     }

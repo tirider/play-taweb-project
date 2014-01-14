@@ -41,6 +41,8 @@ public class EndpointsController extends Controller
     	String format = null;
     	format = dynamicForm.get("format");
     	
+    	System.out.printf(String.valueOf(query), String.valueOf(format));
+    	
     	int formatInt = 0;
     	if(format == null) {
     		if(request().accepts("text/html")) {

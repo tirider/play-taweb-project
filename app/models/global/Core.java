@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -208,6 +209,18 @@ public class Core {
 		}
 		dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		return dateFormat.format(formattedDate);
+	}
+	
+	/**
+	 * Converts date from Timestamp to Date
+	 * @param timestamp
+	 * @return
+	 */
+	public static Date convertTimestampToDate(long timestamp)
+	{
+		Timestamp stamp = new Timestamp(timestamp);
+		Date date = new Date(stamp.getTime());
+		return date;
 	}
 	
 	/**
