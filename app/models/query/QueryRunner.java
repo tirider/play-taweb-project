@@ -9,6 +9,7 @@ import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
+import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
 
 public class QueryRunner 
 {	
@@ -21,11 +22,32 @@ public class QueryRunner
 	private static final String FIELD5  = "countryName";
 	private static final String FIELD6  = "currencyCode";
 	
+	/**
+	 * Checks if DBpedia service is up
+	 * @return
+	 */
+	public static boolean isServiceUp()
+	{
+		String query = "ASK { }";
+		QueryExecution qexec = QueryExecutionFactory.sparqlService(SERVICE, query);
+		
+		boolean status = false;
+		try {
+            if (qexec.execAsk()) {
+            	 status = true;
+            }
+        } catch (QueryExceptionHTTP e) {
+        	status = false;
+        } finally {
+        	qexec.close();
+        }
+		
+		return status;
+	}
+	
 	public static boolean exists(String queryString, String cityName)
 	{
 		String query = String.format(queryString, cityName);
-		//System.out.println("city = "+cityName);
-		
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(SERVICE, query);
 		
 		return qexec.execAsk();
@@ -71,7 +93,6 @@ public class QueryRunner
 		    city.setLogitude(cityLong);
 		    city.setPopulationTotal(cityPopulationTotal);
 		    city.setCountry(countryName);
-		    
 		    // Remove additional information on currency
 		    if(currencyCode.indexOf(",") >= 0) {
 				StringTokenizer st = new StringTokenizer(currencyCode, ",");
