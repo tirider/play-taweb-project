@@ -13,7 +13,7 @@ import com.hp.hpl.jena.sparql.engine.http.QueryExceptionHTTP;
 
 public class QueryRunner 
 {	
-	private static final String SERVICE = "http://dbpedia.org/sparl";
+	private static final String SERVICE = "http://dbpedia.org/sparql";
 	
 	private static final String FIELD1  = "cityAbstract";
 	private static final String FIELD2  = "cityLat";
