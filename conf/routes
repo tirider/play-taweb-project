@@ -22,15 +22,18 @@ GET     /services                                       controllers.ServiceContr
 GET     /ontology                                       controllers.OntologyController.ontology()
 GET     /ontologyDL/:type                               controllers.OntologyController.ontologyDL(type : String)
 
-# ABOUT US 
+# AJAX
+POST    /cityInformationByQuery/                        controllers.AjaxController.cityInformationByQuery() 
+POST    /submitTimesTraveled/                           controllers.AjaxController.submitTimesTraveled()
+POST    /submitRating/                                  controllers.AjaxController.submitRating()
+POST    /submitReview/                                  controllers.AjaxController.submitReview()
+
+# MISC
 GET     /about                                          controllers.Application.about()
+GET     /dbpediaoffline                                 controllers.ResultController.dbpediaoffline()
 
 # RESULTS
 POST    /search                                         controllers.ResultController.search()
-POST    /cityInformationByQuery/                        controllers.ResultController.cityInformationByQuery() 
-POST    /submitTimesTraveled/                           controllers.ResultController.submitTimesTraveled()
-POST    /submitRating/                                  controllers.ResultController.submitRating()
-POST    /submitReview/                                  controllers.ResultController.submitReview()
 GET     /user/:nick                                     controllers.ResultController.user(nick : String)
 GET     /:destination                                   controllers.ResultController.results(destination : String)
 

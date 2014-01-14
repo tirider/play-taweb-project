@@ -8,7 +8,8 @@
 }
 
 @subtitle = {
-			<h1><a>@city.getName(),<br>@city.getCountry()</a></h1>
+			<h1><a>Search result</a></h1>
+			<p>In this section we provide you information about your destination cities. </p>
 }
 
 @content = {
@@ -20,14 +21,14 @@
                             <div class='bar-title'>
                                 <div class='inner'>
                                     <div class='pull-left custom-margin'>
-                                        <h2><strong>Description</strong></h2>
+                                        <strong class="strong-title">Description</strong>
                                     </div>
                                     <div class='pull-right results-per-page custom-margin'>
                                         	@if(city.getName().isEmpty() && city.getCountry.isEmpty()){
-                                        		<strong>The city</strong> on <strong>@arrivalDate.date.format("dd MMMM yyyy")</strong>
+                                        		<strong class="strong-title">The city</strong> on <strong class="strong-title">@arrivalDate.date.format("dd MMMM yyyy")</strong>
                                         	}
                                             @if(!city.getName().isEmpty() && !city.getCountry.isEmpty()){
-                                            	<strong>@city.getName(), @city.getCountry()</strong> on <strong>@arrivalDate.date.format("dd MMMM yyyy")</strong>
+                                            	<strong>@city.getName(), @city.getCountry()</strong> from <strong>@arrivalDate.date.format("dd MMMM yyyy")</strong>
                                             }
                                     </div>
                                 </div>
@@ -117,8 +118,8 @@
                 <section class='widget'>
                         <section class='widget-title uppercase'>
                             <div class='inner'>
-                                    <div class='pull-left custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
-                                        <h2><strong>What users think</strong></h2>
+                                    <div class='pull-left custom-margin'>
+                                        <h2><strong>What do you think</strong></h2>
                                     </div>
                             </div>
                         </section>
@@ -186,8 +187,8 @@
                     <section class='widget'>
                         <section class='widget-title uppercase'>
                             <div class='inner'>
-                                    <div class='pull-left custom-margin' style="margin-top: 2px;margin-bottom: 13px;">
-                                        <h2><strong>Recommendation</strong></h2>
+                                    <div class='pull-left custom-margin'>
+                                        <h2>Recommendation</h2>
                                     </div>
                             </div>
                         </section>
@@ -229,7 +230,7 @@
                                 </div>
                                 <div class='widget-section'>
                                     <div class='inner' style='position: relative;'>
-                                        <label>Top Restaurant</label>
+                                        <label>Top Restaurants</label>
                                     </div>
                                 </div>
                                 <div class='widget-section'>
@@ -255,9 +256,8 @@
 					     }
 					 },
 					 marker:{
-					 		title:'salut',
+					 		title:'Rating Up',
 					    	latLng: mapLatLng,
-					    	/* or address: "Calle 9 numero 330ALT e/ D y Oriente",*/
 					    	options:{
                                     draggable: false
                             },
@@ -267,12 +267,13 @@
                                         
                                         if (infowindow){
                                             infowindow.open(map, marker);
-                                            infowindow.setContent("<div><a target='_black' href='http://www.montpellier.fr/'>http://www.montpellier.fr/</a></div>");
-                                        } else {
+                                            infowindow.setContent('<div id=\"marker-info-windows\">'+$('#feedback').html()+'</div>');
+                                        } 
+                                        else {
                                             $(this).gmap3({
                                                 infowindow:{
                                                     anchor:marker,
-                                                    options:{content: "<div><a target='_black' href='http://www.montpellier.fr/'>http://www.montpellier.fr/</a></div>"}
+                                                    options:{content: '<div id=\"marker-info-windows\">'+$('#feedback').html()+'</div>'}
                                                 }
                                             });
                                         }
