@@ -27,6 +27,7 @@ import models.beans.Weather;
 import models.dao.DAOFactory;
 import models.dao.IUserDAO;
 import models.dao.UserDAO;
+import models.query.QueryRunner;
 import models.semantic.Ontology;
 import models.semantic.SparqlEndpoint;
 import models.semantic.Semantic;
@@ -50,6 +51,7 @@ import views.html.user;
 import views.html.about;
 import views.html.ontology;
 import views.html.namespaceprefixes;
+import views.html.dbpediaoffline;
 
 public class Application extends Controller 
 {
@@ -191,7 +193,6 @@ public class Application extends Controller
     	DynamicForm dynamicForm = Form.form().bindFromRequest();
         
     	String destination = dynamicForm.get("destination-city");
-    	String arrivalDateStr = dynamicForm.get("search-date");
     	
     	return redirect(routes.Application.results(destination));
     }
@@ -203,7 +204,13 @@ public class Application extends Controller
 	        // GET CITY DATA - FIRST CHECK IF CITY ALREADY EXISTS IN TDB
 	        City city = Semantic.getCityDetails(destination);
 	        if(city == null) {
-	        	city = CityParser.parse(destination);
+	        	// CHECK DBPEDIA SERVICE FIRST
+	        	if(QueryRunner.isServiceUp()) {
+	        		city = CityParser.parse(destination);
+	        	}
+	        	else {
+	        		return redirect(routes.Application.dbpediaoffline());
+	        	}
 	        }
 	        if(city == null) { // NO CITY FOUND FROM TDB AND DBPEDIA
 	        	return notFound(notFoundPage.render());
@@ -332,5 +339,11 @@ public class Application extends Controller
     {
     	Map<String,String> NS = Semantic.getNamespacePrefixes();
 		return ok(namespaceprefixes.render(NS));
+    }
+    
+    public static Result dbpediaoffline()
+    {
+		return ok(dbpediaoffline.render());
+    	
     }
 }
