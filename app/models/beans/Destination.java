@@ -8,11 +8,11 @@ public class Destination {
 	
 	public String cityName;
 	public String countryName;
+	public String cityLatLong;
 	public int timesInterested;
 	public int timesTraveled;
 	public int rate;
 	public List<Review> reviews;
-	public String cityLatLong;
 	
 	public Destination(String cityName, String countryName, int timesInterested, int timesTraveled, int rate, List<Review> reviews, String cityLatLong) {
 		this.cityName = cityName;

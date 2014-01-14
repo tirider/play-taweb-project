@@ -2,25 +2,37 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
+# HOME PAGE
 GET     /                               				controllers.Application.index(auth: Integer ?=1)
+
+# AUTHENTICATION
 POST    /login                                          controllers.Application.login()
-GET     /logout                                         controllers.Application.logout()
 POST    /register                                       controllers.Application.register()
-POST    /cityInformationByQuery/                        controllers.Application.cityInformationByQuery()
-GET     /sparql                                         controllers.Application.sparql()
-GET     /sparqlresult                                   controllers.Application.sparqlresults()
-GET     /namespaceprefixes                              controllers.Application.namespaceprefixes()
-POST    /submitTimesTraveled/                           controllers.Application.submitTimesTraveled()
-POST    /submitRating/                                  controllers.Application.submitRating()
-POST    /submitReview/                                  controllers.Application.submitReview()
-GET     /services                                       controllers.Application.services()
+GET     /logout                                         controllers.Application.logout()
+
+# SPARQL EndPoints 
+GET     /sparql                                         controllers.EndpointsController.sparql()
+GET     /sparqlresult                                   controllers.EndpointsController.sparqlresults()
+GET     /namespaceprefixes                              controllers.EndpointsController.namespaceprefixes()
+
+# SERVICE
+GET     /services                                       controllers.ServiceController.services()
+
+# ONTOLOGY
+GET     /ontology                                       controllers.OntologyController.ontology()
+GET     /ontologyDL/:type                               controllers.OntologyController.ontologyDL(type : String)
+
+# ABOUT US 
 GET     /about                                          controllers.Application.about()
-GET     /ontology                                       controllers.Application.ontology()
-GET     /ontologyDL/:type                               controllers.Application.ontologyDL(type : String)
-GET     /user/:nick                                     controllers.Application.user(nick : String)
-POST    /search                                         controllers.Application.search()
-GET     /:destination                                   controllers.Application.results(destination : String)
+
+# RESULTS
+POST    /search                                         controllers.ResultController.search()
+POST    /cityInformationByQuery/                        controllers.ResultController.cityInformationByQuery() 
+POST    /submitTimesTraveled/                           controllers.ResultController.submitTimesTraveled()
+POST    /submitRating/                                  controllers.ResultController.submitRating()
+POST    /submitReview/                                  controllers.ResultController.submitReview()
+GET     /user/:nick                                     controllers.ResultController.user(nick : String)
+GET     /:destination                                   controllers.ResultController.results(destination : String)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

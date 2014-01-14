@@ -24,7 +24,8 @@ public class QueryRunner
 	public static boolean exists(String queryString, String cityName)
 	{
 		String query = String.format(queryString, cityName);
-		//System.out.println(query);
+		//System.out.println("city = "+cityName);
+		
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(SERVICE, query);
 		
 		return qexec.execAsk();
@@ -70,6 +71,7 @@ public class QueryRunner
 		    city.setLogitude(cityLong);
 		    city.setPopulationTotal(cityPopulationTotal);
 		    city.setCountry(countryName);
+		    
 		    // Remove additional information on currency
 		    if(currencyCode.indexOf(",") >= 0) {
 				StringTokenizer st = new StringTokenizer(currencyCode, ",");

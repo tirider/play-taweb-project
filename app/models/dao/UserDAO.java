@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.beans.User;
-import models.crypto.Encryptor;
+import models.global.Core;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
@@ -89,7 +89,7 @@ public class UserDAO implements IUserDAO
 		
 		query.put(TABLE_FIELD_5, user.getName().toLowerCase());	
 		query.put(TABLE_FIELD_2, user.getEmail().toLowerCase());		
-		query.put(TABLE_FIELD_3, Encryptor.ecryptToSha1(user.getPassword()));
+		query.put(TABLE_FIELD_3, Core.ecryptToSha1(user.getPassword()));
 		query.put(TABLE_FIELD_4, user.getInscriptiondate());
 		
 		// COMMITING OPERATION 
@@ -146,7 +146,7 @@ public class UserDAO implements IUserDAO
 		
 		BasicDBObject updatequery = new BasicDBObject();
 		BasicDBObject setquery    = new BasicDBObject();
-		setquery.append(TABLE_FIELD_3, Encryptor.ecryptToSha1(newpassword));
+		setquery.append(TABLE_FIELD_3, Core.ecryptToSha1(newpassword));
 		updatequery.put("$set", setquery);
 		
 		// COMMITING OPERATION
@@ -278,7 +278,7 @@ public class UserDAO implements IUserDAO
 		// CREATION DU QUERY
 		BasicDBObject searchquery = new BasicDBObject();
 		searchquery.put(TABLE_FIELD_2, email.toLowerCase());
-		searchquery.put(TABLE_FIELD_3, Encryptor.ecryptToSha1(password));
+		searchquery.put(TABLE_FIELD_3, Core.ecryptToSha1(password));
 
 		// RESULTAT DE LA REQUETE
 		DBObject row = collection.findOne(searchquery);

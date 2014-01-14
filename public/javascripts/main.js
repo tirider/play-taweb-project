@@ -288,7 +288,7 @@ var fortravelers = {
 						$( "#search-string" ).keyup(function() {
 							$('#search-string').last().addClass( "loading-main" );
 						});
-						$( "#register-city" ).keyup(function() {
+						$("#register-city").keyup(function() {
 							$('#register-city').last().addClass( "loading-register " );
 						});
 				 },
