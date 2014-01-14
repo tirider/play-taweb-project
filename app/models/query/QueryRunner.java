@@ -53,6 +53,12 @@ public class QueryRunner
 		return qexec.execAsk();
 	}
 	
+	/**
+	 * 
+	 * @param queryString
+	 * @param cityName
+	 * @return
+	 */
 	public static City execute(String queryString, String cityName)
 	{
 		City city = null;
