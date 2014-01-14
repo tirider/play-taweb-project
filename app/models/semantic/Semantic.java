@@ -9,9 +9,9 @@ import models.beans.City;
 import models.beans.Destination;
 import models.beans.Photo;
 import models.beans.Review;
+import models.beans.Weather;
 import models.global.Core;
 import models.semantic.SparqlEndpoint;
-import play.Play;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QuerySolution;
@@ -22,9 +22,7 @@ import com.hp.hpl.jena.rdf.model.Property;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.vocabulary.DC;
-import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -125,6 +123,74 @@ public class Semantic {
         
         taweb.close();
         Dataset dataset = getDataset();
+        closeDataset(dataset);
+	}
+	
+	/**
+	 * Updates destination and country information if needed.
+	 * @param cityname
+	 * @param description
+	 * @param latitude
+	 * @param longitude
+	 * @param population
+	 * @param countryname
+	 * @param currencyCodeStr
+	 * @param photoList
+	 */
+	public static void updateCityAndCountryTDB(String cityname, String description, double latitude, double longitude, int population, String countryname, String currencyCodeStr, List<Photo> photoList) 
+	{
+		Model taweb = getModel();
+		
+		String populationStr = String.valueOf(population);
+		String latitudeStr = String.valueOf(latitude);
+		String longitudeStr = String.valueOf(longitude);
+		
+		// CREATE REQUIRED PROPERTIES
+    	Property populationProp = taweb.createProperty(dbpediaowl + "populationTotal");
+		Property country = taweb.createProperty(dbpediaowl + "country");
+		Property latitudeProp = taweb.createProperty(geo + "lat");
+		Property longitudeProp = taweb.createProperty(geo + "lon");
+		Property latlong = taweb.createProperty(geo + "lat_long");
+		Property currencyCode = taweb.createProperty(dbpprop + "currencyCode");
+		
+		// CHECK IF DESTINATION RESOURCE EXISTS
+        Resource DestinationR = taweb.getResource(trvl + cityname);
+        if(!taweb.containsResource(DestinationR))
+        {
+        	Resource Destination = taweb.createResource(trvl + "Destination");
+        	DestinationR = taweb.createResource(trvl + cityname);
+        	DestinationR.addProperty(DC.description, description);
+        	DestinationR.addProperty(populationProp, populationStr);
+        	DestinationR.addProperty(RDFS.label, cityname);
+        	DestinationR.addProperty(latitudeProp, latitudeStr);
+        	DestinationR.addProperty(longitudeProp, longitudeStr);
+        	DestinationR.addProperty(latlong, latitudeStr + "," + longitudeStr);
+        	DestinationR.addProperty(RDF.type, Destination);
+        }
+        
+		// ADD IMAGES RELATED
+		if(photoList.size() > 0) {
+			for(Photo ph : photoList) {
+				String imgUrl = ph.getImgLargeUrl();
+				DestinationR.addProperty(FOAF.img, imgUrl);
+			}
+		}
+
+		// CREATE COUNTRY RESSOURCE
+		Resource CountryName = taweb.getResource(dbpedia + countryname);
+        if(!taweb.containsResource(CountryName))
+        {
+        	CountryName = taweb.createResource(dbpedia + countryname);
+        	Resource CountryR = taweb.createResource(dbpediaowl + "Country");
+    		taweb.add(CountryName, RDF.type, CountryR);
+    		CountryName.addProperty(RDFS.label, countryname);
+    		CountryName.addProperty(currencyCode, currencyCodeStr);
+        }
+
+        DestinationR.addProperty(country, CountryName);
+		
+		taweb.close();
+		Dataset dataset = getDataset();
         closeDataset(dataset);
 	}
 	
@@ -261,6 +327,44 @@ public class Semantic {
         closeDataset(dataset);
     	
     	return "{\"date\":\"" + dateStr + "\", \"nick\":\"" + nick + "\"}";
+	}
+	
+	/**
+	 * Update weather forecast to TDB
+	 * @param weather
+	 * @param cityname
+	 */
+	public static void updateWeatherForecastTDB(List<Weather> weather, String cityname)
+	{
+		if(!weather.isEmpty()) {
+			Model taweb = getModel();
+			
+			Property temperatureMinProp = taweb.createProperty(met + "celcius");
+			Property temperatureMaxProp = taweb.createProperty(met + "celcius");
+			Property iconProp = taweb.createProperty(met + "category");
+			Property forecastProp = taweb.createProperty(met + "forecast");
+			Resource DestinationR = taweb.getResource(trvl + cityname);
+			
+			for(Weather w : weather)
+			{
+				Resource ForecastCityR = taweb.getResource(trvl + "meteo/" + cityname + "#" + Core.getDateForRDF(w.date));
+				if(!taweb.containsResource(ForecastCityR)) {
+					ForecastCityR = taweb.createResource(trvl + "meteo/" + cityname + "#" + Core.getDateForRDF(w.date));
+					Resource ForecastR = taweb.getResource(met + "Forecast");
+					ForecastCityR.addProperty(RDF.type, ForecastR);
+					DestinationR.addProperty(forecastProp, ForecastCityR);
+					ForecastCityR.addProperty(DC.description, w.description);
+					ForecastCityR.addProperty(DC.date, Core.getDateForRDF(w.date));
+					ForecastCityR.addProperty(iconProp, w.icon);
+					ForecastCityR.addProperty(temperatureMinProp, String.valueOf(w.temperatureMin));
+					ForecastCityR.addProperty(temperatureMaxProp, String.valueOf(w.temperatureMax));
+				}
+			}
+			
+			taweb.close();
+			Dataset dataset = getDataset();
+	        closeDataset(dataset);
+		}
 	}
 	
 	/**
@@ -417,74 +521,6 @@ public class Semantic {
         closeDataset(dataset);
         
     	return hasTimesTraveledProp;
-	}
-	
-	/**
-	 * Updates destination and country information if needed.
-	 * @param cityname
-	 * @param description
-	 * @param latitude
-	 * @param longitude
-	 * @param population
-	 * @param countryname
-	 * @param currencyCodeStr
-	 * @param photoList
-	 */
-	public static void updateCityAndCountryTDB(String cityname, String description, double latitude, double longitude, int population, String countryname, String currencyCodeStr, List<Photo> photoList) 
-	{
-		Model taweb = getModel();
-		
-		String populationStr = String.valueOf(population);
-		String latitudeStr = String.valueOf(latitude);
-		String longitudeStr = String.valueOf(longitude);
-		
-		// CREATE REQUIRED PROPERTIES
-    	Property populationProp = taweb.createProperty(dbpediaowl + "populationTotal");
-		Property country = taweb.createProperty(dbpediaowl + "country");
-		Property latitudeProp = taweb.createProperty(geo + "lat");
-		Property longitudeProp = taweb.createProperty(geo + "lon");
-		Property latlong = taweb.createProperty(geo + "lat_long");
-		Property currencyCode = taweb.createProperty(dbpprop + "currencyCode");
-		
-		// CHECK IF DESTINATION RESOURCE EXISTS
-        Resource DestinationR = taweb.getResource(trvl + cityname);
-        if(!taweb.containsResource(DestinationR))
-        {
-        	Resource Destination = taweb.createResource(trvl + "Destination");
-        	DestinationR = taweb.createResource(trvl + cityname);
-        	DestinationR.addProperty(DC.description, description);
-        	DestinationR.addProperty(populationProp, populationStr);
-        	DestinationR.addProperty(RDFS.label, cityname);
-        	DestinationR.addProperty(latitudeProp, latitudeStr);
-        	DestinationR.addProperty(longitudeProp, longitudeStr);
-        	DestinationR.addProperty(latlong, latitudeStr + "," + longitudeStr);
-        	DestinationR.addProperty(RDF.type, Destination);
-        }
-        
-		// ADD IMAGES RELATED
-		if(photoList.size() > 0) {
-			for(Photo ph : photoList) {
-				String imgUrl = ph.getImgLargeUrl();
-				DestinationR.addProperty(FOAF.img, imgUrl);
-			}
-		}
-
-		// CREATE COUNTRY RESSOURCE
-		Resource CountryName = taweb.getResource(dbpedia + countryname);
-        if(!taweb.containsResource(CountryName))
-        {
-        	CountryName = taweb.createResource(dbpedia + countryname);
-        	Resource CountryR = taweb.createResource(dbpediaowl + "Country");
-    		taweb.add(CountryName, RDF.type, CountryR);
-    		CountryName.addProperty(RDFS.label, countryname);
-    		CountryName.addProperty(currencyCode, currencyCodeStr);
-        }
-
-        DestinationR.addProperty(country, CountryName);
-		
-		taweb.close();
-		Dataset dataset = getDataset();
-        closeDataset(dataset);
 	}
 	
 	/**
