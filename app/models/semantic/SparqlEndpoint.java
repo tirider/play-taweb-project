@@ -1,28 +1,20 @@
 package models.semantic;
 
 import java.io.ByteArrayOutputStream;
-import java.util.Iterator;
-
-import play.Play;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
-import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
-import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
-import com.hp.hpl.jena.tdb.TDBFactory;
 import com.hp.hpl.jena.vocabulary.DC;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
-
-import controllers.Application;
 
 public class SparqlEndpoint {
 
@@ -68,9 +60,14 @@ public class SparqlEndpoint {
     		results = null;
     	}
     	finally {
-    		taweb.close();
-    		Dataset dataset = Semantic.getDataset();
-    		Semantic.closeDataset(dataset);
+    		try {
+        		taweb.close();
+        		Dataset dataset = Semantic.getDataset();
+        		Semantic.closeDataset(dataset);
+			} 
+    		catch (Exception e2) {
+				System.out.println(e2.getMessage());
+			}
     	}
     	
     	return results;

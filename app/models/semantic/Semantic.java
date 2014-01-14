@@ -11,7 +11,6 @@ import models.beans.Photo;
 import models.beans.Review;
 import models.global.Core;
 import models.semantic.SparqlEndpoint;
-import play.Play;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QuerySolution;
@@ -903,7 +902,7 @@ public class Semantic {
 	 */
 	public static String getListMostInteractiveUsers()
 	{
-		String query = "SELECT (COUNT(?reviewResource) AS ?reviews) ?nick " +
+		String query = "SELECT ?nick (COUNT(?reviewResource) AS ?reviews) " +
 				"WHERE { "
 				+ "?reviewResource rdf:type rev:Review ."
 				+ "?reviewResource rev:reviewer ?userResource ."
@@ -914,17 +913,14 @@ public class Semantic {
 				+ "LIMIT 10";
 
 		ResultSet results = SparqlEndpoint.queryData(query);
-		if(results == null) {
-			return null;
-		}
-        String resultHtml = "";
-        String nick = "";
+		
+		if(results == null) { return null; }
 
-        resultHtml += "<table>";
+        String resultHtml = "<table>";
 		for ( ; results.hasNext() ; )
 		{
 			QuerySolution qsolution = results.nextSolution() ;
-			nick = qsolution.getLiteral("nick").toString();
+			String nick = qsolution.getLiteral("nick").toString();
 			resultHtml += "<tr><td><a href=\"user/" + nick + "\">" + nick + "</a></td></tr>";
 		}
 		resultHtml += "</table>";

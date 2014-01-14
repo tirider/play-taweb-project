@@ -45,6 +45,12 @@ public class QueryRunner
 		return status;
 	}
 	
+	/**
+	 * This method check if the given city exists
+	 * @param queryString
+	 * @param cityName
+	 * @return
+	 */
 	public static boolean exists(String queryString, String cityName)
 	{
 		String query = String.format(queryString, cityName);
@@ -54,7 +60,7 @@ public class QueryRunner
 	}
 	
 	/**
-	 * 
+	 * Usuful for query execution
 	 * @param queryString
 	 * @param cityName
 	 * @return
