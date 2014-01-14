@@ -31,7 +31,6 @@ public class WeatherService {
 					icon = weatherNodeElement.get("icon").textValue();
 					description = weatherNodeElement.get("description").textValue();
 				}
-				System.out.println("date " + Core.convertTimestampToDate(timestamp) + " t min " + temperatureMin + " t max " + temperatureMax + " ic " + icon + " desc " + description);
 				wd.add(new Weather(Core.convertTimestampToDate(timestamp), temperatureMin, temperatureMax, icon, description));
 			}
 			return wd;

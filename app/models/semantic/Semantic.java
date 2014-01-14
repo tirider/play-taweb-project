@@ -11,7 +11,9 @@ import models.beans.Photo;
 import models.beans.Review;
 import models.beans.Weather;
 import models.global.Core;
+import models.query.QueryRunner;
 import models.semantic.SparqlEndpoint;
+import models.service.CityParser;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QuerySolution;
@@ -108,9 +110,19 @@ public class Semantic {
 	 * @param nick
 	 * @param email
 	 */
-	public static void insertUserTDB(String nick, String email) 
+	public static void insertUserTDB(String nick, String email, String cityname) 
 	{
 		Model taweb = getModel();
+		
+		City city = getCityDetails(cityname);
+        if(city == null) {
+        	if(QueryRunner.isServiceUp()) {
+        		city = CityParser.parse(cityname);
+        	}
+        }
+        
+        updateCityAndCountryTDB(city);
+        Resource CityR = taweb.getResource(trvl + cityname);
 
         Resource Person = taweb.getResource(trvl + "user/" + nick);
         if(!taweb.containsResource(Person))
@@ -118,6 +130,7 @@ public class Semantic {
 	    	// CREATE USER RESSOURCE
         	Person = taweb.createResource(trvl + "user/" + nick);
 			Person.addProperty(FOAF.nick, nick);
+			Person.addProperty(FOAF.based_near, CityR);
 			taweb.add(Person, RDF.type, FOAF.Person);
         }
         
@@ -137,13 +150,15 @@ public class Semantic {
 	 * @param currencyCodeStr
 	 * @param photoList
 	 */
-	public static void updateCityAndCountryTDB(String cityname, String description, double latitude, double longitude, int population, String countryname, String currencyCodeStr, List<Photo> photoList) 
+	public static void updateCityAndCountryTDB(City city) 
 	{
 		Model taweb = getModel();
 		
-		String populationStr = String.valueOf(population);
-		String latitudeStr = String.valueOf(latitude);
-		String longitudeStr = String.valueOf(longitude);
+		String populationStr = String.valueOf(city.getPopulationTotal());
+		String latitudeStr = String.valueOf(city.getLatitude());
+		String longitudeStr = String.valueOf(city.getLongitude());
+		String cityname = city.getName();
+		String countryname = city.getCountry();
 		
 		// CREATE REQUIRED PROPERTIES
     	Property populationProp = taweb.createProperty(dbpediaowl + "populationTotal");
@@ -159,7 +174,7 @@ public class Semantic {
         {
         	Resource Destination = taweb.createResource(trvl + "Destination");
         	DestinationR = taweb.createResource(trvl + cityname);
-        	DestinationR.addProperty(DC.description, description);
+        	DestinationR.addProperty(DC.description, city.getOverview());
         	DestinationR.addProperty(populationProp, populationStr);
         	DestinationR.addProperty(RDFS.label, cityname);
         	DestinationR.addProperty(latitudeProp, latitudeStr);
@@ -167,14 +182,6 @@ public class Semantic {
         	DestinationR.addProperty(latlong, latitudeStr + "," + longitudeStr);
         	DestinationR.addProperty(RDF.type, Destination);
         }
-        
-		// ADD IMAGES RELATED
-		if(photoList.size() > 0) {
-			for(Photo ph : photoList) {
-				String imgUrl = ph.getImgLargeUrl();
-				DestinationR.addProperty(FOAF.img, imgUrl);
-			}
-		}
 
 		// CREATE COUNTRY RESSOURCE
 		Resource CountryName = taweb.getResource(dbpedia + countryname);
@@ -184,10 +191,32 @@ public class Semantic {
         	Resource CountryR = taweb.createResource(dbpediaowl + "Country");
     		taweb.add(CountryName, RDF.type, CountryR);
     		CountryName.addProperty(RDFS.label, countryname);
-    		CountryName.addProperty(currencyCode, currencyCodeStr);
+    		CountryName.addProperty(currencyCode, city.getCurrencyCode());
         }
 
         DestinationR.addProperty(country, CountryName);
+		
+		taweb.close();
+		Dataset dataset = getDataset();
+        closeDataset(dataset);
+	}
+
+	/**
+	 * Add related images to destination
+	 * @param photoList
+	 * @param cityname
+	 */
+	public static void updateDestinationPhotos(List<Photo> photoList, String cityname) {
+		
+		Model taweb = getModel();
+		
+		Resource DestinationR = taweb.getResource(trvl + cityname);
+		if(photoList.size() > 0) {
+			for(Photo ph : photoList) {
+				String imgUrl = ph.getImgLargeUrl();
+				DestinationR.addProperty(FOAF.img, imgUrl);
+			}
+        }
 		
 		taweb.close();
 		Dataset dataset = getDataset();
@@ -301,7 +330,7 @@ public class Semantic {
 	{
 		Model taweb = getModel();
 		Date date = Core.getDate();
-		String dateStr = Core.formatDate(date);
+		String dateStr = Core.convertDateForURIs(date);
 
 		Resource Destination = taweb.getResource(trvl + cityname);
 		Resource Person = taweb.getResource(trvl + "user/" + nick);
@@ -326,7 +355,7 @@ public class Semantic {
 		Dataset dataset = getDataset();
         closeDataset(dataset);
     	
-    	return "{\"date\":\"" + dateStr + "\", \"nick\":\"" + nick + "\"}";
+    	return "{\"date\":\"" + Core.formatDate(date) + "\", \"nick\":\"" + nick + "\"}";
 	}
 	
 	/**
@@ -347,9 +376,9 @@ public class Semantic {
 			
 			for(Weather w : weather)
 			{
-				Resource ForecastCityR = taweb.getResource(trvl + "meteo/" + cityname + "#" + Core.getDateForRDF(w.date));
+				Resource ForecastCityR = taweb.getResource(trvl + "meteo/" + cityname + "#" + Core.convertDateForURIs(w.date));
 				if(!taweb.containsResource(ForecastCityR)) {
-					ForecastCityR = taweb.createResource(trvl + "meteo/" + cityname + "#" + Core.getDateForRDF(w.date));
+					ForecastCityR = taweb.createResource(trvl + "meteo/" + cityname + "#" + Core.convertDateForURIs(w.date));
 					Resource ForecastR = taweb.getResource(met + "Forecast");
 					ForecastCityR.addProperty(RDF.type, ForecastR);
 					DestinationR.addProperty(forecastProp, ForecastCityR);

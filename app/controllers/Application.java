@@ -119,7 +119,7 @@ public class Application extends Controller
 					session().clear();
 					session("username", username);
 					session("email", email);
-					Semantic.insertUserTDB(username, email);
+					Semantic.insertUserTDB(username, email, city);
 					return ok("{\"error\":\"0\",\"email\":\"" + user.getEmail() + "\" }");
 				}
 				else return badRequest();
