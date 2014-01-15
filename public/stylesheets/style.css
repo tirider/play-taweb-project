@@ -1055,11 +1055,20 @@ footer .container{
   vertical-align: top;
 }
 .featured-items .featured-item.featured-list .right {
-  width: 65%;
+  width: 45%;
   margin-left: 3%;
   display: inline-block;
   vertical-align: top;
   position: relative;
+}
+.featured-items .featured-item.featured-list .right-social {
+  width: 125px;
+  margin-left: 3%;
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  float:right;
+  text-align:right;
 }
 .description-box {
 	width: 100%;
