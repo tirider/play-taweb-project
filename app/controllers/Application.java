@@ -124,7 +124,7 @@ public class Application extends Controller
 					session("email", user.getEmail());
 					
 					// REGISTER USER ON TDB
-					Semantic.insertUserTDB(user.getName(), user.getEmail());
+					Semantic.insertUserTDB(user.getName(), user.getEmail(), city);
 					
 					// RETRIEVE JSON TO CHECK EVERYTHING OK WHEN SIGN UP
 					return ok("{\"error\":\"0\",\"username\":\""+user.getName()+"\",\"email\":\"" + user.getEmail() + "\" }");

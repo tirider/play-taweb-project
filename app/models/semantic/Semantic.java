@@ -11,6 +11,7 @@ import models.beans.Photo;
 import models.beans.Review;
 import models.beans.Weather;
 import models.global.Core;
+import models.query.QueryRunner;
 import models.semantic.SparqlEndpoint;
 import models.service.CityParser;
 
