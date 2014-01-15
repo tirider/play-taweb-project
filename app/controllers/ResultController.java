@@ -84,7 +84,8 @@ public class ResultController extends Controller
 	        Boolean canVote = Semantic.canUserVote(city.getName(), session("username"));
 	        
 	        // UPDATE SEMANTIC
-	        Semantic.updateCityAndCountryTDB(city.getName(), city.getOverview(), city.getLatitude(), city.getLongitude(), city.getPopulationTotal(), city.getCountry(), city.getCurrencyCode(), photos);
+	        Semantic.updateCityAndCountryTDB(city);
+	        Semantic.updateDestinationPhotos(photos, city.getName());
 	        Semantic.updateUserDestinationInterestedTDB(session("username"), city.getName());
 	        Semantic.updateWeatherForecastTDB(weather, city.getName());
 	        

@@ -102,7 +102,7 @@ var fortravelers = {
 			        data: {
 			        	  username: $('#register-name').val(), 
 			        	  email: $('#register-email').val(), 
-			        	  city: $('#register-city').val(), 
+			        	  city: $('#destination-city').val(), 
 			        	  password: $('#register-password').val(), 
 			        	  passwordConfirm: $('#register-password-confirm').val() 
 			       	},

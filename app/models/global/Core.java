@@ -219,9 +219,18 @@ public class Core
 	 */
 	public static Date convertTimestampToDate(long timestamp)
 	{
-		Timestamp stamp = new Timestamp(timestamp);
-		Date date = new Date(stamp.getTime());
-		return date;
+		return new Date((long)timestamp*1000);
+	}
+	
+	/**
+	 * Converts date to RDF compliant for URIs
+	 * @param date
+	 * @return
+	 */
+	public static String convertDateForURIs(Date date)
+	{
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss"); // Currently we will use GMT +1 Time (Europe/Paris)
+		return dateFormat.format(date);
 	}
 	
 	/**
