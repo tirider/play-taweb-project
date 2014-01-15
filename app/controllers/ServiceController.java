@@ -13,6 +13,23 @@ public class ServiceController extends Controller
 	 */
     public static Result services()
     {
-    	return ok(services.render(Semantic.getListMostTraveledCities(), Semantic.getListMostInteractiveUsers(), Semantic.getListBestRatedCities(), Semantic.getTotalUsers(), Semantic.getNumberOfDestinationsSearched()));
+    	// GET SEMANTIC INFORMATION
+    	String mostTraveledCities = Semantic.getListMostTraveledCities();
+    	System.out.println("t tht "+mostTraveledCities);
+    	
+    	String mostInteractiveUsers = Semantic.getListMostInteractiveUsers();
+    	System.out.println("t tht "+mostInteractiveUsers);
+    	
+    	String bestRatedCities = Semantic.getListBestRatedCities();
+    	System.out.println("t tht "+bestRatedCities);
+    	
+    	String totalUsers = Semantic.getTotalUsers();
+    	System.out.println("t tht "+totalUsers);
+    	
+    	String numberOfDestinationsSearched = Semantic.getNumberOfDestinationsSearched();
+    	System.out.println("t tht "+numberOfDestinationsSearched);
+    	
+    	// CALLS THE CONCERNED FUNCTION / PAGE
+    	return ok(services.render(mostTraveledCities, mostInteractiveUsers, bestRatedCities, totalUsers, numberOfDestinationsSearched));
     }
 }

@@ -8,8 +8,7 @@ public class City
 	private double latitude;
 	private double logitude; //geo:lat
 	private int populationTotal; // dbpedia-owl:populationTotal
-	private String currencyCode;
-	//dbpprop:currencyCode
+	private String currencyCode; 	//dbpprop:currencyCode
 	
 	public City() 
 	{

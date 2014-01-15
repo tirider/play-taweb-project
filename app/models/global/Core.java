@@ -40,7 +40,8 @@ import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.rdf.model.Literal;
 
-public class Core {
+public class Core 
+{
 	/**
 	 * Downloads data from url given
 	 * @param urlString

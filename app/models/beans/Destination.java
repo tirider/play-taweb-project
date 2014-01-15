@@ -4,8 +4,8 @@ import java.util.List;
 
 import models.beans.Review;
 
-public class Destination {
-	
+public class Destination 
+{
 	public String cityName;
 	public String countryName;
 	public String cityLatLong;
@@ -14,7 +14,8 @@ public class Destination {
 	public int rate;
 	public List<Review> reviews;
 	
-	public Destination(String cityName, String countryName, int timesInterested, int timesTraveled, int rate, List<Review> reviews, String cityLatLong) {
+	public Destination(String cityName, String countryName, int timesInterested, int timesTraveled, int rate, List<Review> reviews, String cityLatLong) 
+	{
 		this.cityName = cityName;
 		this.countryName = countryName;
 		this.timesInterested = timesInterested;
@@ -24,11 +25,13 @@ public class Destination {
 		this.cityLatLong = cityLatLong;
 	}
 
-	public String getCityLatLong() {
+	public String getCityLatLong() 
+	{
 		return cityLatLong;
 	}
 
-	public void setCityLatLong(String cityLatLong) {
+	public void setCityLatLong(String cityLatLong) 
+	{
 		this.cityLatLong = cityLatLong;
 	}
 
@@ -36,23 +39,28 @@ public class Destination {
 		return reviews;
 	}
 
-	public void setReviews(List<Review> reviews) {
+	public void setReviews(List<Review> reviews) 
+	{
 		this.reviews = reviews;
 	}
 
-	public String getCityName() {
+	public String getCityName() 
+	{
 		return cityName;
 	}
 
-	public void setCityName(String cityName) {
+	public void setCityName(String cityName) 
+	{
 		this.cityName = cityName;
 	}
 
-	public String getCountryName() {
+	public String getCountryName() 
+	{
 		return countryName;
 	}
 
-	public void setCountryName(String countryName) {
+	public void setCountryName(String countryName) 
+	{
 		this.countryName = countryName;
 	}
 

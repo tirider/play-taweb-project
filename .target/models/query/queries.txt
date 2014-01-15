@@ -15,20 +15,5 @@ WHERE
    
    FILTER (lang(?countryName)= 'en' && lang(?cityAbstract)= 'en')
 }
-UNION
-{
-   ?cityResource rdf:type dbpedia-owl:City.
-   ?cityResource rdfs:label "Montpellier"@en.
-   ?cityResource geo:lat ?cityLat.
-   ?cityResource geo:lat ?cityLong.
-   ?cityResource dbpedia-owl:abstract ?cityAbstract.
-   ?cityResource dbpedia-owl:populationTotal ?cityPopulationTotal.
-
-   ?cityResource  dbpedia-owl:country ?countryResource.
-   ?countryResource  rdfs:label ?countryName.
-   ?countryResource dbpprop:currencyCode ?currencyCode.
-   
-   FILTER (lang(?countryName)= 'en' && lang(?cityAbstract)= 'en')
-}
-}
 LIMIT 1
+

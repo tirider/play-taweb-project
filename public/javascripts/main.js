@@ -2,6 +2,11 @@ var fortravelers = {
     
     init : function() {
     	
+    	jQuery("#ontology-format").change(function() {
+    		$("#ontology-download").removeAttr("href");
+    		$("#ontology-download").prop('href','/ontologyDL/'+$("#ontology-format option:selected").val());
+    	});
+    	
     	$.pnotify.defaults.history = false;
     	
     	// CHECK FOR AUTHENTICATION
@@ -42,7 +47,7 @@ var fortravelers = {
 			        		easyModal(); 
 			        	}
 			        	else {
-				        	var html = "<nav id=\"profile\" class='main-nav'><ul><li class='active'><a href='#'>Settings</a><ul class='dropdown-menu'><li><a href=\"#\">" + data.email + "</a></li><li><a href=\"/logout\">Log Out</a></li></ul></li></ul></nav>"; 
+				        	var html = "<nav id=\"profile\" class='main-nav'><ul><li class='active'><a href='#'>Settings</a><ul class='dropdown-menu'><li><a href=\"/user/"+data.username+"\">" + data.email + "</a></li><li><a href=\"/logout\">Log Out</a></li></ul></li></ul></nav>"; 
 				        	$(".header-buttons").after(html);
 				        	$(".header-buttons").remove();
 				        	authentication();
@@ -118,7 +123,7 @@ var fortravelers = {
 							$('#register-email').css('color','rgb(246, 100, 66)');
 			        	}
 			        	else if (data.error == "0") {
-			        		var html = "<nav id=\"profile\" class='main-nav'><ul><li class='active'><a href='#'>Settings</a><ul class='dropdown-menu'><li><a href=\"#\">" + data.email + "</a></li><li><a href=\"/logout\">Log Out</a></li></ul></li></ul></nav>"; 
+			        		var html = "<nav id=\"profile\" class='main-nav'><ul><li class='active'><a href='#'>Settings</a><ul class='dropdown-menu'><li><a href=\"/user/"+data.username+"\">" + data.email + "</a></li><li><a href=\"/logout\">Log Out</a></li></ul></li></ul></nav>"; 
 				        	$(".header-buttons").after(html);
 				        	$(".header-buttons").remove();
 				        	authentication();	

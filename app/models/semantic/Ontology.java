@@ -18,8 +18,9 @@ import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import com.hp.hpl.jena.vocabulary.XSD;
 
-public class Ontology {
-	
+public class Ontology 
+{
+	// ENCAPSULATE PREFIXES
 	private static final String owl 		= OWL.getURI();
 	private static final String rdf 		= RDF.getURI();
 	private static final String rdfs 		= RDFS.getURI();
@@ -34,10 +35,17 @@ public class Ontology {
 	private static final String trvlowl		= "http://4travelers.org/ontology#";
 	private static final String rev			= "http://purl.org/stuff/rev#";
 
+	/**
+	 * This method create the whole ontology hierarchy.
+	 * @param type
+	 * @return
+	 */
 	public static File generateOntology(String type) {
 		
+		// DEFINE LOCAL MODEL
 		Model m = ModelFactory.createOntologyModel();
 		
+		// ONTOLOGY PREFIXES
 		m.setNsPrefix("owl", owl);
 		m.setNsPrefix("rdf", rdf);
 		m.setNsPrefix("rdfs", rdfs);
@@ -52,73 +60,82 @@ public class Ontology {
         m.setNsPrefix("trvl-owl", trvlowl);
         m.setNsPrefix("rev", rev);
 
-        // Ontology
+        // CREATE ONTOLOGY
         Resource travelersOntology = m.createResource("http://4travelers.org/ontology/");
         Resource voafVocabulary = m.createResource(voaf + "Vocabulary");
         travelersOntology.addProperty(RDF.type, OWL.Ontology);
         travelersOntology.addProperty(RDF.type, voafVocabulary);
         
+        // ABOUT LICENCE
         Resource licenseR = m.createResource("http://creativecommons.org/licenses/by/4.0/");
         Property licenseProp = m.createProperty(cc + "license");
         travelersOntology.addProperty(licenseProp, licenseR);
         
-        travelersOntology.addProperty(DCTerms.creator, "Matthieu KAPETANOS");
+        // ABOUT AUTHORS
+        travelersOntology.addProperty(DCTerms.creator, "Matthieu KAPETANOS, Rider CARRION-CLEGER");
         
+        // ABOUT THIS ONTOLOGY
         travelersOntology.addProperty(DCTerms.description, "Ontology describing travel and destinations.");
-        
         travelersOntology.addProperty(DCTerms.title, "Travel ontology");
         
+        // CREATION DATE
         Literal dateIssued = m.createTypedLiteral("2013-12-22", XSDDatatype.XSDdate);
         travelersOntology.addProperty(DCTerms.issued, dateIssued);
         
+        // ABOUT PREFIXES
         Property PreferredNamespacePrefix = m.createProperty(vann + "preferredNamespacePrefix");
         Property PreferredNamespaceUri = m.createProperty(vann + "PreferredNamespaceUri");
         travelersOntology.addProperty(PreferredNamespacePrefix, "trvl");
         travelersOntology.addProperty(PreferredNamespaceUri, travelersOntology);
         
+        // ABOUT HIERARCHY
         Property classNumber = m.createProperty(voaf + "classNumber");
         Property propertyNumber = m.createProperty(voaf + "propertyNumber");
         travelersOntology.addProperty(classNumber, "2");
         travelersOntology.addProperty(propertyNumber, "5");
         
+        // ABOUT VERSIONING
         travelersOntology.addProperty(OWL.versionInfo, "Version 1.0");
         
-        // Other Resources
+        // FURTHER RESOURCES
         Resource ReviewR = m.createResource(rev + "Review");
 
-        // Classes
+        // CLASS Destination
         Resource destinationR = m.createResource(trvl + "Destination");
         m.add(destinationR, RDF.type, OWL.Class);
         destinationR.addProperty(RDFS.label, "Destination", "en");
         destinationR.addProperty(RDFS.comment, "This class describes a destination", "en");
         destinationR.addProperty(RDFS.isDefinedBy, travelersOntology);
         
-        Resource userDestinationR = m.createResource(trvl + "UserDestination");
+        // CLASS PersonDestination
+        Resource userDestinationR = m.createResource(trvl + "PersonDestination");
         m.add(userDestinationR, RDF.type, OWL.Class);
-        userDestinationR.addProperty(RDFS.label, "UserDestination", "en");
-        userDestinationR.addProperty(RDFS.comment, "This class describes how a users likes, rate etc a destination", "en");
+        userDestinationR.addProperty(RDFS.label, "PersonDestination", "en");
+        userDestinationR.addProperty(RDFS.comment, "This class describes how users are interested by destinations", "en");
         userDestinationR.addProperty(RDFS.isDefinedBy, travelersOntology);
         
-        // Datatype properties
+        // PROPERTY timesInterested
         Resource timesInterestedInR = m.createResource(trvl + "timesInterested");
         m.add(timesInterestedInR, RDF.type, OWL.DatatypeProperty);
         timesInterestedInR.addProperty(RDFS.isDefinedBy, travelersOntology);
         timesInterestedInR.addProperty(RDFS.domain, userDestinationR);
         timesInterestedInR.addProperty(RDFS.range, XSD.nonNegativeInteger);
         
+        // PROPERTY timesTraveled
         Resource timesTraveledToR = m.createResource(trvl + "timesTraveled");
         m.add(timesTraveledToR, RDF.type, OWL.DatatypeProperty);
         timesTraveledToR.addProperty(RDFS.isDefinedBy, travelersOntology);
         timesTraveledToR.addProperty(RDFS.domain, userDestinationR);
         timesTraveledToR.addProperty(RDFS.range, XSD.nonNegativeInteger);
         
-        // Objecttype properties
+        // PROPERTY to
         Resource toR = m.createResource(trvl + "to");
         m.add(toR, RDF.type, OWL.ObjectProperty);
         toR.addProperty(RDFS.isDefinedBy, travelersOntology);
         toR.addProperty(RDFS.domain, FOAF.Person);
         toR.addProperty(RDFS.range, userDestinationR);
         
+        // PROPERTY destination
         Resource destinationProp = m.createResource(trvl + "destination");
         m.add(destinationProp, RDF.type, OWL.ObjectProperty);
         destinationProp.addProperty(RDFS.isDefinedBy, travelersOntology);
@@ -126,38 +143,34 @@ public class Ontology {
         destinationProp.addProperty(RDFS.domain, destinationR);
         destinationProp.addProperty(RDFS.range, destinationR);
         
+        // PROPERTY review
         Resource reviewProp = m.createResource(trvl + "review");
         m.add(reviewProp, RDF.type, OWL.ObjectProperty);
         reviewProp.addProperty(RDFS.isDefinedBy, travelersOntology);
         reviewProp.addProperty(RDFS.domain, destinationR);
         reviewProp.addProperty(RDFS.range, rev + "Review");
         
-        FileOutputStream ost = null; 
-        File file = new File("travel.ttl");
-        FileOutputStream out = null;
-		try {
-			out = new FileOutputStream(file);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
+        // ONTOLOGY OUTPUT FILE
+        File file = null;
+        try 
+		{
+            if(type.toUpperCase().equals("N3"))
+            {
+            	file = new File("output/4travelersOntology.n3");
+            	FileOutputStream ost = new FileOutputStream(file);
+            	m.write(ost,"N3");
+            }
+            else
+            {
+            	file = new File("output/4travelersOntology.rdf");
+				FileOutputStream ost = new FileOutputStream(file);
+				m.write(ost,"RDF/XML-ABBREV");
+            }
 		}
-
-		try {
-			if(type == "N3") {
-				ost = new FileOutputStream("travel.ttl");
-				m.write(out, "N3"); 
-			}
-			else {
-				ost = new FileOutputStream("travel.rdf");
-				m.write(out, "RDF/XML-ABBREV"); 
-			}
-		}
-		catch (FileNotFoundException e) {
-				System.out.println("error creating file");
-		}
-		finally {
-			m.close();
-		}
-		
+		catch (FileNotFoundException e) 
+		{
+			System.err.println("Some exception(s) is up when writing a ontology file:\n"+e.getMessage());
+		}      
 		return file;
 	}
 }

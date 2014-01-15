@@ -131,11 +131,11 @@
                     <div class='span6'>
                         <nav class='main-nav'>
 		                    <ul>
-		                        <li class='active'> <a href="/">Home</a> </li>
-		                        <li class='active'> <a href="/sparql">SPARQL EndPoint</a> </li>
-		                        <li class='active'> <a href="/services">Services</a> </li>
-		                        <li class='active'> <a href="/ontology">Ontology</a> </li>
-		                        <li class='active'> <a href="/about">About</a> </li>
+		                        <li class='active'> <a href="@routes.Application.index(1)">Home</a> </li>
+		                        <li class='active'> <a href="@routes.EndpointsController.sparql()">SPARQL EndPoint</a> </li>
+		                        <li class='active'> <a href="@routes.ServiceController.services()">Services</a> </li>
+		                        <li class='active'> <a href="@routes.OntologyController.ontology()">Ontology</a> </li>
+		                        <li class='active'> <a href="@routes.Application.about()">About</a> </li>
 		                    </ul>
                         </nav>
                     </div>

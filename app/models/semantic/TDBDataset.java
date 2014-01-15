@@ -11,10 +11,17 @@ public class TDBDataset {
 	private static TDBDataset instance = null;
 	private Dataset dataset = null;
 	
+	/**
+	 * 
+	 */
 	public TDBDataset() {
 		dataset = TDBFactory.createDataset(directory);
 	}
 	
+	/**
+	 * Define a singleton instance
+	 * @return
+	 */
 	public static TDBDataset getInstance() {
 		if(instance == null) {
 			instance = new TDBDataset();
@@ -22,6 +29,10 @@ public class TDBDataset {
 		return instance;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public Dataset getDataset() {
 		return dataset;
 	}

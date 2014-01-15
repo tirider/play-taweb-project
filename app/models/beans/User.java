@@ -2,11 +2,8 @@ package models.beans;
 
 import java.util.Date;
 
-import play.data.validation.Constraints.Required;
-
 public class User 
 {
-	@Required
 	private String id;
 	private String name;
 	private String email;
@@ -26,13 +23,13 @@ public class User
 	public void setId(String id) { this.id = id; }
 	
 	public String getName() { return name; }
-	public void setName(String name) { this.name = name; }
+	public void setName(String name) { this.name = name.toLowerCase(); }
 
 	public String getPassword() { return password; }
 	public void setPassword(String userpassword) { this.password = userpassword; }
 	
 	public String getEmail() { return email; }
-	public void setEmail(String email) { this.email = email; }
+	public void setEmail(String email) { this.email = email.toLowerCase(); }
 
 	public Date getInscriptiondate() { return inscriptiondate; }
 	public void setInscriptiondate(Date inscriptiondate) { this.inscriptiondate = inscriptiondate; }

@@ -138,7 +138,7 @@
                                     </div></div></div></div></div>
                                     </div>
                                     @if(nbrating == 0) {
-                                      <div class="notratedyet">Not rated yet</div>
+                                      <div class="notratedyet"><span class="inf-box-text">Not rated yet</span></div>
                                     } else {
                                         @if(nbrating == 1) {
                                           (<span class="nbvotes">1</span> vote)
@@ -152,7 +152,7 @@
                                         @if(reviews.size() > 0) {
                                            <a href="#acomments">Reviews (@reviews.size())</a>
                                         } else {
-                                           No reviews yet.
+                                           <span class="inf-box-text">No reviews yet</span>
                                         }
                                     }
                                 </div>
@@ -161,7 +161,7 @@
                                    <a href="#acomment" class="write-comment">Write a review</a>
                                 }
                                 </div>
-                           I have been there:
+                           <span class="inf-box-text">I have been there:</span>
                            <div class="clearfix">
                            <select id='times-traveled'>
                                 <option value="0" @if(nbtimestraveled == 0) { selected="selected" }>None</option>

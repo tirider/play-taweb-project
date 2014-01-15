@@ -1,7 +1,7 @@
 package models.beans;
 
-public class Photo {
-
+public class Photo 
+{
 	private String imgThumbnailUrl;
 	private String imgLargeUrl;
 

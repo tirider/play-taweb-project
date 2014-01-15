@@ -54,11 +54,13 @@ public class Application extends Controller
 	        {
 	        	User user = userDAO.find(email);
 	        	
+	        	// CREATE SESSION DATA
 	        	session().clear();
 	        	session("username", user.getName());
 				session("email", user.getEmail());
 				
-				return ok("{\"email\":\"" + user.getEmail() + "\" }");
+				// RETRIEVE JSON TO CHECK EVERYTHING OK WHEN LOGIN
+				return ok("{\"username\":\""+user.getName()+"\",\"email\":\"" + user.getEmail() + "\" }");
 	        }
 	        else return ok("{\"error\":\"1\" }"); 
 	     }
@@ -104,11 +106,11 @@ public class Application extends Controller
 			
 			IUserDAO userDAO = new UserDAO(new DAOFactory().createMongodbConnection());
 			
-			if(userDAO.exists(username))
+			if(userDAO.exists(user.getName()))
 			{
 				return ok("{\"error\":\"2\" }");		
 			}
-			else if (userDAO.existsEmail(email))
+			else if (userDAO.existsEmail(user.getEmail()))
 			{
 				return ok("{\"error\":\"3\" }");
 			}
@@ -116,11 +118,16 @@ public class Application extends Controller
 			{
 				if(userDAO.save(user))
 				{
+					// CREATE SESSION DATA
 					session().clear();
-					session("username", username);
-					session("email", email);
-					Semantic.insertUserTDB(username, email);
-					return ok("{\"error\":\"0\",\"email\":\"" + user.getEmail() + "\" }");
+					session("username", user.getName());
+					session("email", user.getEmail());
+					
+					// REGISTER USER ON TDB
+					Semantic.insertUserTDB(user.getName(), user.getEmail());
+					
+					// RETRIEVE JSON TO CHECK EVERYTHING OK WHEN SIGN UP
+					return ok("{\"error\":\"0\",\"username\":\""+user.getName()+"\",\"email\":\"" + user.getEmail() + "\" }");
 				}
 				else return badRequest();
 			}

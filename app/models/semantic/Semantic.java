@@ -16,6 +16,7 @@ import models.semantic.SparqlEndpoint;
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
+import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.Property;
@@ -45,11 +46,12 @@ public class Semantic {
 	 * Get unique dataset
 	 * @return
 	 */
-	public static Dataset getDataset() {
+	public static Dataset getDataset() 
+	{
+		// GET SINGLETON INSTANCE
 		TDBDataset instance = new TDBDataset();
-		Dataset dataset = instance.getDataset();
 		
-		return dataset;
+		return instance.getDataset();
 	}
 	
 	/**
@@ -67,8 +69,7 @@ public class Semantic {
 	public static Model getModel()
 	{
 		// GET DATASET AND MODEL
-        Dataset dataset = getDataset();
-        Model taweb = dataset.getNamedModel("taweb");
+        Model taweb = getDataset().getNamedModel("taweb");
         
         taweb.setNsPrefix("rdf", rdf);
         taweb.setNsPrefix("rdfs", rdfs);
@@ -83,6 +84,7 @@ public class Semantic {
         taweb.setNsPrefix("trvl", trvl);
         taweb.setNsPrefix("trvl-owl", trvlowl);
 		
+        // RETRIEVE THE NEWEST SYSTEM MODEL
         return taweb;
 	}
 	
@@ -112,18 +114,21 @@ public class Semantic {
 	{
 		Model taweb = getModel();
 
-        Resource Person = taweb.getResource(trvl + "user/" + nick);
-        if(!taweb.containsResource(Person))
-        {
-	    	// CREATE USER RESSOURCE
-        	Person = taweb.createResource(trvl + "user/" + nick);
-			Person.addProperty(FOAF.nick, nick);
-			taweb.add(Person, RDF.type, FOAF.Person);
-        }
+        Resource newResource = taweb.getResource(trvl + "user/" + nick);
         
+        // CHECK WETHER THE RESOURCE USER EXISTS
+        if(!taweb.containsResource(newResource))
+        {
+	    	// ADD NEW RESSOURCE TO THE MODEL
+        	newResource = taweb.createResource(trvl + "user/" + nick);
+			newResource.addProperty(FOAF.nick, nick);
+			taweb.add(newResource, RDF.type, FOAF.Person);
+        }
+        else System.out.println("TDB : The new resource could not be created...");
+        
+        // CLOSE THE CURRENT MODEL
         taweb.close();
-        Dataset dataset = getDataset();
-        closeDataset(dataset);
+        closeDataset(getDataset());
 	}
 	
 	/**
@@ -904,7 +909,9 @@ public class Semantic {
 	 */
 	public static String getListMostTraveledCities()
 	{
-		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) ?destination WHERE { "
+		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) ?destination " +
+				"WHERE " +
+				"{ "
 				+ "?s rdf:type trvl:UserDestination . "
 				+ "?s trvl:timesTraveled ?o . "
 				+ "?s trvl:destination ?destinationResource . "
@@ -915,6 +922,7 @@ public class Semantic {
 				+ "LIMIT 10";
 
 		ResultSet results = SparqlEndpoint.queryData(query);
+
 		if(results == null) {
 			return null;
 		}
