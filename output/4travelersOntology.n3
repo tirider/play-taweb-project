@@ -1,16 +1,16 @@
 @prefix dc:    <http://purl.org/dc/elements/1.1/> .
+@prefix rev:   <http://purl.org/stuff/rev#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix vann:  <http://purl.org/vocab/vann/> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
 @prefix trvl:  <http://4travelers.org/> .
 @prefix voaf:  <http://purl.org/vocommons/voaf#> .
 @prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
-@prefix rev:   <http://purl.org/stuff/rev#> .
 @prefix trvl-owl: <http://4travelers.org/ontology#> .
-@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
 @prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
 @prefix owl:   <http://www.w3.org/2002/07/owl#> .
-@prefix vann:  <http://purl.org/vocab/vann/> .
 @prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix cc:    <http://creativecommons.org/ns#> .
-@prefix dcterms: <http://purl.org/dc/terms/> .
 
 trvl:PersonDestination
         a                 owl:Class ;
