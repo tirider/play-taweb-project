@@ -30,7 +30,6 @@ public class OntologyController extends Controller
     		if(type.toUpperCase().equals("RDF") || type.toUpperCase().equals("N3"))
     		{
 	    		File file = Ontology.generateOntology(type);
-	    		//response().setContentType("application/x-download");
 	    		return ok(file);
     		}
     		else return redirect(routes.OntologyController.ontology());

@@ -75,19 +75,6 @@ textarea:invalid {
   color: #f66442;
   border-color: #f66442;
 }
-.tooltip.bottom .tooltip-arrow {
-  right: 20px;
-  left: auto !important;
-}
-.tooltip-inner {
-  padding: 15px 23px;
-  -webkit-border-radius: 2px;
-  -webkit-background-clip: padding-box;
-  -moz-border-radius: 2px;
-  -moz-background-clip: padding;
-  border-radius: 2px;
-  background-clip: padding-box;
-}
 .top-form h2 {
   color: white;
   font-size: 15px;

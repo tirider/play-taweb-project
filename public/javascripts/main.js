@@ -337,6 +337,8 @@ var fortravelers = {
             'placement': 'bottom'
         });
         
+        $(ui.handle).css('z-index', '100');
+        
 		jQuery("#f").submit(function(event) {
 			if($('#search-string').val() == "") {
 				$('#search-string').prop('title','Please fill in required fields');
