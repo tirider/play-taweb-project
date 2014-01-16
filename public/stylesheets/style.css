@@ -1804,9 +1804,14 @@ margin: 15px 0px;  */
     max-width: 1127px;
     min-height: 233px;
 }
+
 figure img {
   width: 100%;
   max-height: 100%;
+}
+.footer-img {
+  width: auto;
+  float: right;
 }
 .location-finder {
   -webkit-border-radius: 4px;
