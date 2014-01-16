@@ -1,0 +1,107 @@
+@main("Ontology")(subtitle)(content)
+
+@subtitle = {
+            <h1><a>Ontology</a></h1>
+            <p>This page helps developers to understand how to user SPARQL EndPoints. Precisely how we store our data and our ontology.</p>
+}
+
+@content = {
+			<section class='row featured-items'>
+               <section class='span9'>
+                	<div class='row'>
+	                    <div class='span9'>
+	                        <div class='top-bar'>
+	                            <div class='bar-title'>
+	                                <div class='inner'>
+	                                    <div class='pull-left custom-margin'>
+	                                        <strong class="strong-title">About 4travelers Ontology</strong>
+	                                    </div>
+	                                    <div class='pull-right results-per-page custom-margin'>
+	                                        <a class="active"><b>v1.0</b></a>
+	                                    </div>
+	                                </div>
+	                            </div>
+	                            <div class='bar-bottom'>
+	                                <div class='inner'>
+	                                    <h3 class="container-item-text">RDF Travel Ontology</h3>
+	                                    <p>Vocabulary for expressing traveling and destinations using the Resource Description Framework.</p>
+	                                    
+	                                    <h3 class="container-item-text">Namespace</h3>
+	                                    <p>The URI for this vocabulary is <code>http://4travelers.org/</code></p>
+	                                    <p>When abbreviating terms the suggested prefix is <code>trvl</code></p>
+	                                    
+	                                    <p>Each class or property in the vocabulary has a URI constructed by appending a term name to the vocabulary URI. For example: <code>http://4travelers.org/Destination</code></p>
+	                                    
+	                                    <h3 class="container-item-text">Term Summary</h3>
+	                                    <p>An alphabetical list of all terms defined in this schema.</p>
+	                                    
+	                                    <h3 class="container-item-text">Classes</h3>
+	                                    <table>
+	                                        <tr><th>Term</th><th>URI</th><th>Description</th></tr>
+	                                        <tr><td>Destination</td><td>http://4travelers.org/Destination</td><td>A destination, usually it's same as a Settlement.</td></tr>
+	                                        <tr><td>UserDestination</td><td>http://4travelers.org/UserDestination</td><td>A user feedback for a destination.</td></tr>
+	                                    </table>
+	                                    
+	                                    <h3 class="container-item-text">Properties</h3>
+	                                    <table>
+	                                        <tr><th>Term</th><th>URI</th><th>Description</th></tr>
+	                                        <tr><td>destination</td><td>http://4travelers.org/destination</td><td>The resource of the destination.</td></tr>
+	                                        <tr><td>timesInterested</td><td>http://4travelers.org/timesInterested</td><td>A numeric value.</td></tr>
+	                                        <tr><td>timesTraveled</td><td>http://4travelers.org/timesTraveled</td><td>A numeric value.</td></tr>
+	                                        <tr><td>to</td><td>http://4travelers.org/to</td><td>A user which is interested to a destination.</td></tr>
+	                                        <tr><td>review</td><td>http://4travelers.org/review</td><td>The resource of the review of a destination.</td></tr>
+	                                    </table>	                              
+	                                </div>
+	                            </div>
+	                        </div>
+	                    </div>
+					</div>
+               </section>
+               <aside class='span3'>
+	               <section class='widget'>
+	                   <section class='widget-title uppercase'>
+	                       <div class='inner'>
+	                           <h2>Ontology Download</h2>
+	                       </div>
+	                   </section>
+	                   <section class='widget-content'>
+	                        <div class='widget-section'>
+	                            <div class='inner'>
+                                    <label>Available formats</label>
+                                    <select id="ontology-format" class='btn-block selectpicker'>
+                                        <option value="RDF" selected="selected">RDF/XML</option>
+                                        <option value="N3">Turtle</option>
+                                    </select>
+	                            </div>
+	                        </div>
+	                        <div class='widget-section'>
+	                            <div class='inner'>
+	                            	<p>Start your dowload by clicking <a id="ontology-download" href='/ontologyDL/RDF'>here</a></p>
+	                            </div>
+	                        </div>
+	                   </section>
+	               </section>	  
+				  <section class='widget'>
+	                   <section class='widget-title uppercase'>
+	                       <div class='inner'>
+	                           <h2>Other Available Sources</h2>
+	                       </div>
+	                   </section>
+	                   <section class='widget-content'>
+	                        <div class='widget-section'>
+	                            <div class='inner'>
+	                                <label>OWL</label>
+	                                <p>Ontology Web Language</p>
+	                            </div>
+	                        </div>
+	                        <div class='widget-section'>
+	                            <div class='inner'>
+	                                <label>DBPedia.org</label>
+	                                <p>The DBpedia Ontology</p>
+	                            </div>
+	                        </div>
+	                   </section>
+	               </section>	                            
+               </aside>
+			</section>           
+}

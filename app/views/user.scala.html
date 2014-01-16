@@ -1,0 +1,126 @@
+@(nick : String, destinations : List[models.beans.Destination])
+
+@main(nick, scripts)(subtitle)(content)
+
+@scripts = {
+            <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>
+            <script src='@routes.Assets.at("javascripts/vendor/gmap3.min.js")'></script>
+}
+
+@subtitle = {
+            <h1><a>We remember your destinations</a></h1>
+            <p>Gathering information about your destination help us to bring you back newest topics of interest.</p>
+}
+
+@content = {
+            <section class='row featured-items'>
+                <section class='span9'>
+                <div class='row'>
+                    <div class='span9'>
+                        <div class='top-bar'>
+                            <div class='bar-title'>
+                                <div class='inner'>
+                                    <div class='pull-left custom-margin'>
+                                        <h2><strong>@nick's destinations</strong></h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='bar-bottom'>
+                                <div id="user-destinations">
+                                    <div id="map_canvas"></div>
+                                </div>
+                            </div>
+                        </div>
+                        @if(!destinations.isEmpty()) {
+                             @for(d <- destinations){
+                             <div class='location-finder'>
+                                 <div class="user-destination">
+                                 <h4><a name="@d.getCityName()">@d.getCityName()</a></h4>
+                                 <p>Times traveled: @d.getTimesTraveled()</p>
+                                 @if(d.getRate() > 0) {
+                                 <div class="clearfix">
+                                     <div class="rate-left"><p>Has rated:</p></div>
+                                     <div class="rate-right">
+                                     <div id="cannotvote" class="stars">
+                                          <div class="rating" style="width: @d.getRate()%;"></div>
+                                          <div class="star" id="votestar1" data-value="1">
+                                          <div class="star" id="votestar2" data-value="2">
+                                          <div class="star" id="votestar3" data-value="3">
+                                          <div class="star" id="votestar4" data-value="4">
+                                          <div class="star" id="votestar5" data-value="5">
+                                          </div></div></div></div></div>
+                                          </div>
+                                     </div>
+                                 </div>
+                                 } else {
+                                 <p>User has not rated yet.</p>
+                                 }
+                             
+                             @if(!d.getReviews().isEmpty) {
+                                 Reviews:
+                                 @for(r <- d.getReviews()){
+                                     <a name="@d.getCityName()_review_date@r.getReviewDate()"></a>
+                                     <p>On @r.getReviewDate()<br>
+                                     @r.getReview()</p>
+                                 }
+                                  
+                             } else {
+                                  <p>User has not left a review.</p>
+                             }
+                             </div>
+                         </div>
+                         }
+                     }
+                     @if(destinations.isEmpty()) {
+                         <p>User hasn't been interested or traveled to any destination.</p>
+                     }
+                    </div>
+                </div>
+            </section>
+        </section>
+        <script type="text/javascript">
+	        jQuery("#map_canvas").gmap3({
+	        	  map:{
+	        	    options:{
+	        	      center:[29.2398667, 2.3412667],
+	        	      zoom: 2
+	        	    }
+	        	  },
+	        	  marker:{
+	        	    values:[
+						@if(!destinations.isEmpty()) {
+						    @for((d, index) <- destinations.zipWithIndex){
+					    		{latLng:[@d.getCityLatLong()], data:"@d.getCityName()"},
+						    }
+						}
+				    ],
+	        	    options:{
+	        	      draggable: false
+	        	    },
+	        	    events:{
+	        	      mouseover: function(marker, event, context){
+	        	        var map = $(this).gmap3("get"),
+	        	          infowindow = $(this).gmap3({get:{name:"infowindow"}});
+	        	        if (infowindow){
+	        	          infowindow.open(map, marker);
+	        	          infowindow.setContent(context.data);
+	        	        } else {
+	        	          $(this).gmap3({
+	        	            infowindow:{
+	        	              anchor:marker,
+	        	              options:{content: context.data}
+	        	            }
+	        	          });
+	        	        }
+	        	      },
+	        	      mouseout: function(){
+	        	        var infowindow = $(this).gmap3({get:{name:"infowindow"}});
+	        	        if (infowindow){
+	        	          infowindow.close();
+	        	        }
+	        	      }
+	        	    }
+	        	  }
+	        	});
+        </script>
+}
