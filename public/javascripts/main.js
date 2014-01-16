@@ -331,11 +331,6 @@ var fortravelers = {
 				 $("#destination-city").val(ui.item.hiddenValue);
 			 }
 		 });
-		
-        jQuery('.custom-tooltip').tooltip({
-            'selector': '',
-            'placement': 'bottom'
-        });
         
         $(ui.handle).css('z-index', '100');
         
