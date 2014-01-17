@@ -408,7 +408,7 @@ var fortravelers = {
             "touch": true,
             "animation": "fade",
             "animationLoop": true,
-            "slideshow" : false
+            "slideshow" : true
         });
         
         jQuery('.featured-items .next').click(function(){
