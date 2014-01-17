@@ -245,7 +245,7 @@ public class Semantic {
         	
         	userDestination.addProperty(timesInterestedProp, "1");
         	
-        	Resource userDestinationR = taweb.createResource(trvl + "UserDestination");
+        	Resource userDestinationR = taweb.createResource(trvl + "PersonDestination");
         	userDestination.addProperty(RDF.type, userDestinationR);
         }
         else
@@ -405,7 +405,7 @@ public class Semantic {
 	public static int getRatingByCity(String cityname)
 	{
 		String query = "SELECT (AVG(xsd:integer(?o)) AS ?avg) WHERE { "
-						+ "?s rdf:type trvl:UserDestination  ."
+						+ "?s rdf:type trvl:PersonDestination  ."
 						+ "?s rev:rating ?o ."
 						+ "?s trvl:destination ?destinationR ."
 						+ "?destinationR rdfs:label \"" + cityname + "\" "
@@ -434,7 +434,7 @@ public class Semantic {
 	public static int getNumberOfVotesByCity(String cityname)
 	{
 		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) WHERE { "
-						+ "?s rdf:type trvl:UserDestination  ."
+						+ "?s rdf:type trvl:PersonDestination  ."
 						+ "?s rev:rating ?o ."
 						+ "?s trvl:destination ?destinationR ."
 						+ "?destinationR rdfs:label \"" + cityname + "\" "
@@ -796,8 +796,9 @@ public class Semantic {
 	 */
 	public static String getMostInterestedCities()
 	{
-		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) ?destination WHERE { "
-				+ "?s rdf:type trvl:UserDestination . "
+		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) ?destination " +
+				"WHERE { "
+				+ "?s rdf:type trvl:PersonDestination . "
 				+ "?s trvl:timesTraveled ?o . "
 				+ "?s trvl:destination ?destinationResource . "
 				+ "?destinationResource rdfs:label ?destination "
@@ -807,6 +808,7 @@ public class Semantic {
 				+ "LIMIT 8";
 
 		ResultSet results = SparqlEndpoint.queryData(query);
+		
 		if(results == null) {
 			return null;
 		}
@@ -937,7 +939,7 @@ public class Semantic {
 		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) ?destination " +
 				"WHERE " +
 				"{ "
-				+ "?s rdf:type trvl:UserDestination . "
+				+ "?s rdf:type trvl:PersonDestination . "
 				+ "?s trvl:timesTraveled ?o . "
 				+ "?s trvl:destination ?destinationResource . "
 				+ "?destinationResource rdfs:label ?destination "
@@ -1005,7 +1007,7 @@ public class Semantic {
 	public static String getListBestRatedCities()
 	{
 		String query = "SELECT (AVG(xsd:integer(?rate)) AS ?r) ?cityname ?countryname WHERE { "
-				+ "?userDestinationResource rdf:type trvl:UserDestination ."
+				+ "?userDestinationResource rdf:type trvl:PersonDestination ."
 				+ "?userDestinationResource rev:rating ?rate . "
 				+ "?userDestinationResource trvl:destination ?destinationResource ."
 				+ "?destinationResource rdfs:label ?cityname . "

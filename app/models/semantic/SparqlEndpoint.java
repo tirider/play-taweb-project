@@ -1,12 +1,15 @@
 package models.semantic;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.util.List;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.Query;
 import com.hp.hpl.jena.query.QueryExecution;
 import com.hp.hpl.jena.query.QueryExecutionFactory;
 import com.hp.hpl.jena.query.QueryFactory;
+import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
 import com.hp.hpl.jena.rdf.model.Model;
@@ -75,10 +78,34 @@ public class SparqlEndpoint {
 	
 	public static String outputHtml(ResultSet results)
 	{
+		/*// RETRIEVE ALL VARIABLE COMMING FROM THE QUERY
+		List<String> varsets = results.getResultVars();
+		
+		// HOLD THE FINAL RESULT
+		String resultHtml = new String();
+		
+		while(results.hasNext())
+		{
+		    QuerySolution bind = results.nextSolution();
+		    String row = new String();
+		    String res = new String();
+		    
+		    for(int i =0; i< varsets.size();i++)
+		    {
+		    	res = bind.get(varsets.get(i)).toString();
+		    	
+		    	if(res.matches("^http://"))
+		    		row += "<a href=\"http://localhost:9000/Montpellier\">"+res+"</a>"+" ### ";
+		    	else
+		    		row += "\""+res+"\""+ " ### ";
+		    }
+		    
+		    resultHtml += "<br/>"+row + "\n";
+		}*/
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ResultSetFormatter.out(baos, results);
 	    String resultStr = baos.toString();
-
+	    //System.out.println(resultStr);
 	    resultStr = resultStr.replace("<", "&lt;");
 	    resultStr = resultStr.replace(">", "&gt;");
 	    resultStr = resultStr.replace("-", " ");

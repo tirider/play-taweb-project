@@ -62,6 +62,7 @@ public class EndpointsController extends Controller
     		formatInt = Core.parseInt(format);
     	}
     	
+    	// CHECKING FOR VALID QUERY
     	ResultSet results = SparqlEndpoint.queryData(query);
     	if(results == null) {
     		return ok(sparqlresults.render("Error on SPARQL query"));
@@ -70,6 +71,7 @@ public class EndpointsController extends Controller
 		switch(formatInt) {
 			case 0:
 				String resultsHtml = SparqlEndpoint.outputHtml(results);
+				//response().setContentType("text/html");
 				return ok(sparqlresults.render(resultsHtml));
 			case 1:
 				ByteArrayOutputStream baosJson = new ByteArrayOutputStream();

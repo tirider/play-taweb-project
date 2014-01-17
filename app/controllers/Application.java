@@ -28,8 +28,8 @@ public class Application extends Controller
     {
     	int authentication = Core.parseInt(String.valueOf(auth));
     	
-    	if(authentication == 0) 
-    		return ok(index.render(Semantic.getMostInterestedCities(),0));
+    	if(authentication == 0) {
+    		return ok(index.render(Semantic.getMostInterestedCities(),0));}
 		return ok(index.render(Semantic.getMostInterestedCities(),1));    		
     }
  

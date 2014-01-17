@@ -33,7 +33,7 @@ public class ResultController extends Controller
 	 */
     public static Result search() throws Exception
     {
-    	// GET FORM DATA
+    	// GET DATA FROM CLIENT FORM
     	DynamicForm dynamicForm = Form.form().bindFromRequest();
         
     	String destination = dynamicForm.get("destination-city");
@@ -92,7 +92,7 @@ public class ResultController extends Controller
 	        Date ArrivalDate = new Date();
 	        return ok(results.render(city, ArrivalDate, weather, rating, nbrating, canVote, photos, reviews, nbtimes));
     	}
-    	return redirect(routes.Application.index(0));
+    	else return redirect(routes.Application.index(0));
     }
     
     /**

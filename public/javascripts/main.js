@@ -2,6 +2,9 @@ var fortravelers = {
     
     init : function() {
     	
+    	// CUSTOM TOOLTIP
+    	jQuery(document).tooltip({ position: { my: "left+30 center", at: "right center" } });
+    	
     	jQuery("#ontology-format").change(function() {
     		$("#ontology-download").removeAttr("href");
     		$("#ontology-download").prop('href','/ontologyDL/'+$("#ontology-format option:selected").val());
@@ -43,7 +46,7 @@ var fortravelers = {
 			        dataType: "json",
 			        success : function(data) {
 			        	if(data.error == "1") {
-			        		$('#form-login').append("<div class=\"easy-modal\">Ooupss, correct your email or password field.</div>") 
+			        		$('#form-login').append("<div class=\"easy-modal\">Ooupss, correct your email or password field.</div>");
 			        		easyModal(); 
 			        	}
 			        	else {
@@ -51,6 +54,10 @@ var fortravelers = {
 				        	$(".header-buttons").after(html);
 				        	$(".header-buttons").remove();
 				        	authentication();
+				        	$.pnotify({
+			            		title: 'Success',
+			            		text: 'You\'re now connected with us'
+			            	});
 			        	}
 			        },
 			        error : function(data) { 
@@ -127,6 +134,10 @@ var fortravelers = {
 				        	$(".header-buttons").after(html);
 				        	$(".header-buttons").remove();
 				        	authentication();	
+				        	$.pnotify({
+			            		title: 'Success',
+			            		text: 'You\'re now connected with us'
+			            	});
 			        	} 
 			        },
 			        error : function(data) { 
@@ -283,7 +294,19 @@ var fortravelers = {
 			$('#hidden-header').css('display','');
 		});
 		
-		jQuery('#search-string').focus();
+		jQuery('#search-string').attr('required','required');
+		
+		jQuery("#form-search").submit(function(event) {
+			if($('#search-string').val() == "") {
+				return false;
+			}
+			return true;
+			event.preventDefault();
+		});
+		
+		jQuery("#search-string" ).keyup(function() {
+			$("#destination-city").val($('#search-string').val());
+		});
 		
 		var parentID = "";
 		jQuery("#search-string, #register-city").autocomplete({
@@ -321,7 +344,8 @@ var fortravelers = {
 					 }
 				 },
 				 error: function(data){
-				 	alert("Not citie founds.");
+				 	//alert("Sorry not cities were founds. Maybe due to some unavailable service.");
+					 $('#search-string').last().addClass( "loading-main" );
 				 }
 			 	});
 			 },
@@ -332,29 +356,6 @@ var fortravelers = {
 			 }
 		 });
         
-        $(ui.handle).css('z-index', '100');
-        
-		jQuery("#f").submit(function(event) {
-			if($('#search-string').val() == "") {
-				$('#search-string').prop('title','Please fill in required fields');
-				$('#search-string').focus();
-				$('#search-string').css('border-color','rgb(233, 50, 45)');
-				$('#search-string').css('color','rgb(246, 100, 66)');		
-				return false;			
-			}
-			//else { $('#search-string').removeAttr('style'); }
-			
-			return true;
-			event.preventDefault();
-		});
-		
-		$(document).on('focus', '#search-string', function () {
-			$('#search-string').removeClass('error-input-box');
-			$('#error-message').remove();
-		});
-
-        jQuery(document).tooltip();
-	
 		jQuery('.location-finder .button-slider').click(fortravelers.toggleLocationFinder);
         
         jQuery('.custom-multiple-select').mCustomScrollbar({

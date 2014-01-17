@@ -17,9 +17,9 @@
 			            <div id='search-content' class="search-content">
 			                <div class='inner'>
 			                	<p id="search-head-line">Select your destination and arrival date</p>
-			                    <form id='f' name='f' action="/search" method="post">
+			                    <form id="form-search" name="form-search" action="/search" method="post">
 			                        <input type="text" name='search-string' id='search-string' class='search-string' placeholder="e.g Montpellier, Paris, London"/>
-			                        <input type="hidden" name='destination-city' id="destination-city" />
+			                        <input type="hidden" name="destination-city" id="destination-city" />
 			                        <button type="submit" class='btn btn-success btn-lg btn-block'>
 			        					<i class="icon-search icon-white"> </i> Search
 			        				</button>
@@ -31,10 +31,11 @@
 			</section>
 			<!-- ends form search frame -->
 			
+			@if(HTMLString != null) {
 			<!-- start slides bottom show frame -->
 			<section class='row featured-items'>
 			    <div class='span12'>
-			        <h2 style="margin-top:40px;">Most Visited Cities</h2>
+			        <h2 style='margin-top:40px;'>Most Visited Cities</h2>
 			        
 			        <!-- start places arrows control -->
 			        <div class='controls'>
@@ -46,9 +47,7 @@
 			        <!-- start cities slides frame -->
 			        <div class='featured-items-slider'>
 			            <ul class='slides'>
-			                @if(HTMLString != null) {
-                                @Html(HTMLString)
-                            }
+                           @Html(HTMLString)
 			            </ul>
 			        </div>
 			        <!-- ends cities slider frame -->
@@ -58,7 +57,8 @@
 			    <i class='content-bubble'> </i>
 			</section>
 			<!-- ends slides bottom show frame -->
-			
+			} 
+            	
 	        <!-- authentication -->
 	        <input type="hidden" id="authentication" value="@authentication"/>			
 }
