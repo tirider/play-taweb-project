@@ -1,4 +1,10 @@
-@main("About")(subtitle)(content)
+@main("About", meta)(subtitle)(content)
+
+@meta = {
+        <meta property="og:title" content="4Travelers - About" />
+        <meta name="description" content="About page for 4Travelers. Some stuff about authors and the purpose of this webpage.">
+        <meta property="og:description" content="About page for 4Travelers. Some stuff about authors and the purpose of this webpage." />
+}
 
 @subtitle = {
             <h1><a>About this project</a></h1>

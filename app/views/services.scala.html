@@ -1,6 +1,12 @@
 @(getListMostTraveledCities : String, getListMostInteractiveUsers : String, getListBestRatedCities : String, getTotalUsers : String, getNumberOfDestinationsSearched : String)
 
-@main("Services")(subtitle)(content)
+@main("Services", meta)(subtitle)(content)
+
+@meta = {
+        <meta property="og:title" content="4Travelers - Services" />
+        <meta name="description" content="Here are some examples of how you can user our data from our SPARQL EndPoint.">
+        <meta property="og:description" content="Here are some examples of how you can user our data from our SPARQL EndPoint." />
+}
 
 @subtitle = {
             <h1><a>Services</a></h1>

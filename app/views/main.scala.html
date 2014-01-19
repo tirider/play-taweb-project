@@ -1,13 +1,14 @@
-@(title: String, scripts: Html = Html(""))(subtitle: Html)(content: Html)
+@(title: String, scripts: Html = Html(""), meta: Html = Html(""))(subtitle: Html)(content: Html)
 <!DOCTYPE html>
 <html>
     <head>
     	<!-- metadata description -->
         <meta charset="utf-8">
         <title>4Travelers - @title</title>
-        <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-	    	    
+	    @meta
+	    <meta property="og:locale" content="en_GB" />
+	    <meta property="og:image" content='@routes.Assets.at("img/logo.png")' />
 		<!-- stylesheet -->
         <link rel="icon" type="image/png" href='@routes.Assets.at("img/favicon.png")'>
         <link rel="stylesheet" href='@routes.Assets.at("stylesheets/bootstrap.min.css")'>

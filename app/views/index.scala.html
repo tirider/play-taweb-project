@@ -1,6 +1,12 @@
 @(HTMLString : String, authentication: Integer)
 
-@main("Home")(subtitle)(content)
+@main("Home", meta)(subtitle)(content)
+
+@meta = {
+        <meta property="og:title" content="4Travelers - Home" />
+        <meta name="description" content="This website is dedicated to fetch/handle data from external sources in order to produce semantic data in RDF format with the addition of users' recommendations.">
+        <meta property="og:description" content="This website is dedicated to fetch/handle data from external sources in order to produce semantic data in RDF format with the addition of users' recommendations." />
+}
 
 <!-- tag your location page -->
 @subtitle = {
