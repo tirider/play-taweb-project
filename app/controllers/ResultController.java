@@ -37,6 +37,7 @@ public class ResultController extends Controller
     	DynamicForm dynamicForm = Form.form().bindFromRequest();
         
     	String destination = dynamicForm.get("destination-city");
+    	System.out.println(destination);
     	
     	return redirect(routes.ResultController.results(destination));
     }

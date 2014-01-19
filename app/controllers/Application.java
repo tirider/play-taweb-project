@@ -108,7 +108,7 @@ public class Application extends Controller
 			
 			if(userDAO.exists(user.getName()))
 			{
-				return ok("{\"error\":\"2\" }");		
+				return ok("{\"error\":\"2\" }");
 			}
 			else if (userDAO.existsEmail(user.getEmail()))
 			{

@@ -155,7 +155,6 @@ public class Semantic {
 	{
 		Model taweb = getModel();
 		
-		String populationStr = String.valueOf(city.getPopulationTotal());
 		String latitudeStr = String.valueOf(city.getLatitude());
 		String longitudeStr = String.valueOf(city.getLongitude());
 		String cityname = city.getName();
@@ -176,7 +175,10 @@ public class Semantic {
         	Resource Destination = taweb.createResource(trvl + "Destination");
         	DestinationR = taweb.createResource(trvl + cityname);
         	DestinationR.addProperty(DC.description, city.getOverview());
-        	DestinationR.addProperty(populationProp, populationStr);
+        	
+        	if(String.valueOf(city.getPopulationTotal()) != null || String.valueOf(city.getPopulationTotal()) != "0" || String.valueOf(city.getPopulationTotal()) != "") {
+        		DestinationR.addProperty(populationProp, String.valueOf(city.getPopulationTotal()));
+        	}
         	DestinationR.addProperty(RDFS.label, cityname);
         	DestinationR.addProperty(latitudeProp, latitudeStr);
         	DestinationR.addProperty(longitudeProp, longitudeStr);
