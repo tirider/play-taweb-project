@@ -1,13 +1,14 @@
-@(title: String, scripts: Html = Html(""))(subtitle: Html)(content: Html)
+@(title: String, scripts: Html = Html(""), meta: Html = Html(""))(subtitle: Html)(content: Html)
 <!DOCTYPE html>
 <html>
     <head>
     	<!-- metadata description -->
         <meta charset="utf-8">
         <title>4Travelers - @title</title>
-        <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
-	    	    
+	    @meta
+	    <meta property="og:locale" content="en_GB" />
+	    <meta property="og:image" content='@routes.Assets.at("img/logo.png")' />
 		<!-- stylesheet -->
         <link rel="icon" type="image/png" href='@routes.Assets.at("img/favicon.png")'>
         <link rel="stylesheet" href='@routes.Assets.at("stylesheets/bootstrap.min.css")'>
@@ -252,7 +253,7 @@
 		                                    <div class='slide-box'>
 		                                        <div class='text-box'>
 		                                            <div class='inner'>
-		                                                <p>Bon monsieur mattiew, écrie un peu de choses ici. Ce t'un petit text pour decrire ce que ce project t'as apporté. tu comprends ? plus de merde !</p>
+		                                                <p>Happy to work with this project, learned lot of stuff around semantic web, RDF, ontologies...</p>
 		                                            </div>
 		                                            <i class='bubble'></i>
 		                                        </div>
@@ -313,6 +314,9 @@
         </footer>
         <!-- ends footer frame -->
         </div>
+        @if(request.uri != "/") {
+            <input type="hidden" name="destination-city" id="destination-city" />
+        }
         <!-- start social share bar -->
 		<!-- Go to http://www.addthis.com/get/smart-layers to customize -->
 		<script type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid=ra-50676c6651c6a15f"></script>

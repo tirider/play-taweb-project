@@ -1,4 +1,10 @@
-@main("About")(subtitle)(content)
+@main("About", meta)(subtitle)(content)
+
+@meta = {
+        <meta property="og:title" content="4Travelers - About" />
+        <meta name="description" content="About page for 4Travelers. Some stuff about authors and the purpose of this webpage.">
+        <meta property="og:description" content="About page for 4Travelers. Some stuff about authors and the purpose of this webpage." />
+}
 
 @subtitle = {
             <h1><a>About this project</a></h1>
@@ -23,7 +29,7 @@
 	                            </div>
 	                            <div class='bar-bottom'>
 	                                <div class='inner'>
-	                                	<p>This website is dedicated to fetch/handle data from external sources.</p>
+	                                	<p>This website is dedicated to fetch/handle data from external sources in order to produce semantic data in RDF format with the addition of users' recommendations.</p>
 	                               		<h3 class="container-item-text">External sources</h3>
 	                               		<hr>
 	                                   	<p><strong>DBpedia (dbpedia.org)</strong> is used for parsing cities' information in RDF/XML format from his SPARQL EndPoint.</p>
@@ -55,7 +61,7 @@
                                                    <p>
                                                    		<a class="u-email" href="mailto:mat.kapetanos@@gmail.com">mat.kapetanos@@gmail.com</a>
                                                    </p>
-                                                   <p>Matt add your fucking text right here...hahaha</p>
+                                                   <p>Happy to work with this project, learned lot of stuff around semantic web, RDF, ontologies...</p>
                                                </div>
                                            </div>
                                            <!--  <div class='right-social'>
@@ -161,8 +167,8 @@
 	                   <section class='widget-content'>
 	                        <div class='widget-section'>
 	                            <div class='inner'>
-	                                <label>School</label>
-	                                <p>Montpellier 2 University</p>
+	                                <label>University</label>
+	                                <p><a href="http://www.univ-montp2.fr/" target="_blank">University Montpellier II, Faculty of Science</a></p>
 	                            </div>
 	                        </div>
 	                        <div class='widget-section'>
@@ -173,22 +179,22 @@
 	                        </div>
 	                        <div class='widget-section'>
 	                            <div class='inner' style='position: relative;'>
-	                                <label>Project</label>
-	                                <p>Documentation</p>
+	                                <label>Technologies used</label>
+	                                <ul style="margin:0 0 0 20px;">
+	                                   <li><a href="http://www.playframework.com/" target="_blank">Play framework</a></li>
+	                                   <li><a href="http://www.w3.org/RDF/je" target="_blank">RDF</a></li>
+	                                   <li><a href="http://jena.apache.org/" target="_blank">Jena</a></li>
+	                                   <li><a href="http://jena.apache.org/documentation/tdb/index.html" target="_blank">Jena TDB</a></li>
+	                                   <li><a href="http://www.mongodb.org/" target="_blank">MongoDB</a></li>
+                                   </ul>
 	                            </div>
-	                        </div>	                        
-	                        <div class='widget-section'>
-	                            <div class='inner'>
-	                                <label>Languages</label>
-	                                <p>English, Spanish, Grec</p>	                                
-	                            </div>
-	                        </div>	
+	                        </div>
 	                   </section>
 	               </section>
 				   <section class='widget'>
 	                   <section class='widget-title uppercase'>
 	                       <div class='inner'>
-	                           <h2>Our teacher</h2>
+	                           <h2>Our professor</h2>
 	                       </div>
 	                   </section>
 	                   <section class='widget-content'>
