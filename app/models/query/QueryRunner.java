@@ -23,7 +23,7 @@ public class QueryRunner
 	private static final String FIELD6  = "currencyCode";
 	
 	/**
-	 * Checks if DBpedia service is up
+	 * This method checks whether dbpedia service is running up.
 	 * @return
 	 */
 	public static boolean isServiceUp()
@@ -31,18 +31,20 @@ public class QueryRunner
 		String query = "ASK { }";
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(SERVICE, query);
 		
-		boolean status = false;
-		try {
-            if (qexec.execAsk()) {
-            	 status = true;
-            }
-        } catch (QueryExceptionHTTP e) {
-        	status = false;
-        } finally {
+		try 
+		{
+			return qexec.execAsk() == true;
+        } 
+		catch (QueryExceptionHTTP e) 
+		{
+        	System.err.println("Sorry, dbpedia service is not working rigth now...");
+        } 
+		finally 
+		{
         	qexec.close();
         }
 		
-		return status;
+		return false;
 	}
 	
 	/**
@@ -70,7 +72,6 @@ public class QueryRunner
 		City city = null;
 		
 		String query = String.format(queryString, cityName);
-		//System.out.println(query);
 		
 		QueryExecution qexec = QueryExecutionFactory.sparqlService(SERVICE, query);
 		ResultSet results = qexec.execSelect() ;
@@ -105,11 +106,14 @@ public class QueryRunner
 		    city.setLogitude(cityLong);
 		    city.setPopulationTotal(cityPopulationTotal);
 		    city.setCountry(countryName);
+		    
 		    // Remove additional information on currency
-		    if(currencyCode.indexOf(",") >= 0) {
+		    if(currencyCode.indexOf(",") >= 0) 
+		    {
 				StringTokenizer st = new StringTokenizer(currencyCode, ",");
 				currencyCode = st.nextToken();
 			}
+		    
 		    city.setcurrencyCode(currencyCode);
 		}
 		

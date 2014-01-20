@@ -2,19 +2,19 @@ package models.beans;
 
 public class City 
 {
-	private String country; // dbpedia-owl:country
+	private String country;      // dbpedia-owl:country
 	private String name;
 	private String overview;
 	private double latitude;
-	private double logitude; //geo:lat
+	private double logitude;     //geo:lat
 	private int populationTotal; // dbpedia-owl:populationTotal
-	private String currencyCode; 	//dbpprop:currencyCode
+	private String currencyCode; //dbpprop:currencyCode
 	
 	public City() 
 	{
 		this.country = new String();
 		this.name = new String();
-		this.overview = new String("We have not information available for the city.");
+		this.overview = new String();
 		this.latitude = 0.0;
 		this.logitude = 0.0;
 		this.populationTotal = 0;

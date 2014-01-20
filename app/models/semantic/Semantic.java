@@ -13,7 +13,7 @@ import models.beans.Weather;
 import models.global.Core;
 import models.query.QueryRunner;
 import models.semantic.SparqlEndpoint;
-import models.service.CityParser;
+import models.service.DBPediaService;
 
 import com.hp.hpl.jena.query.Dataset;
 import com.hp.hpl.jena.query.QuerySolution;
@@ -67,7 +67,7 @@ public class Semantic {
 	 * Return TDB Model
 	 * @return
 	 */
-	public static Model getModel()
+	public static Model getTDBModel()
 	{
 		// GET DATASET AND MODEL
         Model taweb = getDataset().getNamedModel("taweb");
@@ -95,7 +95,7 @@ public class Semantic {
 	 */
 	public static Map<String,String> getNamespacePrefixes()
 	{
-		Model taweb = getModel();
+		Model taweb = getTDBModel();
 		
 		Map<String, String> NS = taweb.getNsPrefixMap();
 		
@@ -113,12 +113,12 @@ public class Semantic {
 	 */
 	public static void insertUserTDB(String nick, String email, String cityname) 
 	{
-		Model taweb = getModel();
+		Model taweb = getTDBModel();
 		
-		City city = getCityDetails(cityname);
+		City city = getCityDetailsFromTDB(cityname);
         if(city == null) {
         	if(QueryRunner.isServiceUp()) {
-        		city = CityParser.parse(cityname);
+        		city = DBPediaService.parse(cityname);
         	}
         }
         
@@ -153,27 +153,27 @@ public class Semantic {
 	 */
 	public static void updateCityAndCountryTDB(City city) 
 	{
-		Model taweb = getModel();
+		Model model = getTDBModel();
 		
-		String latitudeStr = String.valueOf(city.getLatitude());
+		String latitudeStr  = String.valueOf(city.getLatitude());
 		String longitudeStr = String.valueOf(city.getLongitude());
-		String cityname = city.getName();
-		String countryname = city.getCountry();
+		String cityname     = city.getName();
+		String countryname  = city.getCountry();
 		
 		// CREATE REQUIRED PROPERTIES
-    	Property populationProp = taweb.createProperty(dbpediaowl + "populationTotal");
-		Property country = taweb.createProperty(dbpediaowl + "country");
-		Property latitudeProp = taweb.createProperty(geo + "lat");
-		Property longitudeProp = taweb.createProperty(geo + "lon");
-		Property latlong = taweb.createProperty(geo + "lat_long");
-		Property currencyCode = taweb.createProperty(dbpprop + "currencyCode");
+    	Property populationProp = model.createProperty(dbpediaowl + "populationTotal");
+		Property country = model.createProperty(dbpediaowl + "country");
+		Property latitudeProp = model.createProperty(geo + "lat");
+		Property longitudeProp = model.createProperty(geo + "lon");
+		Property latlong = model.createProperty(geo + "lat_long");
+		Property currencyCode = model.createProperty(dbpprop + "currencyCode");
 		
 		// CHECK IF DESTINATION RESOURCE EXISTS
-        Resource DestinationR = taweb.getResource(trvl + cityname);
-        if(!taweb.containsResource(DestinationR))
+        Resource DestinationR = model.getResource(trvl + cityname);
+        if(!model.containsResource(DestinationR))
         {
-        	Resource Destination = taweb.createResource(trvl + "Destination");
-        	DestinationR = taweb.createResource(trvl + cityname);
+        	Resource Destination = model.createResource(trvl + "Destination");
+        	DestinationR = model.createResource(trvl + cityname);
         	DestinationR.addProperty(DC.description, city.getOverview());
         	
         	if(String.valueOf(city.getPopulationTotal()) != null || String.valueOf(city.getPopulationTotal()) != "0" || String.valueOf(city.getPopulationTotal()) != "") {
@@ -187,19 +187,19 @@ public class Semantic {
         }
 
 		// CREATE COUNTRY RESSOURCE
-		Resource CountryName = taweb.getResource(dbpedia + countryname);
-        if(!taweb.containsResource(CountryName))
+		Resource CountryName = model.getResource(dbpedia + countryname);
+        if(!model.containsResource(CountryName))
         {
-        	CountryName = taweb.createResource(dbpedia + countryname);
-        	Resource CountryR = taweb.createResource(dbpediaowl + "Country");
-    		taweb.add(CountryName, RDF.type, CountryR);
+        	CountryName = model.createResource(dbpedia + countryname);
+        	Resource CountryR = model.createResource(dbpediaowl + "Country");
+    		model.add(CountryName, RDF.type, CountryR);
     		CountryName.addProperty(RDFS.label, countryname);
     		CountryName.addProperty(currencyCode, city.getCurrencyCode());
         }
 
         DestinationR.addProperty(country, CountryName);
 		
-		taweb.close();
+		model.close();
 		Dataset dataset = getDataset();
         closeDataset(dataset);
 	}
@@ -209,19 +209,24 @@ public class Semantic {
 	 * @param photoList
 	 * @param cityname
 	 */
-	public static void updateDestinationPhotos(List<Photo> photoList, String cityname) {
+	public static void updateDestinationPhotos(List<Photo> photoList, String cityname) 
+	{
+		Model model = getTDBModel();
 		
-		Model taweb = getModel();
-		
-		Resource DestinationR = taweb.getResource(trvl + cityname);
-		if(photoList.size() > 0) {
-			for(Photo ph : photoList) {
+		Resource DestinationR = model.getResource(trvl + cityname);
+		if(photoList.size() > 0) 
+		{
+			for(Photo ph : photoList) 
+			{
+				// RETRIEVE IMG URL STRING
 				String imgUrl = ph.getImgLargeUrl();
+				
+				// ADD IN TDB GRAPH
 				DestinationR.addProperty(FOAF.img, imgUrl);
 			}
         }
 		
-		taweb.close();
+		model.close();
 		Dataset dataset = getDataset();
         closeDataset(dataset);
 	}
@@ -233,21 +238,21 @@ public class Semantic {
 	 */
 	public static void updateUserDestinationInterestedTDB(String nick, String cityname) 
 	{
-		Model taweb = getModel();
+		Model model = getTDBModel();
 
-		Property toProp = taweb.createProperty(trvl + "to");
-        Property timesInterestedProp = taweb.createProperty(trvl + "timesInterested");
-        Resource Destination = taweb.getResource(trvl + cityname);
+		Property toProp = model.createProperty(trvl + "to");
+        Property timesInterestedProp = model.createProperty(trvl + "timesInterested");
+        Resource Destination = model.getResource(trvl + cityname);
 
         // CHECK IF USER DESTINATION RESOURCE EXISTS
-        Resource userDestination = taweb.getResource(trvl + "user/" + nick + "#" + cityname);
-        if(!taweb.containsResource(userDestination))
+        Resource userDestination = model.getResource(trvl + "user/" + nick + "#" + cityname);
+        if(!model.containsResource(userDestination))
         {
-        	userDestination = taweb.createResource(trvl + "user/" + nick + "#" + cityname);
+        	userDestination = model.createResource(trvl + "user/" + nick + "#" + cityname);
         	
         	userDestination.addProperty(timesInterestedProp, "1");
         	
-        	Resource userDestinationR = taweb.createResource(trvl + "PersonDestination");
+        	Resource userDestinationR = model.createResource(trvl + "PersonDestination");
         	userDestination.addProperty(RDF.type, userDestinationR);
         }
         else
@@ -260,13 +265,13 @@ public class Semantic {
         	userDestination.addProperty(timesInterestedProp, String.valueOf(timesInterestedInt));
         }
 
-        Property destinationProp = taweb.createProperty(trvl + "destination");
-        Resource Person = taweb.getResource(trvl + "user/" + nick);
+        Property destinationProp = model.createProperty(trvl + "destination");
+        Resource Person = model.getResource(trvl + "user/" + nick);
         
         Person.addProperty(toProp, userDestination);
         userDestination.addProperty(destinationProp, Destination);
         
-        taweb.close();
+        model.close();
         Dataset dataset = getDataset();
         closeDataset(dataset);
 	}
@@ -280,7 +285,7 @@ public class Semantic {
 	 */
 	public static String updateUserDestinationTravelledTDB(String nick, String timesTraveled, String cityname)
 	{
-		Model taweb = getModel();
+		Model taweb = getTDBModel();
         
 		Property timesTraveledProp = taweb.createProperty(trvl + "timesTraveled");
 		
@@ -304,7 +309,7 @@ public class Semantic {
 	 */
 	public static String updateUserDestinationRatingTDB(String nick, String rating, String cityname)
 	{
-		Model taweb = getModel();
+		Model taweb = getTDBModel();
         
 		Property ratingProp = taweb.createProperty(rev + "rating");
 		
@@ -331,7 +336,7 @@ public class Semantic {
 	 */
 	public static String updateUserDestinationReviewTDB(String nick, String review, String cityname)
 	{
-		Model taweb = getModel();
+		Model taweb = getTDBModel();
 		Date date = Core.getDate();
 		String dateStr = Core.convertDateForURIs(date);
 
@@ -368,21 +373,22 @@ public class Semantic {
 	 */
 	public static void updateWeatherForecastTDB(List<Weather> weather, String cityname)
 	{
-		if(!weather.isEmpty()) {
-			Model taweb = getModel();
+		if(!weather.isEmpty()) 
+		{
+			Model model = getTDBModel();
 			
-			Property temperatureMinProp = taweb.createProperty(met + "celcius");
-			Property temperatureMaxProp = taweb.createProperty(met + "celcius");
-			Property iconProp = taweb.createProperty(met + "category");
-			Property forecastProp = taweb.createProperty(met + "forecast");
-			Resource DestinationR = taweb.getResource(trvl + cityname);
+			Property temperatureMinProp = model.createProperty(met + "celcius");
+			Property temperatureMaxProp = model.createProperty(met + "celcius");
+			Property iconProp = model.createProperty(met + "category");
+			Property forecastProp = model.createProperty(met + "forecast");
+			Resource DestinationR = model.getResource(trvl + cityname);
 			
 			for(Weather w : weather)
 			{
-				Resource ForecastCityR = taweb.getResource(trvl + "meteo/" + cityname + "#" + Core.convertDateForURIs(w.date));
-				if(!taweb.containsResource(ForecastCityR)) {
-					ForecastCityR = taweb.createResource(trvl + "meteo/" + cityname + "#" + Core.convertDateForURIs(w.date));
-					Resource ForecastR = taweb.getResource(met + "Forecast");
+				Resource ForecastCityR = model.getResource(trvl + "meteo/" + cityname + "#" + Core.convertDateForURIs(w.date));
+				if(!model.containsResource(ForecastCityR)) {
+					ForecastCityR = model.createResource(trvl + "meteo/" + cityname + "#" + Core.convertDateForURIs(w.date));
+					Resource ForecastR = model.getResource(met + "Forecast");
 					ForecastCityR.addProperty(RDF.type, ForecastR);
 					DestinationR.addProperty(forecastProp, ForecastCityR);
 					ForecastCityR.addProperty(DC.description, w.description);
@@ -393,7 +399,7 @@ public class Semantic {
 				}
 			}
 			
-			taweb.close();
+			model.close();
 			Dataset dataset = getDataset();
 	        closeDataset(dataset);
 		}
@@ -406,7 +412,8 @@ public class Semantic {
 	 */
 	public static int getRatingByCity(String cityname)
 	{
-		String query = "SELECT (AVG(xsd:integer(?o)) AS ?avg) WHERE { "
+		String query = "SELECT (AVG(xsd:integer(?o)) AS ?avg) " +
+				       "WHERE { "
 						+ "?s rdf:type trvl:PersonDestination  ."
 						+ "?s rev:rating ?o ."
 						+ "?s trvl:destination ?destinationR ."
@@ -422,6 +429,7 @@ public class Semantic {
 			QuerySolution qsolution = results.nextSolution();
 
 			double resultAvg = qsolution.getLiteral("avg").getDouble();
+			
 			resultStr = (int) Math.round(((resultAvg * 100)/5));
 		}
         
@@ -435,7 +443,8 @@ public class Semantic {
 	 */
 	public static int getNumberOfVotesByCity(String cityname)
 	{
-		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) WHERE { "
+		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) " +
+				       "WHERE { "
 						+ "?s rdf:type trvl:PersonDestination  ."
 						+ "?s rev:rating ?o ."
 						+ "?s trvl:destination ?destinationR ."
@@ -465,7 +474,8 @@ public class Semantic {
 	 */
 	public static int getNumberOfTimesTraveled(String cityname, String nick)
 	{
-		String query = "SELECT?o WHERE { "
+		String query = "SELECT ?o " +
+				 "WHERE { "
 				+ "?userResource rdf:type foaf:Person ."
 				+ "?userResource foaf:nick \"" + nick + "\" ."
 				+ "?userResource trvl:to ?userDestinationResource ."
@@ -496,15 +506,17 @@ public class Semantic {
 	 */
 	public static List<Review> getReviewsByCity(String cityname)
 	{
-		Model taweb = getModel();
+		Model model = getTDBModel();
 		List<Review> reviews = null;
 		
-		Resource City = taweb.getResource(trvl + cityname);
-		if(taweb.containsResource(City)) {
-			
+		Resource resourceCity = model.getResource(trvl + cityname);
+		
+		if(model.containsResource(resourceCity)) 
+		{
 			reviews = new ArrayList<Review>();
 			
-			String query = "SELECT ?text ?date ?nick WHERE { "
+			String query = "SELECT ?text ?date ?nick " +
+					"WHERE { "
     				+ "?reviewResource rdf:type rev:Review ."
     				+ "?reviewResource rev:text ?text ."
 					+ "?reviewResource dc:date ?date ."
@@ -527,7 +539,7 @@ public class Semantic {
 			}
 		}
 
-		taweb.close();
+		model.close();
         Dataset dataset = getDataset();
         closeDataset(dataset);
 		
@@ -542,7 +554,7 @@ public class Semantic {
 	 */
 	public static boolean canUserVote(String cityname, String nick)
 	{
-		Model taweb = getModel();
+		Model taweb = getTDBModel();
 		
 		Property timesTraveledProp = taweb.createProperty(trvl + "timesTraveled");
 		Resource userDestination = taweb.getResource(trvl + "user/" + nick + "#" + cityname);
@@ -562,7 +574,7 @@ public class Semantic {
 	 */
 	public static boolean isUser(String nick)
 	{
-		Model taweb = getModel();
+		Model taweb = getTDBModel();
 		boolean result = false;
 		
 		Resource Person = taweb.getResource(trvl + "user/" + nick);
@@ -583,57 +595,88 @@ public class Semantic {
 	 * @param cityname
 	 * @return
 	 */
-	public static City getCityDetails(String cityname) 
+	public static City getCityDetailsFromTDB(String cityname) 
 	{
-		Model taweb = getModel();
-		City city = null;
+		// GET TDB MODEL
+		Model model = getTDBModel();
 		
-		Resource City = taweb.getResource(trvl + cityname);
-		if(taweb.containsResource(City)) {
-			
-			city = new City();
-			
-			String query = "SELECT ?countryName ?overview ?lat ?long ?population ?currencyCode WHERE { "
-    				+ "?cityResource rdf:type trvl:Destination . "
-    				+ "?cityResource rdfs:label \"" + cityname + "\" ."
-					+ "?cityResource dbpedia-owl:country ?countryResource . "
-					+ "?countryResource rdfs:label ?countryName . "
-					+ "?cityResource dc:description ?overview . "
-					+ "OPTIONAL { ?countryResource dbpprop:currencyCode ?currencyCode } "
-					+ "OPTIONAL { ?cityResource dbpedia-owl:populationTotal ?population } "
-					+ "OPTIONAL { ?cityResource geo:lat ?lat } "
-					+ "OPTIONAL { ?cityResource geo:lon ?long } "
+		// INITIALISATION
+		City city = new City();		
+		
+		// RESOURCE RE-CONSTRUCTION
+		Resource resourceCity = model.getResource(trvl + cityname);
+		
+		// TEST WHETHER RE-BUIT RESOURCE EXISTS
+		if(model.containsResource(resourceCity)) 
+		{
+			// BUILDING QUERY STRING
+			String query = "SELECT ?countryName ?overview ?lat ?long ?population ?currencyCode " 
+					+ "WHERE "
+					+ "{ "
+	    				+ "?cityResource rdf:type trvl:Destination . "
+	    				+ "?cityResource rdfs:label \"" + cityname + "\" ."
+						+ "?cityResource dbpedia-owl:country ?countryResource . "
+						+ "?countryResource rdfs:label ?countryName . "
+						+ "?cityResource dc:description ?overview . "
+						+ "OPTIONAL { ?countryResource dbpprop:currencyCode ?currencyCode } "
+						+ "OPTIONAL { ?cityResource dbpedia-owl:populationTotal ?population } "
+						+ "OPTIONAL { ?cityResource geo:lat ?lat } "
+						+ "OPTIONAL { ?cityResource geo:lon ?long } "
 					+ "}";
     	
+			// PREPARING THE QUERY EXECUTION
 	    	ResultSet results = SparqlEndpoint.queryData(query);
 	
+	    	// LOOPING ON RESULTS
 			for ( ; results.hasNext() ; )
 			{
 				QuerySolution qsolution = results.nextSolution();
-	
+				
+				// ABOUT CITY NAME
 				city.setName(cityname);
+				
+				// ABOUT CITY COUNTRY
 				city.setCountry(qsolution.getLiteral("countryName").toString());
+				
+				// ABOUT CITY SUMMARY
 				city.setOverview(qsolution.getLiteral("overview").toString());
-				if(qsolution.contains("currencyCode")) {
+				
+				// ABOUT CITY CURRENCY CODE
+				if(qsolution.contains("currencyCode")) 
+				{
 					city.setcurrencyCode(qsolution.getLiteral("currencyCode").toString());
 				}
-				if(qsolution.contains("population")) {
+				
+				// ABOUT CITY POPULATION
+				if(qsolution.contains("population")) 
+				{
 					city.setPopulationTotal(qsolution.getLiteral("population").toString());
 				}
-				if(qsolution.contains("lat")) {
+				
+				// ABOUT CITY LAT
+				if(qsolution.contains("lat")) 
+				{
 					city.setLatitude(qsolution.getLiteral("lat").toString());
 				}
-				if(qsolution.contains("long")) {
+				
+				// ABOUT CITY LONGITUDE
+				if(qsolution.contains("long")) 
+				{
 					city.setLogitude(qsolution.getLiteral("long").toString());
 				}
 			}
+
+			// CLOSE DATA MODEL
+			model.close();
+	        Dataset dataset = getDataset();
+	        closeDataset(dataset);
+			
+	        // RETURN CITY OBJECT
+			return city;			
 		}
 
-		taweb.close();
-        Dataset dataset = getDataset();
-        closeDataset(dataset);
-		
-		return city;
+		// NO CITY INTO TDB GRAPH
+		return null;
 	}
 	
 	/**
@@ -643,7 +686,7 @@ public class Semantic {
 	 */
 	public static List<Photo> getPhotosByCity(String cityname)
 	{
-		Model taweb = getModel();
+		Model taweb = getTDBModel();
 		
 		List<Photo> photos = null;
 		

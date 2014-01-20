@@ -23,7 +23,7 @@ public class SparqlEndpoint {
 
 	public static ResultSet queryData(String q)
 	{
-		Model taweb = Semantic.getModel();
+		Model taweb = Semantic.getTDBModel();
 
         // GET NAMESPACES FROM MODELS
         String dbpediaowlNS = taweb.getNsPrefixURI("dbpedia-owl");
