@@ -76,59 +76,84 @@ public class Core
 	 */
 	public static String getCityByQuery(String query)
 	{
-		query = query.toLowerCase();
-
-		LinkedHashMap<String, String> resultArray = new LinkedHashMap<String, String>(); // LinkedHashMap preserves order insertion
-		
-		File file = Play.application().getFile("/public/json/cities_en.json");
-		String resultsStr = "{\"cities\":[";
-		String jsonStr;
-		try {
-			jsonStr = Files.toString(file, Charsets.UTF_8);
-			if(jsonStr == null) {
-				return null;
-			}
-			ObjectMapper mapper = new ObjectMapper();
-			JsonNode actualObj = mapper.readTree(jsonStr);
-			JsonNode results = actualObj.get("cities");
-			int size = 12;
-			outer:
-			for (JsonNode element: results) {
-				if(element.get("city").asText().toLowerCase().equals(query)) {
-					if (--size > 0) {
-						resultArray.put(element.get("city").asText(), element.get("country").asText());
-	    		    }
-					else {
-						break outer;
-					}
-				}
-			}
-			outer2:
-			for (JsonNode element: results) {
-				if(element.get("city").asText().toLowerCase().startsWith(query)) {
-					if (--size > 0) {
-						if(!resultArray.containsKey(element.get("city").asText())) {
-							resultArray.put(element.get("city").asText(), element.get("country").asText());
-						}
-	    		    }
-					else {
-						break outer2;
-					}
-				}
-			}
-			
-			for (String key : resultArray.keySet()) {
-				resultsStr += "{\"value\" : \"" + key + "\",";
-				resultsStr += "\"name\" : \"" + key + ", " + resultArray.get(key) + "\"},";
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+String resultsStr = "{\"cities\":[";
+        
+        String cityName = "";
+        try {
+	    SAXBuilder sxb = new SAXBuilder();
+	    URL url = new URL("http://lookup.dbpedia.org/api/search/PrefixSearch?QueryClass=Settlement&MaxHits=10&QueryString=" + query);
+	    Namespace ns = Namespace.getNamespace("http://lookup.dbpedia.org/");
+	    Document document = sxb.build(url);
+	    Element racine = document.getRootElement();
+	    List<Element> results = racine.getChildren("Result", ns);
+	    int size = results.size();
+	    for (Element element : results) {
+	            cityName = element.getChildText("Label", ns);
+	            resultsStr += "{\"value\" : \"" + cityName + "\",";
+	             resultsStr += "\"name\" : \"" + cityName + "\"}";
+	             if (--size > 0) {
+	                     resultsStr += ", ";
+	             }
+	            }
+	            resultsStr += "]}";
+		} catch (Exception ex) {
+		        return null;
 		}
-		
-		resultsStr += "]}";
-		resultsStr = resultsStr.replace(",]}", "]}"); // remove last comma
-		return resultsStr;
+		        return resultsStr;
+		        
+//		query = query.toLowerCase();
+//
+//		LinkedHashMap<String, String> resultArray = new LinkedHashMap<String, String>(); // LinkedHashMap preserves order insertion
+//		
+//		File file = Play.application().getFile("/public/json/cities_en.json");
+//		String resultsStr = "{\"cities\":[";
+//		String jsonStr;
+//		try {
+//			jsonStr = Files.toString(file, Charsets.UTF_8);
+//			if(jsonStr == null) {
+//				return null;
+//			}
+//			ObjectMapper mapper = new ObjectMapper();
+//			JsonNode actualObj = mapper.readTree(jsonStr);
+//			JsonNode results = actualObj.get("cities");
+//			int size = 12;
+//			outer:
+//			for (JsonNode element: results) {
+//				if(element.get("city").asText().toLowerCase().equals(query)) {
+//					if (--size > 0) {
+//						resultArray.put(element.get("city").asText(), element.get("country").asText());
+//	    		    }
+//					else {
+//						break outer;
+//					}
+//				}
+//			}
+//			outer2:
+//			for (JsonNode element: results) {
+//				if(element.get("city").asText().toLowerCase().startsWith(query)) {
+//					if (--size > 0) {
+//						if(!resultArray.containsKey(element.get("city").asText())) {
+//							resultArray.put(element.get("city").asText(), element.get("country").asText());
+//						}
+//	    		    }
+//					else {
+//						break outer2;
+//					}
+//				}
+//			}
+//			
+//			for (String key : resultArray.keySet()) {
+//				resultsStr += "{\"value\" : \"" + key + "\",";
+//				resultsStr += "\"name\" : \"" + key + ", " + resultArray.get(key) + "\"},";
+//			}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//		
+//		resultsStr += "]}";
+//		resultsStr = resultsStr.replace(",]}", "]}"); // remove last comma
+//		return resultsStr;
 	}
 	
 	/**
