@@ -206,6 +206,7 @@ var fortravelers = {
 				        	}
 				        	if($(".nbvotes").length) {
 				        		$(".nbvotes").text(msg.numberOfVotes + " votes");
+				        		$(".vote-text").remove();
 				        	}
 				        	$.pnotify({
 			            		title: 'Success',
