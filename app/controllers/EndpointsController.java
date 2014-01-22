@@ -57,6 +57,9 @@ public class EndpointsController extends Controller
         	else if (request().accepts("application/rdf+xml")) {
     	    	formatInt = 3;
     	    }
+        	else if (request().accepts("application/x-turtle")) {
+    	    	formatInt = 4;
+    	    }
     	}
     	else {
     		formatInt = Core.parseInt(format);
@@ -85,6 +88,10 @@ public class EndpointsController extends Controller
 				ByteArrayOutputStream baosRDF = new ByteArrayOutputStream();
 				ResultSetFormatter.outputAsRDF(baosRDF, "RDF/XML-ABBREV", results);
 				return ok(baosRDF.toString());
+			case 4:
+				ByteArrayOutputStream baosN3 = new ByteArrayOutputStream();
+				ResultSetFormatter.outputAsRDF(baosN3, "N3", results);
+				return ok(baosN3.toString());
 		}
 		return null;
     }
