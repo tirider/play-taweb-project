@@ -863,6 +863,7 @@ public class Semantic {
 		String cityNameUrl = "";
 		String cityDescription = "";
 		String cityImage = "";
+		String img = "";
 		
         String resultHtml = "";
         int i = 0;
@@ -982,15 +983,17 @@ public class Semantic {
 	 */
 	public static String getListMostTraveledCities()
 	{
-		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) ?destination " +
+		String query = "SELECT (COUNT(xsd:integer(?o)) AS ?count) ?destination ?countryname " +
 				"WHERE " +
 				"{ "
 				+ "?s rdf:type trvl:PersonDestination . "
 				+ "?s trvl:timesTraveled ?o . "
 				+ "?s trvl:destination ?destinationResource . "
-				+ "?destinationResource rdfs:label ?destination "
+				+ "?destinationResource rdfs:label ?destination . "
+				+ "?destinationResource dbpedia-owl:country ?countryResource . "
+				+ "?countryResource rdfs:label ?countryname"
 				+ " } "
-				+ "GROUP BY ?destination "
+				+ "GROUP BY ?destination ?countryname "
 				+ "ORDER BY ?count "
 				+ "LIMIT 10";
 
@@ -1001,13 +1004,15 @@ public class Semantic {
 		}
         String resultHtml = "";
         String cityname = "";
+        String countryname = "";
 
         resultHtml += "<table>";
 		for ( ; results.hasNext() ; )
 		{
 			QuerySolution qsolution = results.nextSolution() ;
 			cityname = qsolution.getLiteral("destination").toString();
-			resultHtml += "<tr><td><a href=\"" + cityname.replace(" ", "%20") + "\">" + cityname + "</a></td></tr>";
+			countryname = qsolution.getLiteral("countryname").toString();
+			resultHtml += "<tr><td><a href=\"" + cityname.replace(" ", "%20") + "\">" + cityname + ", " + countryname + "</a></td></tr>";
 		}
 		resultHtml += "</table>";
 		
