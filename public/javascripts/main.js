@@ -232,6 +232,7 @@ var fortravelers = {
 			else
 			{
 	    		var review = $('#comment-text').val();
+	    		review = review.replace(/\r?\n/g, '<br />');
 	    		if (review == '') {
 	    			if(!$(".comment-missing").length) {
 	    				$('#comment').append("<div id=\"error-message comment-missing\">Please enter a text</div>");
